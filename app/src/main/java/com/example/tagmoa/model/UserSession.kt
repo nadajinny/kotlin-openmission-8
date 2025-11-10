@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.model
 
 enum class AuthProvider {
     GOOGLE,

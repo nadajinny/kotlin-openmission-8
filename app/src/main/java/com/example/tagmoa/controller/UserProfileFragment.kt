@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,9 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.tagmoa.R
+import com.example.tagmoa.model.AuthProvider
+import com.example.tagmoa.model.SessionManager
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.kakao.sdk.user.UserApiClient

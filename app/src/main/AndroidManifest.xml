@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".TagmoaApp"
+        android:name=".controller.TagmoaApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -34,20 +34,20 @@
         </activity>
 
         <activity
-            android:name=".AddEditSubTaskActivity" />
+            android:name=".controller.AddEditSubTaskActivity" />
         <activity
-            android:name=".MainTaskDetailActivity" />
+            android:name=".controller.MainTaskDetailActivity" />
         <activity
-            android:name=".AddEditMainTaskActivity" />
+            android:name=".controller.AddEditMainTaskActivity" />
         <activity
-            android:name=".TagManagementActivity" />
+            android:name=".controller.TagManagementActivity" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".controller.MainActivity"
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".controller.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

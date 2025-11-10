@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
+import com.example.tagmoa.model.MainTask
+import com.example.tagmoa.model.Tag
+import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.view.MainTaskAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup

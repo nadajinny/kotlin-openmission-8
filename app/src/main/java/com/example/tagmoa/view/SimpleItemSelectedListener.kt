@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.view
 
 import android.view.View
 import android.widget.AdapterView

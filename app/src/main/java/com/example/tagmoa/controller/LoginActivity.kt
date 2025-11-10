@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.tagmoa.R
+import com.example.tagmoa.model.AuthProvider
+import com.example.tagmoa.model.SessionManager
+import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.UserSession
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.SignInButton

@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.view
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
+import com.example.tagmoa.model.SubTask
 
 class SubTaskAdapter(
     private val onEdit: (SubTask) -> Unit,

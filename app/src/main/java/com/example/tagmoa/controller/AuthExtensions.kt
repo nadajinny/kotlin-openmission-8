@@ -1,8 +1,11 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.tagmoa.model.AuthProvider
+import com.example.tagmoa.model.SessionManager
+import com.example.tagmoa.model.UserSession
 import com.google.firebase.auth.FirebaseAuth
 
 fun AppCompatActivity.requireUserIdOrRedirect(): String? {

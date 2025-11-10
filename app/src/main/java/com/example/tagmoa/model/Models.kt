@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.model
 
 data class Tag(
     var id: String = "",

@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.view
 
 import java.text.SimpleDateFormat
 import java.util.Date

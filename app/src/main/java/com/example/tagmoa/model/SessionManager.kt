@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.model
 
 import android.content.Context
 import android.content.SharedPreferences

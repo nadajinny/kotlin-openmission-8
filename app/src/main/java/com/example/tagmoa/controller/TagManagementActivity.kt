@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.os.Bundle
 import android.view.View
@@ -10,6 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
+import com.example.tagmoa.model.MainTask
+import com.example.tagmoa.model.Tag
+import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.view.TagAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference

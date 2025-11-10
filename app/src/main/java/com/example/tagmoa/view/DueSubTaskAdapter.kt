@@ -1,10 +1,11 @@
-package com.example.tagmoa
+package com.example.tagmoa.view
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
 
 data class DueSubTaskItem(
     val id: String,

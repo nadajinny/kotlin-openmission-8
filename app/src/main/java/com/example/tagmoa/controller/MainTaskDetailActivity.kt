@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.content.Intent
 import android.graphics.Color
@@ -12,6 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
+import com.example.tagmoa.model.MainTask
+import com.example.tagmoa.model.SubTask
+import com.example.tagmoa.model.Tag
+import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.view.SubTaskAdapter
+import com.example.tagmoa.view.asDateLabel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference

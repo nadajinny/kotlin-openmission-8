@@ -1,6 +1,7 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.content.Context
+import com.example.tagmoa.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

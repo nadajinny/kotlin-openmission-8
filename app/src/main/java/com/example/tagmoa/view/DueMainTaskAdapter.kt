@@ -1,10 +1,12 @@
-package com.example.tagmoa
+package com.example.tagmoa.view
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
+import com.example.tagmoa.model.MainTask
 
 class DueMainTaskAdapter(
     private val onClick: (MainTask) -> Unit

@@ -1,6 +1,8 @@
-package com.example.tagmoa
+package com.example.tagmoa.controller
 
 import android.app.Application
+import com.example.tagmoa.R
+import com.example.tagmoa.model.SessionManager
 import com.kakao.sdk.common.KakaoSdk
 import com.navercorp.nid.NidOAuth
 import com.navercorp.nid.core.data.datastore.NidOAuthInitializingCallback

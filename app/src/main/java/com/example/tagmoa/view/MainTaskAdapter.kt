@@ -1,4 +1,4 @@
-package com.example.tagmoa
+package com.example.tagmoa.view
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tagmoa.R
+import com.example.tagmoa.model.MainTask
+import com.example.tagmoa.model.Tag
 
 class MainTaskAdapter(
     private val onTaskClick: (MainTask) -> Unit
