@@ -68,4 +68,14 @@
     <string name="priority_low">낮음</string>
     <string name="priority_medium">보통</string>
     <string name="priority_high">높음</string>
+
+    <string name="login_title">Tagmoa에 로그인</string>
+    <string name="login_subtitle">구글 계정으로 로그인하면 기기마다 동일한 태그와 테스크를 불러올 수 있습니다.</string>
+    <string name="message_google_sign_in_failed">Google 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="message_google_auth_failed">Firebase 인증에 실패했습니다. 네트워크를 확인한 뒤 다시 시도해주세요.</string>
+    <string name="message_account_deleted">계정을 삭제하고 연동을 해제했습니다.</string>
+    <string name="message_account_delete_failed">계정 삭제에 실패했습니다. 다시 로그인한 뒤 시도해주세요.</string>
+    <string name="message_signed_out">로그아웃되었습니다.</string>
+    <string name="action_logout">로그아웃</string>
+    <string name="action_disconnect_account">연동 해제</string>
 </resources>

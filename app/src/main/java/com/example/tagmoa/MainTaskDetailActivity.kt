@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class MainTaskDetailActivity : AppCompatActivity() {
@@ -27,6 +26,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
     private lateinit var tasksRef: DatabaseReference
     private lateinit var subTasksRef: DatabaseReference
     private lateinit var tagsRef: DatabaseReference
+    private lateinit var userId: String
 
     private lateinit var textTitle: TextView
     private lateinit var textDate: TextView
@@ -56,9 +56,11 @@ class MainTaskDetailActivity : AppCompatActivity() {
             return
         }
 
-        tasksRef = FirebaseDatabase.getInstance().getReference("mainTasks")
-        subTasksRef = FirebaseDatabase.getInstance().getReference("subTasks")
-        tagsRef = FirebaseDatabase.getInstance().getReference("tags")
+        val uid = requireUserIdOrRedirect() ?: return
+        userId = uid
+        tasksRef = UserDatabase.tasksRef(userId)
+        subTasksRef = UserDatabase.subTasksRef(userId)
+        tagsRef = UserDatabase.tagsRef(userId)
 
         textTitle = findViewById(R.id.textDetailTitle)
         textDate = findViewById(R.id.textDetailDate)
@@ -189,11 +191,19 @@ class MainTaskDetailActivity : AppCompatActivity() {
     }
 
     private fun deleteTask() {
-        tasksRef.child(taskId).removeValue().addOnSuccessListener {
-            subTasksRef.child(taskId).removeValue()
-            Toast.makeText(this, R.string.message_task_deleted, Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        tasksRef.child(taskId).removeValue()
+            .addOnSuccessListener {
+                subTasksRef.child(taskId).removeValue()
+                Toast.makeText(this, R.string.message_task_deleted, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     private fun confirmDeleteSubTask(subTask: SubTask) {
@@ -207,9 +217,17 @@ class MainTaskDetailActivity : AppCompatActivity() {
 
     private fun deleteSubTask(subTask: SubTask) {
         if (subTask.id.isBlank()) return
-        subTasksRef.child(taskId).child(subTask.id).removeValue().addOnSuccessListener {
-            Toast.makeText(this, R.string.message_subtask_deleted, Toast.LENGTH_SHORT).show()
-        }
+        subTasksRef.child(taskId).child(subTask.id).removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(this, R.string.message_subtask_deleted, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     override fun onDestroy() {

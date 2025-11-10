@@ -13,13 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class TagManagementActivity : AppCompatActivity() {
 
     private lateinit var tagsRef: DatabaseReference
     private lateinit var tasksRef: DatabaseReference
+    private lateinit var userId: String
     private lateinit var adapter: TagAdapter
     private lateinit var emptyState: TextView
     private lateinit var inputTagName: EditText
@@ -28,10 +28,11 @@ class TagManagementActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val uid = requireUserIdOrRedirect() ?: return
+        userId = uid
+        tagsRef = UserDatabase.tagsRef(userId)
+        tasksRef = UserDatabase.tasksRef(userId)
         setContentView(R.layout.activity_tag_management)
-
-        tagsRef = FirebaseDatabase.getInstance().getReference("tags")
-        tasksRef = FirebaseDatabase.getInstance().getReference("mainTasks")
 
         emptyState = findViewById(R.id.textTagEmptyState)
         inputTagName = findViewById(R.id.editTagName)
@@ -77,11 +78,19 @@ class TagManagementActivity : AppCompatActivity() {
         }
         val newId = tagsRef.push().key ?: return
         val newTag = Tag(id = newId, name = name)
-        tagsRef.child(newId).setValue(newTag).addOnSuccessListener {
-            inputTagName.text.clear()
-            Toast.makeText(this, R.string.message_tag_created, Toast.LENGTH_SHORT).show()
-            promptAssignTagToTasks(newTag)
-        }
+        tagsRef.child(newId).setValue(newTag)
+            .addOnSuccessListener {
+                inputTagName.text.clear()
+                Toast.makeText(this, R.string.message_tag_created, Toast.LENGTH_SHORT).show()
+                promptAssignTagToTasks(newTag)
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     private fun promptAssignTagToTasks(tag: Tag) {
@@ -136,10 +145,18 @@ class TagManagementActivity : AppCompatActivity() {
 
     private fun deleteTag(tag: Tag) {
         if (tag.id.isBlank()) return
-        tagsRef.child(tag.id).removeValue().addOnSuccessListener {
-            removeTagFromTasks(tag.id)
-            Toast.makeText(this, R.string.message_tag_deleted, Toast.LENGTH_SHORT).show()
-        }
+        tagsRef.child(tag.id).removeValue()
+            .addOnSuccessListener {
+                removeTagFromTasks(tag.id)
+                Toast.makeText(this, R.string.message_tag_deleted, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
     private fun removeTagFromTasks(tagId: String) {

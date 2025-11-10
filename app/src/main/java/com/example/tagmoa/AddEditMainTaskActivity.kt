@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DatabaseReference
 import java.util.Calendar
 
 class AddEditMainTaskActivity : AppCompatActivity() {
@@ -19,9 +19,9 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         const val EXTRA_TASK_ID = "extra_task_id"
     }
 
-    private val database = FirebaseDatabase.getInstance()
-    private val tasksRef = database.getReference("mainTasks")
-    private val tagsRef = database.getReference("tags")
+    private lateinit var tasksRef: DatabaseReference
+    private lateinit var tagsRef: DatabaseReference
+    private lateinit var userId: String
 
     private lateinit var editTitle: EditText
     private lateinit var editDescription: EditText
@@ -39,6 +39,10 @@ class AddEditMainTaskActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val uid = requireUserIdOrRedirect() ?: return
+        userId = uid
+        tasksRef = UserDatabase.tasksRef(userId)
+        tagsRef = UserDatabase.tagsRef(userId)
         setContentView(R.layout.activity_add_edit_main_task)
 
         editTitle = findViewById(R.id.editTaskTitle)
@@ -205,9 +209,17 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             tagIds = selectedTagIds.toMutableList()
         )
 
-        tasksRef.child(task.id).setValue(task).addOnSuccessListener {
-            Toast.makeText(this, R.string.message_task_saved, Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        tasksRef.child(task.id).setValue(task)
+            .addOnSuccessListener {
+                Toast.makeText(this, R.string.message_task_saved, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 }

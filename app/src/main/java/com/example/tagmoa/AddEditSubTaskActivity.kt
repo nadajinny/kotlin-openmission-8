@@ -9,7 +9,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DatabaseReference
 import java.util.Calendar
 
 class AddEditSubTaskActivity : AppCompatActivity() {
@@ -19,9 +19,9 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         const val EXTRA_SUB_TASK_ID = "extra_sub_task_id"
     }
 
-    private val database = FirebaseDatabase.getInstance()
-    private val tasksRef = database.getReference("mainTasks")
-    private val subTasksRef = database.getReference("subTasks")
+    private lateinit var tasksRef: DatabaseReference
+    private lateinit var subTasksRef: DatabaseReference
+    private lateinit var userId: String
 
     private lateinit var spinnerMainTasks: Spinner
     private lateinit var spinnerPriority: Spinner
@@ -35,6 +35,10 @@ class AddEditSubTaskActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val uid = requireUserIdOrRedirect() ?: return
+        userId = uid
+        tasksRef = UserDatabase.tasksRef(userId)
+        subTasksRef = UserDatabase.subTasksRef(userId)
         setContentView(R.layout.activity_add_edit_sub_task)
 
         spinnerMainTasks = findViewById(R.id.spinnerMainTasks)
@@ -181,9 +185,17 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             priority = priority,
             dueDate = selectedDate
         )
-        subTasksRef.child(mainTaskId).child(subTaskKey).setValue(subTask).addOnSuccessListener {
-            Toast.makeText(this, R.string.message_subtask_saved, Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        subTasksRef.child(mainTaskId).child(subTaskKey).setValue(subTask)
+            .addOnSuccessListener {
+                Toast.makeText(this, R.string.message_subtask_saved, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 }
