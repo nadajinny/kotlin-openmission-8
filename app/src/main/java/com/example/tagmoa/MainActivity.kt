@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(HomeFragment())
         }
     }
+    
 
     override fun onStart() {
         super.onStart()
@@ -56,7 +57,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun ensureAuthenticated(): Boolean {
-        if (firebaseAuth.currentUser == null) {
+        val session = SessionManager.currentSession ?: run {
+            redirectToLogin()
+            return false
+        }
+
+        if (session.provider == AuthProvider.GOOGLE && firebaseAuth.currentUser == null) {
+            SessionManager.clearSession()
             redirectToLogin()
             return false
         }

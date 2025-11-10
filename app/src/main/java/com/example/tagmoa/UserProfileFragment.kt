@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import com.kakao.sdk.user.UserApiClient
 
 class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
@@ -27,29 +28,52 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         btnLogout = view.findViewById(R.id.btnProfileLogout)
         btnDisconnect = view.findViewById(R.id.btnProfileDisconnect)
 
-        val user = firebaseAuth.currentUser
-        if (user == null) {
+        val session = SessionManager.currentSession
+        if (session == null) {
             redirectToLogin()
             return
         }
 
-        textName.text = getString(R.string.profile_name_format, user.displayName ?: "-")
-        textEmail.text = getString(R.string.profile_email_format, user.email ?: "-")
+        textName.text = getString(R.string.profile_name_format, session.displayName ?: "-")
+        textEmail.text = getString(R.string.profile_email_format, session.email ?: "-")
 
         btnLogout.setOnClickListener {
-            firebaseAuth.signOut()
-            googleClient.signOut().addOnCompleteListener {
-                Toast.makeText(requireContext(), getString(R.string.message_signed_out), Toast.LENGTH_SHORT).show()
-                redirectToLogin()
+            when (session.provider) {
+                AuthProvider.GOOGLE -> logoutGoogle()
+                AuthProvider.KAKAO -> logoutKakao()
             }
         }
 
         btnDisconnect.setOnClickListener {
-            performAccountDisconnect()
+            when (session.provider) {
+                AuthProvider.GOOGLE -> disconnectGoogle()
+                AuthProvider.KAKAO -> disconnectKakao()
+            }
         }
     }
 
-    private fun performAccountDisconnect() {
+    private fun logoutGoogle() {
+        firebaseAuth.signOut()
+        googleClient.signOut().addOnCompleteListener {
+            SessionManager.clearSession()
+            Toast.makeText(requireContext(), getString(R.string.message_signed_out), Toast.LENGTH_SHORT).show()
+            redirectToLogin()
+        }
+    }
+
+    private fun logoutKakao() {
+        UserApiClient.instance.logout { error ->
+            SessionManager.clearSession()
+            if (error != null) {
+                Toast.makeText(requireContext(), error.localizedMessage ?: getString(R.string.error_generic), Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.message_signed_out), Toast.LENGTH_SHORT).show()
+            }
+            redirectToLogin()
+        }
+    }
+
+    private fun disconnectGoogle() {
         val currentUser = firebaseAuth.currentUser
         if (currentUser == null) {
             redirectToLogin()
@@ -59,11 +83,24 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             if (task.isSuccessful) {
                 firebaseAuth.signOut()
                 googleClient.revokeAccess().addOnCompleteListener {
+                    SessionManager.clearSession()
                     Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
                     redirectToLogin()
                 }
             } else {
                 Toast.makeText(requireContext(), getString(R.string.message_account_delete_failed), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun disconnectKakao() {
+        UserApiClient.instance.unlink { error ->
+            if (error != null) {
+                Toast.makeText(requireContext(), getString(R.string.message_account_delete_failed), Toast.LENGTH_LONG).show()
+            } else {
+                SessionManager.clearSession()
+                Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
+                redirectToLogin()
             }
         }
     }

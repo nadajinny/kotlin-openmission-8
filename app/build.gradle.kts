@@ -19,6 +19,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders["kakao_app_key"] = "a34795d3954f3817b08003b1b9e6d6d7"
     }
 
     buildTypes {
@@ -50,6 +52,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database:22.0.1")
     implementation("com.google.firebase:firebase-auth:24.0.1")
     implementation("com.google.android.gms:play-services-auth:21.4.0")
+    implementation("${project.property("KAKAO_SDK_GROUP")}:v2-user:${project.property("KAKAO_SDK_VERSION")}")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

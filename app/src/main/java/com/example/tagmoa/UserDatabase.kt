@@ -1,6 +1,5 @@
 package com.example.tagmoa
 
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
@@ -18,13 +17,14 @@ object UserDatabase {
 
     fun subTasksRef(uid: String): DatabaseReference = userRoot(uid).child("subTasks")
 
-    fun upsertUserProfile(user: FirebaseUser) {
+    fun upsertUserProfile(session: UserSession) {
         val profile = mapOf(
-            "uid" to user.uid,
-            "email" to (user.email ?: ""),
-            "displayName" to (user.displayName ?: ""),
+            "uid" to session.uid,
+            "email" to (session.email ?: ""),
+            "displayName" to (session.displayName ?: ""),
+            "provider" to session.provider.name,
             "lastLoginAt" to ServerValue.TIMESTAMP
         )
-        userRoot(user.uid).child("profile").updateChildren(profile)
+        userRoot(session.uid).child("profile").updateChildren(profile)
     }
 }

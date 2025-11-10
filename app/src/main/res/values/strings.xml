@@ -69,6 +69,7 @@
     <string name="priority_medium">보통</string>
     <string name="priority_high">높음</string>
 
+    <string name="kakao_app_key">a34795d3954f3817b08003b1b9e6d6d7</string>
     <string name="nav_home">홈</string>
     <string name="nav_tasks">메인 테스크</string>
     <string name="nav_calendar">캘린더</string>
@@ -99,4 +100,6 @@
     <string name="message_signed_out">로그아웃되었습니다.</string>
     <string name="action_logout">로그아웃</string>
     <string name="action_disconnect_account">연동 해제</string>
+    <string name="action_kakao_login">카카오 로그인</string>
+    <string name="error_kakao_email_required">카카오 계정 이메일을 가져오지 못했습니다. 동의 항목을 확인하고 다시 시도해주세요.</string>
 </resources>
