@@ -2,7 +2,8 @@ package com.example.tagmoa
 
 enum class AuthProvider {
     GOOGLE,
-    KAKAO
+    KAKAO,
+    NAVER
 }
 
 data class UserSession(

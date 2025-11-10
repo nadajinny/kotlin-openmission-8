@@ -17,11 +17,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NidOAuth
+import com.navercorp.nid.profile.domain.vo.NidProfile
+import com.navercorp.nid.profile.util.NidProfileCallback
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var googleSignInButton: SignInButton
     private lateinit var kakaoLoginButton: MaterialButton
+    private lateinit var naverLoginButton: MaterialButton
     private lateinit var progressBar: ProgressBar
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -43,12 +47,24 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private val naverLoginLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            fetchNaverProfile()
+        } else {
+            val errorDesc = NidOAuth.getLastErrorDescription()
+            showSignInError(errorDesc ?: getString(R.string.error_generic))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         googleSignInButton = findViewById(R.id.btn_google_login)
         kakaoLoginButton = findViewById(R.id.btn_kakao_login)
+        naverLoginButton = findViewById(R.id.btn_naver_login)
         progressBar = findViewById(R.id.progressLogin)
 
         googleSignInButton.setSize(SignInButton.SIZE_WIDE)
@@ -61,6 +77,10 @@ class LoginActivity : AppCompatActivity() {
 
         kakaoLoginButton.setOnClickListener {
             startKakaoLogin()
+        }
+
+        naverLoginButton.setOnClickListener {
+            startNaverLogin()
         }
     }
 
@@ -90,6 +110,14 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     fetchKakaoUser()
                 }
+            }
+        } else if (savedSession?.provider == AuthProvider.NAVER) {
+            toggleLoading(true)
+            if (NidOAuth.getAccessToken().isNullOrBlank()) {
+                SessionManager.clearSession()
+                toggleLoading(false)
+            } else {
+                fetchNaverProfile()
             }
         }
     }
@@ -179,6 +207,39 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun startNaverLogin() {
+        toggleLoading(true)
+        NidOAuth.requestLogin(this, naverLoginLauncher)
+    }
+
+    private fun fetchNaverProfile() {
+        NidOAuth.getUserProfile(object : NidProfileCallback<NidProfile> {
+            override fun onSuccess(result: NidProfile) {
+                val detail = result.profile
+                val email = detail?.email
+                if (email.isNullOrBlank()) {
+                    showSignInError(getString(R.string.error_naver_email_required))
+                    return
+                }
+                val safeEmail = email
+                val displayName = detail.name ?: detail.nickname ?: safeEmail.substringBefore("@")
+                val session = UserSession(
+                    provider = AuthProvider.NAVER,
+                    uid = "NAVER-${detail.id}",
+                    displayName = displayName,
+                    email = safeEmail
+                )
+                SessionManager.setSession(session)
+                UserDatabase.upsertUserProfile(session)
+                navigateToMain()
+            }
+
+            override fun onFailure(errorCode: String, errorDesc: String) {
+                showSignInError("errorCode:$errorCode, errorDesc:$errorDesc")
+            }
+        })
+    }
+
     private fun showSignInError(message: String) {
         toggleLoading(false)
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
@@ -188,6 +249,7 @@ class LoginActivity : AppCompatActivity() {
         progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         googleSignInButton.isEnabled = !isLoading
         kakaoLoginButton.isEnabled = !isLoading
+        naverLoginButton.isEnabled = !isLoading
     }
 
     private fun navigateToMain() {

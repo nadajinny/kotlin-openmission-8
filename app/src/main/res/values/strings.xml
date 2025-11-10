@@ -101,5 +101,11 @@
     <string name="action_logout">로그아웃</string>
     <string name="action_disconnect_account">연동 해제</string>
     <string name="action_kakao_login">카카오 로그인</string>
+    <string name="action_naver_login">네이버 로그인</string>
     <string name="error_kakao_email_required">카카오 계정 이메일을 가져오지 못했습니다. 동의 항목을 확인하고 다시 시도해주세요.</string>
+    <string name="error_naver_email_required">네이버 계정 이메일을 받아오지 못했습니다. 이메일 제공에 동의한 뒤 다시 시도해주세요.</string>
+
+    <string name="naver_client_id">pf6vBJZnLeefkegYBoCO</string>
+    <string name="naver_client_secret">sDnnZLiJIa</string>
+    <string name="naver_client_name">tagmoa</string>
 </resources>

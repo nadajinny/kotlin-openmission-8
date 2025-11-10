@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NidOAuth
+import com.navercorp.nid.oauth.util.NidOAuthCallback
 
 class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
@@ -41,6 +43,7 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             when (session.provider) {
                 AuthProvider.GOOGLE -> logoutGoogle()
                 AuthProvider.KAKAO -> logoutKakao()
+                AuthProvider.NAVER -> logoutNaver()
             }
         }
 
@@ -48,6 +51,7 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             when (session.provider) {
                 AuthProvider.GOOGLE -> disconnectGoogle()
                 AuthProvider.KAKAO -> disconnectKakao()
+                AuthProvider.NAVER -> disconnectNaver()
             }
         }
     }
@@ -71,6 +75,24 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             }
             redirectToLogin()
         }
+    }
+
+    private fun logoutNaver() {
+        NidOAuth.logout(object : NidOAuthCallback {
+            override fun onSuccess() {
+                SessionManager.clearSession()
+                Toast.makeText(requireContext(), getString(R.string.message_signed_out), Toast.LENGTH_SHORT).show()
+                redirectToLogin()
+            }
+
+            override fun onFailure(errorCode: String, errorDesc: String) {
+                Toast.makeText(
+                    requireContext(),
+                    "errorCode:$errorCode, errorDesc:$errorDesc",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     private fun disconnectGoogle() {
@@ -103,6 +125,24 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
                 redirectToLogin()
             }
         }
+    }
+
+    private fun disconnectNaver() {
+        NidOAuth.disconnect(object : NidOAuthCallback {
+            override fun onSuccess() {
+                SessionManager.clearSession()
+                Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
+                redirectToLogin()
+            }
+
+            override fun onFailure(errorCode: String, errorDesc: String) {
+                Toast.makeText(
+                    requireContext(),
+                    "errorCode:$errorCode, errorDesc:$errorDesc",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     private fun redirectToLogin() {
