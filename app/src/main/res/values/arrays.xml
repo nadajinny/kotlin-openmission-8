@@ -1,0 +1,19 @@
+<resources>
+    <string-array name="main_task_color_names">
+        <item>보라</item>
+        <item>민트</item>
+        <item>오렌지</item>
+        <item>블루</item>
+    </string-array>
+    <string-array name="main_task_color_values">
+        <item>#FF6200EE</item>
+        <item>#FF03DAC5</item>
+        <item>#FFFF9800</item>
+        <item>#FF2196F3</item>
+    </string-array>
+    <string-array name="sub_task_priorities">
+        <item>@string/priority_low</item>
+        <item>@string/priority_medium</item>
+        <item>@string/priority_high</item>
+    </string-array>
+</resources>

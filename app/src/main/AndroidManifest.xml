@@ -12,7 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tagmoa">
 
-        <!-- ✅ 앱의 시작점(MainActivity) 등록 -->
+        <activity
+            android:name=".AddEditSubTaskActivity" />
+        <activity
+            android:name=".MainTaskDetailActivity" />
+        <activity
+            android:name=".AddEditMainTaskActivity" />
+        <activity
+            android:name=".TagManagementActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,9 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- ✅ 추가 화면 (AddListActivity) 등록 -->
-        <activity android:name=".AddListActivity" />
 
     </application>
 

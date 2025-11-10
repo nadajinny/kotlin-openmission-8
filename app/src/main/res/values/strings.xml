@@ -1,3 +1,71 @@
 <resources>
     <string name="app_name">Tagmoa</string>
+
+    <string name="title_main_tasks">할 일 메인 테스크</string>
+    <string name="action_add_main_task">메인 테스크 추가</string>
+    <string name="action_manage_tags">태그 관리</string>
+    <string name="message_no_main_tasks">등록된 메인 테스크가 없습니다.</string>
+
+    <string name="label_no_title">제목 없음</string>
+    <string name="label_no_tags">태그 없음</string>
+    <string name="label_no_date">일자 미정</string>
+    <string name="label_with_date">일자: %1$s</string>
+    <string name="label_no_duration">기간 정보 없음</string>
+    <string name="label_with_duration">기간: %1$s</string>
+    <string name="label_no_description">설명이 없습니다.</string>
+    <string name="label_with_priority">중요도: %1$s</string>
+    <string name="label_main_color">메인 컬러</string>
+    <string name="label_main_task">메인 테스크</string>
+    <string name="label_priority">중요도</string>
+
+    <string name="title_manage_tags">태그 관리</string>
+    <string name="hint_tag_name">새 태그 이름</string>
+    <string name="action_add_tag">태그 추가</string>
+    <string name="message_no_tags">등록된 태그가 없습니다.</string>
+    <string name="error_empty_tag_name">태그 이름을 입력해주세요.</string>
+    <string name="message_tag_created">태그를 생성했습니다.</string>
+    <string name="message_no_tasks_for_tag">연결할 메인 테스크가 없습니다.</string>
+    <string name="title_assign_tag">%1$s 태그를 연결할 테스크 선택</string>
+    <string name="action_apply">적용</string>
+    <string name="message_tag_applied">태그를 선택한 테스크에 연결했습니다.</string>
+    <string name="title_delete_tag">태그 삭제</string>
+    <string name="message_delete_tag">%1$s 태그를 삭제하시겠어요?</string>
+    <string name="message_tag_deleted">태그를 삭제했습니다.</string>
+
+    <string name="title_edit_main_task">메인 테스크 작성 / 수정</string>
+    <string name="hint_task_title">제목</string>
+    <string name="hint_task_description">간단한 설명</string>
+    <string name="hint_task_duration">기간 (예: 2주)</string>
+    <string name="action_select_date">날짜 선택</string>
+    <string name="action_clear_date">날짜 초기화</string>
+    <string name="action_select_tags">태그 선택</string>
+    <string name="action_save">저장</string>
+    <string name="message_no_tags_available">등록된 태그가 없습니다.</string>
+    <string name="title_select_tags">태그 선택</string>
+    <string name="error_empty_title">제목을 입력해주세요.</string>
+    <string name="message_task_saved">메인 테스크를 저장했습니다.</string>
+    <string name="error_generic">처리 중 오류가 발생했습니다.</string>
+
+    <string name="title_edit_sub_task">서브 테스크 작성 / 수정</string>
+    <string name="hint_subtask_content">내용</string>
+    <string name="error_select_main_task">메인 테스크를 선택해주세요.</string>
+    <string name="error_empty_subtask_content">내용을 입력해주세요.</string>
+    <string name="error_no_main_tasks">먼저 메인 테스크를 생성해주세요.</string>
+    <string name="message_subtask_saved">서브 테스크를 저장했습니다.</string>
+
+    <string name="action_edit">수정</string>
+    <string name="action_delete">삭제</string>
+    <string name="action_add_sub_task">서브 테스크 추가</string>
+    <string name="title_sub_tasks">서브 테스크</string>
+    <string name="message_no_subtasks">등록된 서브 테스크가 없습니다.</string>
+    <string name="title_delete_task">메인 테스크 삭제</string>
+    <string name="message_delete_task">메인 테스크와 연결된 모든 서브 테스크가 삭제됩니다. 계속할까요?</string>
+    <string name="message_task_deleted">메인 테스크를 삭제했습니다.</string>
+    <string name="title_delete_subtask">서브 테스크 삭제</string>
+    <string name="message_delete_subtask">해당 서브 테스크를 삭제할까요?</string>
+    <string name="message_subtask_deleted">서브 테스크를 삭제했습니다.</string>
+
+    <string name="priority_low">낮음</string>
+    <string name="priority_medium">보통</string>
+    <string name="priority_high">높음</string>
 </resources>
