@@ -2,6 +2,7 @@ package com.example.tagmoa.controller
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -10,6 +11,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.Tag
@@ -49,7 +54,9 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         userId = uid
         tasksRef = UserDatabase.tasksRef(userId)
         tagsRef = UserDatabase.tagsRef(userId)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_add_edit_main_task)
+        applyEdgeToEdgeInsets(findViewById(R.id.rootAddEditMainTask))
 
         editTitle = findViewById(R.id.editTaskTitle)
         editDescription = findViewById(R.id.editTaskDescription)
@@ -227,5 +234,14 @@ class AddEditMainTaskActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+    }
+
+    private fun applyEdgeToEdgeInsets(root: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
+            insets
+        }
+        ViewCompat.requestApplyInsets(root)
     }
 }
