@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base fill mimics the light outer color from the Compose design -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F9FBFF" />
+        </shape>
+    </item>
+
+    <!-- Radial gradient approximating the Composable brush -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:startColor="#C8DFFF"
+                android:centerColor="#E4D8FF"
+                android:endColor="#FFD8E8"
+                android:centerX="0.8"
+                android:centerY="0.2"
+                android:gradientRadius="900dp" />
+        </shape>
+    </item>
+</layer-list>

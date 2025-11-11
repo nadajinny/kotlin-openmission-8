@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app_gradient">
 
     <FrameLayout
         android:id="@+id/containerMain"
@@ -32,7 +33,7 @@
             android:layout_marginBottom="@dimen/add_fab_menu_item_spacing"
             android:contentDescription="@string/add_quick_action_tag"
             android:stateListAnimator="@null"
-            app:backgroundTint="@color/cbn_highlight"
+            app:backgroundTint="@color/fab_highlight"
             app:elevation="0dp"
             app:fabCustomSize="@dimen/cbn_fab_size"
             app:maxImageSize="24dp"
@@ -48,7 +49,7 @@
             android:layout_marginBottom="@dimen/add_fab_menu_item_spacing"
             android:contentDescription="@string/add_quick_action_main_task"
             android:stateListAnimator="@null"
-            app:backgroundTint="@color/cbn_highlight"
+            app:backgroundTint="@color/fab_highlight"
             app:elevation="0dp"
             app:fabCustomSize="@dimen/cbn_fab_size"
             app:maxImageSize="24dp"
@@ -63,7 +64,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/add_quick_action_sub_task"
             android:stateListAnimator="@null"
-            app:backgroundTint="@color/cbn_highlight"
+            app:backgroundTint="@color/fab_highlight"
             app:elevation="0dp"
             app:fabCustomSize="@dimen/cbn_fab_size"
             app:maxImageSize="24dp"

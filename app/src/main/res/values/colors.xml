@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Palette exactly as requested -->
-    <color name="brand_stone">#918C8C</color>
-    <color name="brand_slate">#7B7F7F</color>
-    <color name="brand_cloud">#CFD2D2</color>
-    <color name="brand_deep_teal">#5F7D7D</color>
-    <color name="brand_primary">#559999</color>
-    <color name="brand_primary_bright">#6DB3B3</color>
-    <color name="brand_secondary">#84C5C5</color>
-    <color name="brand_spray">#C6E5E5</color>
-    <color name="brand_snow">#DFEFEF</color>
-    <color name="brand_ice">#F2F6F6</color>
-    <color name="brand_fog">#A5BABA</color>
-    <color name="brand_fog_light">#B2C3C3</color>
+    <!-- Core palette remapped to the new indigo/sky tones -->
+    <color name="brand_stone">#918CE5</color>
+    <color name="brand_slate">#7B7FE5</color>
+    <color name="brand_cloud">#CFD2F1</color>
+    <color name="brand_deep_teal">#5F7DE4</color>
+    <color name="brand_primary">#5599E0</color>
+    <color name="brand_primary_bright">#6DB3E2</color>
+    <color name="brand_secondary">#84C5E7</color>
+    <color name="brand_spray">#7ABFE6</color>
+    <color name="brand_snow">#8CCAE8</color>
+    <color name="brand_ice">#C6E5F0</color>
+    <color name="brand_fog">#DFEFF4</color>
+    <color name="brand_fog_light">#F2F6F6</color>
 
     <!-- Additional palette provided by design -->
     <color name="color_918ce5">#918CE5</color>
@@ -32,10 +32,11 @@
     <color name="color_b2c3e2">#B2C3E2</color>
 
     <!-- Component colors mapped directly to the palette -->
-    <color name="cbn_background">@color/brand_ice</color>
+    <color name="cbn_background">@android:color/white</color>
     <color name="cbn_shadow">@color/brand_fog</color>
-    <color name="cbn_highlight">@color/brand_primary</color>
-    <color name="cbn_add_active_color">@color/brand_snow</color>
-    <color name="cbn_icon_active">@color/brand_ice</color>
+    <color name="cbn_highlight">@color/brand_cloud</color>
+    <color name="cbn_add_active_color">@color/color_f2f6f6</color>
+    <color name="cbn_icon_active">@color/color_7b7fe5</color>
     <color name="cbn_icon_inactive">@color/brand_slate</color>
+    <color name="fab_highlight">@color/color_5599e0</color>
 </resources>
