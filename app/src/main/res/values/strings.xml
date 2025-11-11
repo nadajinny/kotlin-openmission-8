@@ -72,8 +72,12 @@
     <string name="kakao_app_key">a34795d3954f3817b08003b1b9e6d6d7</string>
     <string name="nav_home">홈</string>
     <string name="nav_tasks">메인 테스크</string>
+    <string name="nav_add">추가</string>
     <string name="nav_calendar">캘린더</string>
     <string name="nav_profile">내 정보</string>
+    <string name="add_quick_action_tag">태그 추가</string>
+    <string name="add_quick_action_main_task">메인 테스크 추가</string>
+    <string name="add_quick_action_sub_task">서브 테스크 추가</string>
 
     <string name="home_due_main_title">오늘까지 마감인 메인 테스크</string>
     <string name="home_due_sub_title">오늘까지 마감인 서브 테스크</string>

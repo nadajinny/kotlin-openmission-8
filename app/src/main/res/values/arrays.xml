@@ -1,15 +1,31 @@
 <resources>
     <string-array name="main_task_color_names">
-        <item>보라</item>
-        <item>민트</item>
-        <item>오렌지</item>
-        <item>블루</item>
+        <item>스톤</item>
+        <item>슬레이트</item>
+        <item>클라우드</item>
+        <item>딥 틸</item>
+        <item>프라이머리</item>
+        <item>프라이머리 브라이트</item>
+        <item>세컨더리</item>
+        <item>스프레이</item>
+        <item>스노우</item>
+        <item>아이스</item>
+        <item>포그</item>
+        <item>포그 라이트</item>
     </string-array>
     <string-array name="main_task_color_values">
-        <item>#FF6200EE</item>
-        <item>#FF03DAC5</item>
-        <item>#FFFF9800</item>
-        <item>#FF2196F3</item>
+        <item>#918C8C</item>
+        <item>#7B7F7F</item>
+        <item>#CFD2D2</item>
+        <item>#5F7D7D</item>
+        <item>#559999</item>
+        <item>#6DB3B3</item>
+        <item>#84C5C5</item>
+        <item>#C6E5E5</item>
+        <item>#DFEFEF</item>
+        <item>#F2F6F6</item>
+        <item>#A5BABA</item>
+        <item>#B2C3C3</item>
     </string-array>
     <string-array name="sub_task_priorities">
         <item>@string/priority_low</item>

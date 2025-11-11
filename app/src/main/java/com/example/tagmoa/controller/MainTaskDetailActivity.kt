@@ -183,7 +183,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
         val parsedColor = try {
             Color.parseColor(task.mainColor)
         } catch (e: IllegalArgumentException) {
-            ContextCompat.getColor(this, R.color.purple_500)
+            ContextCompat.getColor(this, R.color.brand_primary)
         }
         colorView.setBackgroundColor(parsedColor)
     }

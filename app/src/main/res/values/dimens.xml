@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cbn_layout_height">96dp</dimen>
+    <dimen name="cbn_nav_height">64dp</dimen>
+    <dimen name="cbn_bottom_curve_offset">30dp</dimen>
+    <dimen name="cbn_fab_size">48dp</dimen>
+    <dimen name="cbn_fab_top_offset">6dp</dimen>
+    <dimen name="cbn_curve_extra_width">12dp</dimen>
+    <dimen name="cbn_first_curve_control_1_x_offset">48dp</dimen>
+    <dimen name="cbn_first_curve_control_1_y_offset">10dp</dimen>
+    <dimen name="cbn_first_curve_control_2_x_offset">34dp</dimen>
+    <dimen name="cbn_first_curve_control_2_y_offset">22dp</dimen>
+    <dimen name="cbn_second_curve_control_1_x_offset">34dp</dimen>
+    <dimen name="cbn_second_curve_control_1_y_offset">22dp</dimen>
+    <dimen name="cbn_second_curve_control_2_x_offset">48dp</dimen>
+    <dimen name="cbn_second_curve_control_2_y_offset">10dp</dimen>
+    <dimen name="cbn_shadow_radius">18dp</dimen>
+    <dimen name="cbn_shadow_dy">8dp</dimen>
+    <dimen name="cbn_icon_touch_padding">12dp</dimen>
+    <dimen name="cbn_icon_size">28dp</dimen>
+    <dimen name="add_fab_menu_bottom_margin">16dp</dimen>
+    <dimen name="add_fab_menu_item_spacing">12dp</dimen>
+    <dimen name="add_fab_menu_horizontal_offset">20dp</dimen>
+</resources>

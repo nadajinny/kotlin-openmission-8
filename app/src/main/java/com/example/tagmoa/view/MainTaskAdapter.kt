@@ -79,7 +79,7 @@ class MainTaskAdapter(
             val parsedColor = try {
                 Color.parseColor(task.mainColor)
             } catch (e: IllegalArgumentException) {
-                ContextCompat.getColor(itemView.context, R.color.purple_500)
+                ContextCompat.getColor(itemView.context, R.color.brand_primary)
             }
             colorStripe.setBackgroundColor(parsedColor)
 

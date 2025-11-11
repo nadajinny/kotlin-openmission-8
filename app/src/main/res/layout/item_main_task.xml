@@ -17,7 +17,7 @@
             android:id="@+id/viewTaskColor"
             android:layout_width="6dp"
             android:layout_height="match_parent"
-            android:background="@color/purple_500" />
+            android:background="@color/brand_primary" />
 
         <LinearLayout
             android:layout_width="0dp"

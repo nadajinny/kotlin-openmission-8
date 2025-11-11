@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Palette exactly as requested -->
+    <color name="brand_stone">#918C8C</color>
+    <color name="brand_slate">#7B7F7F</color>
+    <color name="brand_cloud">#CFD2D2</color>
+    <color name="brand_deep_teal">#5F7D7D</color>
+    <color name="brand_primary">#559999</color>
+    <color name="brand_primary_bright">#6DB3B3</color>
+    <color name="brand_secondary">#84C5C5</color>
+    <color name="brand_spray">#C6E5E5</color>
+    <color name="brand_snow">#DFEFEF</color>
+    <color name="brand_ice">#F2F6F6</color>
+    <color name="brand_fog">#A5BABA</color>
+    <color name="brand_fog_light">#B2C3C3</color>
+
+    <!-- Additional palette provided by design -->
+    <color name="color_918ce5">#918CE5</color>
+    <color name="color_7b7fe5">#7B7FE5</color>
+    <color name="color_cfd2f1">#CFD2F1</color>
+    <color name="color_5f7de4">#5F7DE4</color>
+    <color name="color_5599e0">#5599E0</color>
+    <color name="color_6db3e2">#6DB3E2</color>
+    <color name="color_84c5e7">#84C5E7</color>
+    <color name="color_7abfe6">#7ABFE6</color>
+    <color name="color_8ccae8">#8CCAE8</color>
+    <color name="color_aad6eb">#AAD6EB</color>
+    <color name="color_c6e5f0">#C6E5F0</color>
+    <color name="color_dfeff4">#DFEFF4</color>
+    <color name="color_f2f6f6">#F2F6F6</color>
+    <color name="color_a5bade">#A5BADE</color>
+    <color name="color_b2c3e2">#B2C3E2</color>
+
+    <!-- Component colors mapped directly to the palette -->
+    <color name="cbn_background">@color/brand_ice</color>
+    <color name="cbn_shadow">@color/brand_fog</color>
+    <color name="cbn_highlight">@color/brand_primary</color>
+    <color name="cbn_add_active_color">@color/brand_snow</color>
+    <color name="cbn_icon_active">@color/brand_ice</color>
+    <color name="cbn_icon_inactive">@color/brand_slate</color>
 </resources>

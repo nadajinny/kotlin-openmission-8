@@ -37,7 +37,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private lateinit var spinnerColor: Spinner
 
     private var selectedDate: Long? = null
-    private var selectedColor: String = "#FF6200EE"
+    private var selectedColor: String = "#559999"
     private val selectedTagIds = mutableSetOf<String>()
     private var taskId: String? = null
     private var allTags: List<Tag> = emptyList()
