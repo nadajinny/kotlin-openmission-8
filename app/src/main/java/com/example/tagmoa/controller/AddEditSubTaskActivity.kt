@@ -1,6 +1,5 @@
 package com.example.tagmoa.controller
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -10,6 +9,8 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,10 +19,10 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.view.DateRangePickerModal
 import com.example.tagmoa.view.SimpleItemSelectedListener
-import com.example.tagmoa.view.asDateLabel
+import com.example.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
-import java.util.Calendar
 
 class AddEditSubTaskActivity : AppCompatActivity() {
 
@@ -36,10 +37,12 @@ class AddEditSubTaskActivity : AppCompatActivity() {
 
     private lateinit var spinnerMainTasks: Spinner
     private lateinit var spinnerPriority: Spinner
-    private lateinit var textDate: TextView
+    private lateinit var textDateRange: TextView
     private lateinit var editContent: EditText
+    private lateinit var composeDatePickerHost: ComposeView
 
-    private var selectedDate: Long? = null
+    private var selectedStartDate: Long? = null
+    private var selectedEndDate: Long? = null
     private var selectedMainTaskId: String? = null
     private var subTaskId: String? = null
     private var mainTasks: List<MainTask> = emptyList()
@@ -56,21 +59,25 @@ class AddEditSubTaskActivity : AppCompatActivity() {
 
         spinnerMainTasks = findViewById(R.id.spinnerMainTasks)
         spinnerPriority = findViewById(R.id.spinnerPriority)
-        textDate = findViewById(R.id.textSubTaskDate)
+        textDateRange = findViewById(R.id.textSubTaskDateRange)
         editContent = findViewById(R.id.editSubTaskContent)
+        composeDatePickerHost = findViewById<ComposeView>(R.id.subTaskDateRangePickerHost).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        }
 
-        val btnSelectDate = findViewById<Button>(R.id.btnSelectSubTaskDate)
-        val btnClearDate = findViewById<Button>(R.id.btnClearSubTaskDate)
+        val btnSelectDateRange = findViewById<Button>(R.id.btnSelectSubTaskDateRange)
+        val btnClearDateRange = findViewById<Button>(R.id.btnClearSubTaskDateRange)
         val btnSave = findViewById<Button>(R.id.btnSaveSubTask)
 
         selectedMainTaskId = intent.getStringExtra(EXTRA_MAIN_TASK_ID)
         subTaskId = intent.getStringExtra(EXTRA_SUB_TASK_ID)
 
         setupPrioritySpinner()
-        btnSelectDate.setOnClickListener { showDatePicker() }
-        btnClearDate.setOnClickListener {
-            selectedDate = null
-            updateDateLabel()
+        btnSelectDateRange.setOnClickListener { showDateRangePicker() }
+        btnClearDateRange.setOnClickListener {
+            selectedStartDate = null
+            selectedEndDate = null
+            updateDateRangeLabel()
         }
         btnSave.setOnClickListener { saveSubTask() }
 
@@ -114,7 +121,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
                 selectedMainTaskId = mainTasks.getOrNull(defaultIndex)?.id
             }
 
-            updateDateLabel()
+            updateDateRangeLabel()
 
             if (!subTaskId.isNullOrBlank()) {
                 loadSubTask()
@@ -128,7 +135,8 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         subTasksRef.child(mainTaskId).child(subId).get().addOnSuccessListener { snapshot ->
             val subTask = snapshot.getValue(SubTask::class.java) ?: return@addOnSuccessListener
             editContent.setText(subTask.content)
-            selectedDate = subTask.dueDate
+            selectedStartDate = subTask.startDate ?: subTask.dueDate
+            selectedEndDate = subTask.endDate ?: subTask.dueDate
             val adapterCount = spinnerPriority.adapter?.count ?: 0
             if (adapterCount > 0) {
                 val priorityIndex = subTask.priority.coerceIn(0, adapterCount - 1)
@@ -136,7 +144,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             }
             selectedMainTaskId = subTask.mainTaskId.ifBlank { mainTaskId }
             setMainTaskSelection(selectedMainTaskId)
-            updateDateLabel()
+            updateDateRangeLabel()
         }
     }
 
@@ -148,26 +156,28 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDatePicker() {
-        val calendar = Calendar.getInstance()
-        selectedDate?.let { calendar.timeInMillis = it }
-        DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth, 0, 0, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                selectedDate = calendar.timeInMillis
-                updateDateLabel()
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+    private fun showDateRangePicker() {
+        composeDatePickerHost.setContent {
+            DateRangePickerModal(
+                initialStartDateMillis = selectedStartDate,
+                initialEndDateMillis = selectedEndDate,
+                onDateRangeSelected = { (start, end) ->
+                    selectedStartDate = start
+                    selectedEndDate = end
+                    updateDateRangeLabel()
+                },
+                onDismiss = { clearDateRangePickerHost() }
+            )
+        }
     }
 
-    private fun updateDateLabel() {
-        val label = selectedDate.asDateLabel()
-        textDate.text = if (label.isEmpty()) {
+    private fun clearDateRangePickerHost() {
+        composeDatePickerHost.setContent { }
+    }
+
+    private fun updateDateRangeLabel() {
+        val label = formatDateRange(selectedStartDate, selectedEndDate)
+        textDateRange.text = if (label.isEmpty()) {
             getString(R.string.label_no_date)
         } else {
             getString(R.string.label_with_date, label)
@@ -196,7 +206,9 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             mainTaskId = mainTaskId,
             content = content,
             priority = priority,
-            dueDate = selectedDate
+            startDate = selectedStartDate,
+            endDate = selectedEndDate,
+            dueDate = selectedEndDate ?: selectedStartDate
         )
         subTasksRef.child(mainTaskId).child(subTaskKey).setValue(subTask)
             .addOnSuccessListener {

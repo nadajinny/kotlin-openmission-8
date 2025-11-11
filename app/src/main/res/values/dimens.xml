@@ -21,4 +21,5 @@
     <dimen name="add_fab_menu_bottom_margin">16dp</dimen>
     <dimen name="add_fab_menu_item_spacing">12dp</dimen>
     <dimen name="add_fab_menu_horizontal_offset">20dp</dimen>
+    <dimen name="calendar_min_cell_height">40dp</dimen>
 </resources>

@@ -9,6 +9,8 @@ data class MainTask(
     var id: String = "",
     var title: String = "",
     var description: String = "",
+    var startDate: Long? = null,
+    var endDate: Long? = null,
     var dueDate: Long? = null,
     var duration: String = "",
     var mainColor: String = "#559999",
@@ -20,5 +22,7 @@ data class SubTask(
     var mainTaskId: String = "",
     var content: String = "",
     var priority: Int = 0,
+    var startDate: Long? = null,
+    var endDate: Long? = null,
     var dueDate: Long? = null
 )

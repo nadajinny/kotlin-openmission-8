@@ -58,7 +58,7 @@ class MainTaskAdapter(
                     ?: itemView.context.getString(R.string.label_no_tags)
             }
 
-            val dateLabel = task.dueDate.asDateLabel()
+            val dateLabel = formatDateRange(task.startDate, task.endDate, task.dueDate)
             dateText.text = if (dateLabel.isEmpty()) {
                 itemView.context.getString(R.string.label_no_date)
             } else {

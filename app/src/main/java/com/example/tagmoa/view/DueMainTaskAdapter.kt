@@ -37,7 +37,7 @@ class DueMainTaskAdapter(
 
         fun bind(task: MainTask) {
             titleText.text = task.title.ifBlank { itemView.context.getString(R.string.label_no_title) }
-            val dateLabel = task.dueDate.asDateLabel()
+            val dateLabel = formatDateRange(task.startDate, task.endDate, task.dueDate)
             dateText.text = if (dateLabel.isBlank()) {
                 itemView.context.getString(R.string.label_no_date)
             } else {

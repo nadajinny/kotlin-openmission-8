@@ -1,6 +1,5 @@
 package com.example.tagmoa.controller
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -11,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,10 +20,10 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.view.DateRangePickerModal
 import com.example.tagmoa.view.SimpleItemSelectedListener
-import com.example.tagmoa.view.asDateLabel
+import com.example.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
-import java.util.Calendar
 
 class AddEditMainTaskActivity : AppCompatActivity() {
 
@@ -37,11 +38,13 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private lateinit var editTitle: EditText
     private lateinit var editDescription: EditText
     private lateinit var editDuration: EditText
-    private lateinit var textSelectedDate: TextView
+    private lateinit var textDateRange: TextView
     private lateinit var textSelectedTags: TextView
     private lateinit var spinnerColor: Spinner
+    private lateinit var composeDatePickerHost: ComposeView
 
-    private var selectedDate: Long? = null
+    private var selectedStartDate: Long? = null
+    private var selectedEndDate: Long? = null
     private var selectedColor: String = "#559999"
     private val selectedTagIds = mutableSetOf<String>()
     private var taskId: String? = null
@@ -61,22 +64,26 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         editTitle = findViewById(R.id.editTaskTitle)
         editDescription = findViewById(R.id.editTaskDescription)
         editDuration = findViewById(R.id.editTaskDuration)
-        textSelectedDate = findViewById(R.id.textTaskDate)
+        textDateRange = findViewById(R.id.textTaskDateRange)
         textSelectedTags = findViewById(R.id.textSelectedTags)
         spinnerColor = findViewById(R.id.spinnerTaskColor)
+        composeDatePickerHost = findViewById<ComposeView>(R.id.dateRangePickerHost).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        }
 
-        val btnSelectDate = findViewById<Button>(R.id.btnSelectDate)
-        val btnClearDate = findViewById<Button>(R.id.btnClearDate)
+        val btnSelectDateRange = findViewById<Button>(R.id.btnSelectDateRange)
+        val btnClearDateRange = findViewById<Button>(R.id.btnClearDateRange)
         val btnSelectTags = findViewById<Button>(R.id.btnSelectTags)
         val btnSaveTask = findViewById<Button>(R.id.btnSaveTask)
 
         setupColorSpinner()
         loadTags()
 
-        btnSelectDate.setOnClickListener { showDatePicker() }
-        btnClearDate.setOnClickListener {
-            selectedDate = null
-            updateDateLabel()
+        btnSelectDateRange.setOnClickListener { showDateRangePicker() }
+        btnClearDateRange.setOnClickListener {
+            selectedStartDate = null
+            selectedEndDate = null
+            updateDateRangeLabel()
         }
         btnSelectTags.setOnClickListener { showTagSelector() }
         btnSaveTask.setOnClickListener { saveTask() }
@@ -85,7 +92,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         if (taskId != null) {
             loadTask(taskId!!)
         } else {
-            updateDateLabel()
+            updateDateRangeLabel()
             updateTagLabel()
         }
     }
@@ -140,27 +147,28 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showDatePicker() {
-        val calendar = Calendar.getInstance()
-        selectedDate?.let { calendar.timeInMillis = it }
-        val datePicker = DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth, 0, 0, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                selectedDate = calendar.timeInMillis
-                updateDateLabel()
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePicker.show()
+    private fun showDateRangePicker() {
+        composeDatePickerHost.setContent {
+            DateRangePickerModal(
+                initialStartDateMillis = selectedStartDate,
+                initialEndDateMillis = selectedEndDate,
+                onDateRangeSelected = { (start, end) ->
+                    selectedStartDate = start
+                    selectedEndDate = end
+                    updateDateRangeLabel()
+                },
+                onDismiss = { clearDateRangePickerHost() }
+            )
+        }
     }
 
-    private fun updateDateLabel() {
-        val label = selectedDate.asDateLabel()
-        textSelectedDate.text = if (label.isEmpty()) {
+    private fun clearDateRangePickerHost() {
+        composeDatePickerHost.setContent { }
+    }
+
+    private fun updateDateRangeLabel() {
+        val label = formatDateRange(selectedStartDate, selectedEndDate)
+        textDateRange.text = if (label.isEmpty()) {
             getString(R.string.label_no_date)
         } else {
             getString(R.string.label_with_date, label)
@@ -182,12 +190,13 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             editTitle.setText(task.title)
             editDescription.setText(task.description)
             editDuration.setText(task.duration)
-            selectedDate = task.dueDate
+            selectedStartDate = task.startDate ?: task.dueDate
+            selectedEndDate = task.endDate ?: task.dueDate
             selectedColor = task.mainColor
             selectedTagIds.clear()
             selectedTagIds.addAll(task.tagIds)
             setColorSelection(selectedColor)
-            updateDateLabel()
+            updateDateRangeLabel()
             updateTagLabel()
         }
     }
@@ -216,7 +225,9 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             id = taskIdValue,
             title = title,
             description = editDescription.text.toString().trim(),
-            dueDate = selectedDate,
+            startDate = selectedStartDate,
+            endDate = selectedEndDate,
+            dueDate = selectedEndDate ?: selectedStartDate,
             duration = editDuration.text.toString().trim(),
             mainColor = selectedColor,
             tagIds = selectedTagIds.toMutableList()

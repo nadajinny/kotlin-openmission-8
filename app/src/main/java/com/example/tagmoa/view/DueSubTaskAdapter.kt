@@ -12,6 +12,8 @@ data class DueSubTaskItem(
     val mainTaskId: String,
     val content: String,
     val parentTitle: String,
+    val startDate: Long?,
+    val endDate: Long?,
     val dueDate: Long?
 )
 
@@ -44,7 +46,7 @@ class DueSubTaskAdapter : RecyclerView.Adapter<DueSubTaskAdapter.DueSubTaskViewH
         fun bind(item: DueSubTaskItem) {
             contentText.text = item.content.ifBlank { itemView.context.getString(R.string.label_no_title) }
             parentText.text = itemView.context.getString(R.string.label_main_task) + ": " + item.parentTitle
-            val dateLabel = item.dueDate.asDateLabel()
+            val dateLabel = formatDateRange(item.startDate, item.endDate, item.dueDate)
             dateText.text = if (dateLabel.isBlank()) {
                 itemView.context.getString(R.string.label_no_date)
             } else {

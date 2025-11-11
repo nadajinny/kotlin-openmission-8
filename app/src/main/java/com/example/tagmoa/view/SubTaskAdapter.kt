@@ -45,7 +45,7 @@ class SubTaskAdapter(
             contentText.text = subTask.content.ifBlank {
                 context.getString(R.string.label_no_description)
             }
-            val dateLabel = subTask.dueDate.asDateLabel()
+            val dateLabel = formatDateRange(subTask.startDate, subTask.endDate, subTask.dueDate)
             dateText.text = if (dateLabel.isEmpty()) {
                 context.getString(R.string.label_no_date)
             } else {

@@ -42,7 +42,7 @@
             android:layout_marginTop="4dp" />
 
         <TextView
-            android:id="@+id/textSubTaskDate"
+            android:id="@+id/textSubTaskDateRange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -51,26 +51,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnSelectSubTaskDate"
+                android:id="@+id/btnSelectSubTaskDateRange"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/action_select_date" />
+                android:text="@string/action_select_date_range" />
 
             <Space
                 android:layout_width="8dp"
                 android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/btnClearSubTaskDate"
+                android:id="@+id/btnClearSubTaskDateRange"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/action_clear_date" />
+                android:text="@string/action_clear_date_range" />
         </LinearLayout>
 
         <EditText
@@ -90,6 +90,12 @@
             android:layout_marginTop="16dp"
             android:text="@string/action_save"
             android:textAllCaps="false" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/subTaskDateRangePickerHost"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </ScrollView>

@@ -39,4 +39,10 @@
     <color name="cbn_icon_active">@color/color_7b7fe5</color>
     <color name="cbn_icon_inactive">@color/brand_slate</color>
     <color name="fab_highlight">@color/color_5599e0</color>
+
+    <!-- Calendar specific colors -->
+    <color name="gray_200">#FFE0E0E0</color>
+    <color name="calendar_color_sunday">#FFE06464</color>
+    <color name="calendar_color_saturday">#FF4A74C7</color>
+    <color name="calendar_color_inactive">#FFB5B5B5</color>
 </resources>

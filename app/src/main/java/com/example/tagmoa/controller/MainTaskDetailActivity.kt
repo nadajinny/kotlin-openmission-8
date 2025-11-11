@@ -18,7 +18,7 @@ import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
 import com.example.tagmoa.view.SubTaskAdapter
-import com.example.tagmoa.view.asDateLabel
+import com.example.tagmoa.view.formatDateRange
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -166,7 +166,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
     private fun renderTask() {
         val task = currentTask ?: return
         textTitle.text = task.title.ifBlank { getString(R.string.label_no_title) }
-        val dateLabel = task.dueDate.asDateLabel()
+        val dateLabel = formatDateRange(task.startDate, task.endDate, task.dueDate)
         textDate.text = if (dateLabel.isEmpty()) {
             getString(R.string.label_no_date)
         } else {

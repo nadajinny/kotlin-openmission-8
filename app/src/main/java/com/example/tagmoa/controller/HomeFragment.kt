@@ -14,6 +14,7 @@ import com.example.tagmoa.model.UserDatabase
 import com.example.tagmoa.view.DueMainTaskAdapter
 import com.example.tagmoa.view.DueSubTaskAdapter
 import com.example.tagmoa.view.DueSubTaskItem
+import com.example.tagmoa.view.overlapsWithRange
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -80,7 +81,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     val taskId = task.id.ifBlank { child.key.orEmpty() }
                     task.id = taskId
                     taskMap[taskId] = task
-                    if (isDueToday(task.dueDate)) {
+                    if (isDueToday(task.startDate, task.endDate, task.dueDate)) {
                         result.add(task)
                     }
                 }
@@ -104,7 +105,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     for (child in mainSnapshot.children) {
                         val subTask = child.getValue(SubTask::class.java) ?: continue
                         val subId = subTask.id.ifBlank { child.key.orEmpty() }
-                        if (isDueToday(subTask.dueDate)) {
+                        if (isDueToday(subTask.startDate, subTask.endDate, subTask.dueDate)) {
                             val parentTitle = taskMap[mainId]?.title ?: getString(R.string.label_no_title)
                             result.add(
                                 DueSubTaskItem(
@@ -112,6 +113,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                                     mainTaskId = mainId,
                                     content = subTask.content,
                                     parentTitle = parentTitle,
+                                    startDate = subTask.startDate,
+                                    endDate = subTask.endDate,
                                     dueDate = subTask.dueDate
                                 )
                             )
@@ -128,8 +131,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun isDueToday(dueDate: Long?): Boolean {
-        if (dueDate == null) return false
+    private fun isDueToday(startDate: Long?, endDate: Long?, fallbackDate: Long?): Boolean {
         val startCal = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -142,7 +144,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             set(Calendar.SECOND, 59)
             set(Calendar.MILLISECOND, 999)
         }
-        return dueDate in startCal.timeInMillis..endCal.timeInMillis
+        return overlapsWithRange(
+            startDate,
+            endDate,
+            startCal.timeInMillis,
+            endCal.timeInMillis,
+            fallbackDate
+        )
     }
 
     override fun onDestroyView() {
