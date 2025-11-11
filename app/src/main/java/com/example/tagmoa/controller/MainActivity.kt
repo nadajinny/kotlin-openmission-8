@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.tagmoa.R
 import com.example.tagmoa.model.AuthProvider
@@ -19,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity() {
 
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private lateinit var rootContainer: View
     private lateinit var bottomNavigation: CurvedBottomNavigationView
     private lateinit var fabMenuContainer: View
     private lateinit var fabAddTag: FloatingActionButton
@@ -34,9 +39,14 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_main)
 
+        rootContainer = findViewById(R.id.rootMain)
         bottomNavigation = findViewById(R.id.bottomNavigation)
+
+        applyEdgeToEdgeInsets()
+
         setupFabMenu()
         setupBottomNavigation()
 
@@ -140,6 +150,15 @@ class MainActivity : AppCompatActivity() {
                 alignFabMenuWithAddButton()
             }
         }
+    }
+
+    private fun applyEdgeToEdgeInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
+            insets
+        }
+        ViewCompat.requestApplyInsets(rootContainer)
     }
 
     private fun toggleFabMenu() {
