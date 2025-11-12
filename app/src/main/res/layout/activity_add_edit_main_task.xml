@@ -101,11 +101,5 @@
             android:text="@string/action_save"
             android:textAllCaps="false" />
 
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/dateRangePickerHost"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
     </LinearLayout>
 </ScrollView>

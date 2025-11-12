@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/textCalendarDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_select_date_range"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textStyle="bold"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/textCalendarSelectedRange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/label_select_period_placeholder"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/dialogCalendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="4dp"
+        android:theme="@style/CalenderViewCustom"
+        app:mcv_dateTextAppearance="@style/CalenderViewDateCustomText"
+        app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText"
+        app:mcv_headerTextAppearance="@style/CalendarWidgetHeader"
+        app:mcv_selectionMode="range"
+        app:mcv_firstDayOfWeek="sunday"
+        app:mcv_showOtherDates="all"
+        app:mcv_leftArrow="@drawable/ic_calendar_arrow_left"
+        app:mcv_rightArrow="@drawable/ic_calendar_arrow_right" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCalendarCancel"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_cancel" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnCalendarConfirm"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_ok" />
+    </LinearLayout>
+</LinearLayout>

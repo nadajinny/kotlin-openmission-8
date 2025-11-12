@@ -10,8 +10,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -20,8 +18,8 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
-import com.example.tagmoa.view.DateRangePickerModal
 import com.example.tagmoa.view.SimpleItemSelectedListener
+import com.example.tagmoa.view.TaskDateRangePicker
 import com.example.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
 
@@ -40,7 +38,6 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private lateinit var textDateRange: TextView
     private lateinit var textSelectedTags: TextView
     private lateinit var spinnerColor: Spinner
-    private lateinit var composeDatePickerHost: ComposeView
 
     private var selectedStartDate: Long? = null
     private var selectedEndDate: Long? = null
@@ -65,9 +62,6 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         textDateRange = findViewById(R.id.textTaskDateRange)
         textSelectedTags = findViewById(R.id.textSelectedTags)
         spinnerColor = findViewById(R.id.spinnerTaskColor)
-        composeDatePickerHost = findViewById<ComposeView>(R.id.dateRangePickerHost).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        }
 
         val btnSelectDateRange = findViewById<Button>(R.id.btnSelectDateRange)
         val btnClearDateRange = findViewById<Button>(R.id.btnClearDateRange)
@@ -146,22 +140,15 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     }
 
     private fun showDateRangePicker() {
-        composeDatePickerHost.setContent {
-            DateRangePickerModal(
-                initialStartDateMillis = selectedStartDate,
-                initialEndDateMillis = selectedEndDate,
-                onDateRangeSelected = { (start, end) ->
-                    selectedStartDate = start
-                    selectedEndDate = end
-                    updateDateRangeLabel()
-                },
-                onDismiss = { clearDateRangePickerHost() }
-            )
+        TaskDateRangePicker.show(
+            context = this,
+            initialStartDateMillis = selectedStartDate,
+            initialEndDateMillis = selectedEndDate
+        ) { start, end ->
+            selectedStartDate = start
+            selectedEndDate = end
+            updateDateRangeLabel()
         }
-    }
-
-    private fun clearDateRangePickerHost() {
-        composeDatePickerHost.setContent { }
     }
 
     private fun updateDateRangeLabel() {

@@ -9,8 +9,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,8 +17,8 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.UserDatabase
-import com.example.tagmoa.view.DateRangePickerModal
 import com.example.tagmoa.view.SimpleItemSelectedListener
+import com.example.tagmoa.view.TaskDateRangePicker
 import com.example.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
 
@@ -39,7 +37,6 @@ class AddEditSubTaskActivity : AppCompatActivity() {
     private lateinit var spinnerPriority: Spinner
     private lateinit var textDateRange: TextView
     private lateinit var editContent: EditText
-    private lateinit var composeDatePickerHost: ComposeView
 
     private var selectedStartDate: Long? = null
     private var selectedEndDate: Long? = null
@@ -61,9 +58,6 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         spinnerPriority = findViewById(R.id.spinnerPriority)
         textDateRange = findViewById(R.id.textSubTaskDateRange)
         editContent = findViewById(R.id.editSubTaskContent)
-        composeDatePickerHost = findViewById<ComposeView>(R.id.subTaskDateRangePickerHost).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-        }
 
         val btnSelectDateRange = findViewById<Button>(R.id.btnSelectSubTaskDateRange)
         val btnClearDateRange = findViewById<Button>(R.id.btnClearSubTaskDateRange)
@@ -157,22 +151,15 @@ class AddEditSubTaskActivity : AppCompatActivity() {
     }
 
     private fun showDateRangePicker() {
-        composeDatePickerHost.setContent {
-            DateRangePickerModal(
-                initialStartDateMillis = selectedStartDate,
-                initialEndDateMillis = selectedEndDate,
-                onDateRangeSelected = { (start, end) ->
-                    selectedStartDate = start
-                    selectedEndDate = end
-                    updateDateRangeLabel()
-                },
-                onDismiss = { clearDateRangePickerHost() }
-            )
+        TaskDateRangePicker.show(
+            context = this,
+            initialStartDateMillis = selectedStartDate,
+            initialEndDateMillis = selectedEndDate
+        ) { start, end ->
+            selectedStartDate = start
+            selectedEndDate = end
+            updateDateRangeLabel()
         }
-    }
-
-    private fun clearDateRangePickerHost() {
-        composeDatePickerHost.setContent { }
     }
 
     private fun updateDateRangeLabel() {

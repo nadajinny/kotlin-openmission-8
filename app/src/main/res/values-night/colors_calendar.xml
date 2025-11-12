@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="calendar_text_primary">#F5F5F5</color>
+    <color name="calendar_text_muted">#B0B0B0</color>
+    <color name="calendar_text_inverse">#121212</color>
+    <color name="calendar_today_fill">@color/brand_primary</color>
+    <color name="calendar_today_stroke">#66FFFFFF</color>
+</resources>

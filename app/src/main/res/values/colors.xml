@@ -45,4 +45,9 @@
     <color name="calendar_color_sunday">#FFE06464</color>
     <color name="calendar_color_saturday">#FF4A74C7</color>
     <color name="calendar_color_inactive">#FFB5B5B5</color>
+    <color name="calendar_text_primary">#222222</color>
+    <color name="calendar_text_muted">#8A8A8A</color>
+    <color name="calendar_text_inverse">@android:color/white</color>
+    <color name="calendar_today_fill">@color/brand_primary</color>
+    <color name="calendar_today_stroke">@color/brand_cloud</color>
 </resources>
