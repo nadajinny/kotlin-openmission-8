@@ -51,22 +51,44 @@
             tools:mcv_currentDate="2024-05-20" />
 
         <TextView
-            android:id="@+id/textCalendarScheduleLabel"
+            android:id="@+id/textCalendarSchedulePendingLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="16dp"
-            android:text="@string/calendar_schedule_label"
+            android:text="@string/calendar_schedule_label_pending"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textColor="@color/calendar_text_primary" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCalendarSchedule"
+            android:id="@+id/recyclerCalendarSchedulePending"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingBottom="8dp"
+            tools:listitem="@layout/item_calendar_schedule" />
+
+        <TextView
+            android:id="@+id/textCalendarScheduleCompletedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/calendar_schedule_label_completed"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textColor="@color/calendar_text_primary"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCalendarScheduleCompleted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:paddingBottom="8dp"

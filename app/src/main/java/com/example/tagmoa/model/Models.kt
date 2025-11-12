@@ -12,6 +12,9 @@ data class MainTask(
     var startDate: Long? = null,
     var endDate: Long? = null,
     var dueDate: Long? = null,
+    var isCompleted: Boolean = false,
+    var completedAt: Long? = null,
+    var manualSchedule: Boolean = false,
     var mainColor: String = "#559999",
     var tagIds: MutableList<String> = mutableListOf()
 )
@@ -23,5 +26,7 @@ data class SubTask(
     var priority: Int = 0,
     var startDate: Long? = null,
     var endDate: Long? = null,
-    var dueDate: Long? = null
+    var dueDate: Long? = null,
+    var isCompleted: Boolean = false,
+    var completedAt: Long? = null
 )

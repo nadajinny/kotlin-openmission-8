@@ -18,6 +18,7 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.ensureManualScheduleFlag
 import com.example.tagmoa.view.SimpleItemSelectedListener
 import com.example.tagmoa.view.TaskDateRangePicker
 import com.example.tagmoa.view.formatDateRange
@@ -44,8 +45,12 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private var selectedColor: String = "#559999"
     private val selectedTagIds = mutableSetOf<String>()
     private var taskId: String? = null
+    private var hasManualSchedule: Boolean = false
+    private var isTaskCompleted: Boolean = false
+    private var taskCompletedAt: Long? = null
     private var allTags: List<Tag> = emptyList()
     private lateinit var colorValues: Array<String>
+    private var loadedTask: MainTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +80,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         btnClearDateRange.setOnClickListener {
             selectedStartDate = null
             selectedEndDate = null
+            hasManualSchedule = false
             updateDateRangeLabel()
         }
         btnSelectTags.setOnClickListener { showTagSelector() }
@@ -147,6 +153,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         ) { start, end ->
             selectedStartDate = start
             selectedEndDate = end
+            hasManualSchedule = true
             updateDateRangeLabel()
         }
     }
@@ -172,10 +179,21 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private fun loadTask(id: String) {
         tasksRef.child(id).get().addOnSuccessListener { snapshot ->
             val task = snapshot.getValue(MainTask::class.java) ?: return@addOnSuccessListener
+            task.id = task.id.ifBlank { id }
+            task.ensureManualScheduleFlag()
+            loadedTask = task
             editTitle.setText(task.title)
             editDescription.setText(task.description)
-            selectedStartDate = task.startDate ?: task.dueDate
-            selectedEndDate = task.endDate ?: task.dueDate
+            hasManualSchedule = task.manualSchedule
+            isTaskCompleted = task.isCompleted
+            taskCompletedAt = task.completedAt
+            if (task.manualSchedule) {
+                selectedStartDate = task.startDate ?: task.dueDate
+                selectedEndDate = task.endDate ?: task.dueDate
+            } else {
+                selectedStartDate = null
+                selectedEndDate = null
+            }
             selectedColor = task.mainColor
             selectedTagIds.clear()
             selectedTagIds.addAll(task.tagIds)
@@ -205,13 +223,37 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             return
         }
 
+        val now = System.currentTimeMillis()
+        val manualStart = selectedStartDate ?: selectedEndDate
+        val finalStartDate = if (hasManualSchedule) {
+            manualStart
+        } else {
+            loadedTask?.startDate ?: now
+        }
+        val finalEndDate = if (hasManualSchedule) selectedEndDate else null
+        val finalDueDate = if (hasManualSchedule) {
+            selectedEndDate ?: selectedStartDate
+        } else {
+            loadedTask?.takeIf { !it.manualSchedule }?.dueDate
+        }
+        if (hasManualSchedule && finalStartDate == null) {
+            Toast.makeText(this, R.string.label_select_period_placeholder, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val finalIsCompleted = isTaskCompleted && taskId != null
+        val finalCompletedAt = if (finalIsCompleted) taskCompletedAt else null
+
         val task = MainTask(
             id = taskIdValue,
             title = title,
             description = editDescription.text.toString().trim(),
-            startDate = selectedStartDate,
-            endDate = selectedEndDate,
-            dueDate = selectedEndDate ?: selectedStartDate,
+            startDate = finalStartDate,
+            endDate = finalEndDate,
+            dueDate = finalDueDate,
+            isCompleted = finalIsCompleted,
+            completedAt = finalCompletedAt,
+            manualSchedule = hasManualSchedule,
             mainColor = selectedColor,
             tagIds = selectedTagIds.toMutableList()
         )

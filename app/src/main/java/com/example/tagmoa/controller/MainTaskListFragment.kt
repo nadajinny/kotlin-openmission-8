@@ -14,6 +14,7 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.ensureManualScheduleFlag
 import com.example.tagmoa.view.MainTaskAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
@@ -154,6 +155,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
                 allTasks.clear()
                 for (child in snapshot.children) {
                     val task = child.getValue(MainTask::class.java) ?: continue
+                    task.ensureManualScheduleFlag()
                     val taskId = task.id.ifBlank { child.key.orEmpty() }
                     task.id = taskId
                     allTasks.add(task)

@@ -17,8 +17,9 @@ import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.ensureManualScheduleFlag
 import com.example.tagmoa.view.SubTaskAdapter
-import com.example.tagmoa.view.formatDateRange
+import com.example.tagmoa.view.buildScheduleLabel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -41,6 +42,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
     private lateinit var textDescription: TextView
     private lateinit var colorView: View
     private lateinit var subTaskEmpty: TextView
+    private lateinit var btnToggleComplete: Button
 
     private lateinit var adapter: SubTaskAdapter
 
@@ -79,6 +81,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
         val btnEditTask = findViewById<Button>(R.id.btnEditTask)
         val btnDeleteTask = findViewById<Button>(R.id.btnDeleteTask)
         val btnAddSubTask = findViewById<Button>(R.id.btnAddSubTask)
+        btnToggleComplete = findViewById(R.id.btnToggleTaskComplete)
 
         adapter = SubTaskAdapter(
             onEdit = { subTask ->
@@ -87,7 +90,10 @@ class MainTaskDetailActivity : AppCompatActivity() {
                 intent.putExtra(AddEditSubTaskActivity.EXTRA_SUB_TASK_ID, subTask.id)
                 startActivity(intent)
             },
-            onDelete = { subTask -> confirmDeleteSubTask(subTask) }
+            onDelete = { subTask -> confirmDeleteSubTask(subTask) },
+            onToggleComplete = { subTask, isChecked ->
+                toggleSubTaskCompletion(subTask, isChecked)
+            }
         )
 
         recyclerSubTasks.layoutManager = LinearLayoutManager(this)
@@ -105,6 +111,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
             intent.putExtra(AddEditSubTaskActivity.EXTRA_MAIN_TASK_ID, taskId)
             startActivity(intent)
         }
+        btnToggleComplete.setOnClickListener { toggleMainTaskCompletion() }
 
         observeTags()
         observeTask()
@@ -130,7 +137,9 @@ class MainTaskDetailActivity : AppCompatActivity() {
         taskListener?.let { tasksRef.child(taskId).removeEventListener(it) }
         taskListener = tasksRef.child(taskId).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                currentTask = snapshot.getValue(MainTask::class.java)
+                val task = snapshot.getValue(MainTask::class.java)
+                task?.ensureManualScheduleFlag()
+                currentTask = task
                 currentTask?.id = taskId
                 renderTask()
             }
@@ -153,6 +162,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
                 }
                 adapter.submitList(items)
                 subTaskEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+                updateAutoDueDate(items)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -164,12 +174,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
     private fun renderTask() {
         val task = currentTask ?: return
         textTitle.text = task.title.ifBlank { getString(R.string.label_no_title) }
-        val dateLabel = formatDateRange(task.startDate, task.endDate, task.dueDate)
-        textDate.text = if (dateLabel.isEmpty()) {
-            getString(R.string.label_no_date)
-        } else {
-            getString(R.string.label_with_date, dateLabel)
-        }
+        textDate.text = task.buildScheduleLabel(this)
         val tagNames = task.tagIds.mapNotNull { tagsMap[it]?.name }
         textTags.text = if (tagNames.isEmpty()) getString(R.string.label_no_tags) else tagNames.joinToString(", ")
         textDescription.text = task.description.ifBlank { getString(R.string.label_no_description) }
@@ -179,6 +184,11 @@ class MainTaskDetailActivity : AppCompatActivity() {
             ContextCompat.getColor(this, R.color.brand_primary)
         }
         colorView.setBackgroundColor(parsedColor)
+        btnToggleComplete.text = if (task.isCompleted) {
+            getString(R.string.action_mark_task_incomplete)
+        } else {
+            getString(R.string.action_mark_task_complete)
+        }
     }
 
     private fun confirmDeleteTask() {
@@ -221,6 +231,85 @@ class MainTaskDetailActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(this, R.string.message_subtask_deleted, Toast.LENGTH_SHORT).show()
             }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
+    private fun toggleMainTaskCompletion() {
+        val task = currentTask ?: return
+        val newStatus = !task.isCompleted
+        val updates = mutableMapOf<String, Any?>(
+            "isCompleted" to newStatus,
+            "completedAt" to if (newStatus) System.currentTimeMillis() else null
+        )
+        if (!task.manualSchedule) {
+            updates["dueDate"] = if (newStatus) {
+                task.dueDate ?: System.currentTimeMillis()
+            } else {
+                null
+            }
+        }
+        tasksRef.child(taskId).updateChildren(updates)
+            .addOnSuccessListener {
+                val message = if (newStatus) {
+                    R.string.message_task_marked_complete
+                } else {
+                    R.string.message_task_marked_incomplete
+                }
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
+    private fun toggleSubTaskCompletion(subTask: SubTask, isCompleted: Boolean) {
+        if (subTask.id.isBlank()) return
+        val updates = mutableMapOf<String, Any?>(
+            "isCompleted" to isCompleted,
+            "completedAt" to if (isCompleted) System.currentTimeMillis() else null
+        )
+        subTasksRef.child(taskId).child(subTask.id).updateChildren(updates)
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    this,
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
+    private fun updateAutoDueDate(subTasks: List<SubTask>) {
+        val task = currentTask ?: return
+        if (task.manualSchedule || task.isCompleted) return
+
+        val hasSubTasks = subTasks.isNotEmpty()
+        val allCompleted = hasSubTasks && subTasks.all { it.isCompleted }
+        val desiredDueDate = if (allCompleted) {
+            val completionDates = subTasks.mapNotNull { if (it.isCompleted) it.completedAt else null }
+            completionDates.maxOrNull() ?: System.currentTimeMillis()
+        } else {
+            null
+        }
+
+        val shouldClearDue = !allCompleted && task.dueDate != null
+        val shouldUpdateDue = allCompleted && task.dueDate != desiredDueDate
+
+        if (!shouldClearDue && !shouldUpdateDue) return
+
+        val updates = mutableMapOf<String, Any?>(
+            "dueDate" to desiredDueDate
+        )
+        tasksRef.child(taskId).updateChildren(updates)
             .addOnFailureListener { error ->
                 Toast.makeText(
                     this,

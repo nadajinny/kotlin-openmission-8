@@ -43,6 +43,8 @@ class AddEditSubTaskActivity : AppCompatActivity() {
     private var selectedMainTaskId: String? = null
     private var subTaskId: String? = null
     private var mainTasks: List<MainTask> = emptyList()
+    private var isCompleted: Boolean = false
+    private var completedAt: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,6 +133,8 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             editContent.setText(subTask.content)
             selectedStartDate = subTask.startDate ?: subTask.dueDate
             selectedEndDate = subTask.endDate ?: subTask.dueDate
+            isCompleted = subTask.isCompleted
+            completedAt = subTask.completedAt
             val adapterCount = spinnerPriority.adapter?.count ?: 0
             if (adapterCount > 0) {
                 val priorityIndex = subTask.priority.coerceIn(0, adapterCount - 1)
@@ -195,7 +199,9 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             priority = priority,
             startDate = selectedStartDate,
             endDate = selectedEndDate,
-            dueDate = selectedEndDate ?: selectedStartDate
+            dueDate = selectedEndDate ?: selectedStartDate,
+            isCompleted = isCompleted,
+            completedAt = completedAt
         )
         subTasksRef.child(mainTaskId).child(subTaskKey).setValue(subTask)
             .addOnSuccessListener {

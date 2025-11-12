@@ -57,16 +57,16 @@ class MainTaskAdapter(
                     ?: itemView.context.getString(R.string.label_no_tags)
             }
 
-            val dateLabel = formatDateRange(task.startDate, task.endDate, task.dueDate)
-            dateText.text = if (dateLabel.isEmpty()) {
-                itemView.context.getString(R.string.label_no_date)
-            } else {
-                itemView.context.getString(R.string.label_with_date, dateLabel)
-            }
+            dateText.text = task.buildScheduleLabel(itemView.context)
 
             descriptionText.text = task.description.ifBlank {
                 itemView.context.getString(R.string.label_no_description)
             }
+            val contentAlpha = if (task.isCompleted) 0.5f else 1f
+            title.alpha = contentAlpha
+            tagsText.alpha = contentAlpha
+            dateText.alpha = contentAlpha
+            descriptionText.alpha = contentAlpha
 
             val parsedColor = try {
                 Color.parseColor(task.mainColor)

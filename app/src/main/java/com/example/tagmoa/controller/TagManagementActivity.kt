@@ -18,6 +18,7 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.ensureManualScheduleFlag
 import com.example.tagmoa.view.TagAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -108,7 +109,10 @@ class TagManagementActivity : AppCompatActivity() {
         tasksRef.get().addOnSuccessListener { snapshot ->
             val tasks = snapshot.children.mapNotNull { child ->
                 val task = child.getValue(MainTask::class.java)
-                task?.apply { id = id.ifBlank { child.key.orEmpty() } }
+                task?.apply {
+                    id = id.ifBlank { child.key.orEmpty() }
+                    ensureManualScheduleFlag()
+                }
             }
             if (tasks.isEmpty()) {
                 Toast.makeText(this, R.string.message_no_tasks_for_tag, Toast.LENGTH_SHORT).show()

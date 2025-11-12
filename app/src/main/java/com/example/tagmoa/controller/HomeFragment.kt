@@ -11,6 +11,7 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.ensureManualScheduleFlag
 import com.example.tagmoa.view.DueMainTaskAdapter
 import com.example.tagmoa.view.DueSubTaskAdapter
 import com.example.tagmoa.view.DueSubTaskItem
@@ -79,9 +80,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 for (child in snapshot.children) {
                     val task = child.getValue(MainTask::class.java) ?: continue
                     val taskId = task.id.ifBlank { child.key.orEmpty() }
+                    task.ensureManualScheduleFlag()
                     task.id = taskId
                     taskMap[taskId] = task
-                    if (isDueToday(task.startDate, task.endDate, task.dueDate)) {
+                    if (isTaskDueToday(task)) {
                         result.add(task)
                     }
                 }
@@ -105,7 +107,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     for (child in mainSnapshot.children) {
                         val subTask = child.getValue(SubTask::class.java) ?: continue
                         val subId = subTask.id.ifBlank { child.key.orEmpty() }
-                        if (isDueToday(subTask.startDate, subTask.endDate, subTask.dueDate)) {
+                        if (subTask.isCompleted) continue
+                        if (isRangeDueToday(subTask.startDate, subTask.endDate, subTask.dueDate)) {
                             val parentTitle = taskMap[mainId]?.title ?: getString(R.string.label_no_title)
                             result.add(
                                 DueSubTaskItem(
@@ -131,7 +134,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun isDueToday(startDate: Long?, endDate: Long?, fallbackDate: Long?): Boolean {
+    private fun isTaskDueToday(task: MainTask): Boolean {
+        if (task.isCompleted) return false
+        if (!task.manualSchedule && task.dueDate == null) return false
+        return isRangeDueToday(task.startDate, task.endDate, task.dueDate)
+    }
+
+    private fun isRangeDueToday(startDate: Long?, endDate: Long?, fallbackDate: Long?): Boolean {
         val startCal = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
