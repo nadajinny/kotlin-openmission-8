@@ -93,9 +93,11 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         calendarView.doOnLayout {
             val availableWidth = it.width - it.paddingLeft - it.paddingRight
             if (availableWidth > 0) {
-                val tileWidth = (availableWidth / com.example.tagmoa.view.FurangCalendar.DAYS_OF_WEEK)
-                calendarView.setTileWidth(tileWidth)
-                calendarView.setTileHeight((tileWidth * 1.1f).toInt())
+                val tileWidth = availableWidth / FurangCalendar.DAYS_OF_WEEK
+                if (tileWidth > 0) {
+                    calendarView.setTileWidth(tileWidth)
+                    calendarView.setTileHeight(tileWidth)
+                }
             }
         }
 
