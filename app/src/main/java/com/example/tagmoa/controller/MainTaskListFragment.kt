@@ -31,8 +31,6 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
     private lateinit var searchInput: TextInputEditText
     private lateinit var btnSearch: MaterialButton
     private lateinit var chipGroup: ChipGroup
-    private lateinit var btnAddTask: MaterialButton
-    private lateinit var btnManageTags: MaterialButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyState: TextView
@@ -65,22 +63,12 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         searchInput = view.findViewById(R.id.editSearchMainTask)
         btnSearch = view.findViewById(R.id.btnSearchMainTask)
         chipGroup = view.findViewById(R.id.chipGroupTags)
-        btnAddTask = view.findViewById(R.id.btnAddMainTask)
-        btnManageTags = view.findViewById(R.id.btnManageTags)
         recyclerView = view.findViewById(R.id.recyclerMainTaskList)
         progressBar = view.findViewById(R.id.progressMainList)
         emptyState = view.findViewById(R.id.textMainListEmpty)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
-
-        btnAddTask.setOnClickListener {
-            startActivity(Intent(requireContext(), AddEditMainTaskActivity::class.java))
-        }
-
-        btnManageTags.setOnClickListener {
-            startActivity(Intent(requireContext(), TagManagementActivity::class.java))
-        }
 
         btnSearch.setOnClickListener { filterTasks() }
         searchInput.addTextChangedListener(object : TextWatcher {

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -15,8 +14,7 @@ import androidx.fragment.app.Fragment
 import com.example.tagmoa.R
 import com.example.tagmoa.model.AuthProvider
 import com.example.tagmoa.model.SessionManager
-import com.example.tagmoa.view.CurvedBottomNavItem
-import com.example.tagmoa.view.CurvedBottomNavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 
@@ -24,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private lateinit var rootContainer: View
-    private lateinit var bottomNavigation: CurvedBottomNavigationView
+    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var fabMenuContainer: View
     private lateinit var fabAddTag: FloatingActionButton
     private lateinit var fabAddMainTask: FloatingActionButton
@@ -51,8 +49,7 @@ class MainActivity : AppCompatActivity() {
         setupBottomNavigation()
 
         if (savedInstanceState == null) {
-            bottomNavigation.selectItem(R.id.navigation_home, animate = false)
-            replaceFragment(HomeFragment())
+            bottomNavigation.selectedItemId = R.id.navigation_home
         }
     }
 
@@ -94,22 +91,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
-        val items = listOf(
-            CurvedBottomNavItem(R.id.navigation_add, R.drawable.ic_nav_add, R.string.nav_add),
-            CurvedBottomNavItem(R.id.navigation_tasks, R.drawable.ic_nav_tasks, R.string.nav_tasks),
-            CurvedBottomNavItem(R.id.navigation_home, R.drawable.ic_nav_home, R.string.nav_home),
-            CurvedBottomNavItem(R.id.navigation_calendar, R.drawable.ic_nav_calendar, R.string.nav_calendar),
-            CurvedBottomNavItem(R.id.navigation_profile, R.drawable.ic_nav_profile, R.string.nav_profile)
-        )
-
-        bottomNavigation.setItems(items)
         bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.id) {
-                R.id.navigation_home -> navigateTo(HomeFragment(), item.id)
-                R.id.navigation_tasks -> navigateTo(MainTaskListFragment(), item.id)
-                R.id.navigation_add -> toggleFabMenu()
-                R.id.navigation_calendar -> navigateTo(CalendarFragment(), item.id)
-                R.id.navigation_profile -> navigateTo(UserProfileFragment(), item.id)
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    navigateTo(HomeFragment(), item.itemId)
+                    true
+                }
+                R.id.navigation_tasks -> {
+                    navigateTo(MainTaskListFragment(), item.itemId)
+                    true
+                }
+                R.id.navigation_add -> {
+                    toggleFabMenu()
+                    false
+                }
+                R.id.navigation_calendar -> {
+                    navigateTo(CalendarFragment(), item.itemId)
+                    true
+                }
+                R.id.navigation_profile -> {
+                    navigateTo(UserProfileFragment(), item.itemId)
+                    true
+                }
+                else -> false
             }
         }
     }
@@ -155,7 +159,8 @@ class MainActivity : AppCompatActivity() {
     private fun applyEdgeToEdgeInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
+            view.updatePadding(top = systemBars.top)
+            bottomNavigation.updatePadding(bottom = systemBars.bottom)
             insets
         }
         ViewCompat.requestApplyInsets(rootContainer)
@@ -171,9 +176,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showFabMenu() {
         if (fabMenuContainer.isVisible) return
-        bottomNavigation.setHighlightOverlayColor(
-            ContextCompat.getColor(this, R.color.cbn_add_active_color)
-        )
         fabMenuContainer.animate().cancel()
         fabMenuContainer.alpha = 0f
         fabMenuContainer.visibility = View.VISIBLE
@@ -189,9 +191,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideFabMenu(shouldReselectContent: Boolean) {
         if (!fabMenuContainer.isVisible) {
-            bottomNavigation.setHighlightOverlayColor(null)
             if (shouldReselectContent) {
-                bottomNavigation.selectItem(lastContentItemId, animate = true)
+                bottomNavigation.selectedItemId = lastContentItemId
             }
             return
         }
@@ -202,17 +203,16 @@ class MainActivity : AppCompatActivity() {
             .withEndAction {
                 fabMenuContainer.visibility = View.GONE
                 fabMenuContainer.alpha = 1f
-                bottomNavigation.setHighlightOverlayColor(null)
                 if (shouldReselectContent) {
-                    bottomNavigation.selectItem(lastContentItemId, animate = true)
+                    bottomNavigation.selectedItemId = lastContentItemId
                 }
             }
             .start()
     }
 
     private fun alignFabMenuWithAddButton() {
-        val addCenterX = bottomNavigation.getItemCenterX(R.id.navigation_add)
-        if (addCenterX <= 0f) return
+        val addItemView = bottomNavigation.findViewById<View>(R.id.navigation_add) ?: return
+        val addCenterX = addItemView.left + addItemView.width / 2f
         if (fabMenuContainer.width == 0) {
             fabMenuContainer.post { alignFabMenuWithAddButton() }
             return
