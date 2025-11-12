@@ -50,4 +50,6 @@
     <color name="calendar_text_inverse">@android:color/white</color>
     <color name="calendar_today_fill">@color/brand_primary</color>
     <color name="calendar_today_stroke">@color/brand_cloud</color>
+    <color name="main_color">@color/brand_primary</color>
+    <color name="enabled_date_color">#B0B5C3</color>
 </resources>
