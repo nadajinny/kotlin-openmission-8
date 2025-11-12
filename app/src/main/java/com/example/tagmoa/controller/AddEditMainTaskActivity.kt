@@ -37,7 +37,6 @@ class AddEditMainTaskActivity : AppCompatActivity() {
 
     private lateinit var editTitle: EditText
     private lateinit var editDescription: EditText
-    private lateinit var editDuration: EditText
     private lateinit var textDateRange: TextView
     private lateinit var textSelectedTags: TextView
     private lateinit var spinnerColor: Spinner
@@ -63,7 +62,6 @@ class AddEditMainTaskActivity : AppCompatActivity() {
 
         editTitle = findViewById(R.id.editTaskTitle)
         editDescription = findViewById(R.id.editTaskDescription)
-        editDuration = findViewById(R.id.editTaskDuration)
         textDateRange = findViewById(R.id.textTaskDateRange)
         textSelectedTags = findViewById(R.id.textSelectedTags)
         spinnerColor = findViewById(R.id.spinnerTaskColor)
@@ -189,7 +187,6 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             val task = snapshot.getValue(MainTask::class.java) ?: return@addOnSuccessListener
             editTitle.setText(task.title)
             editDescription.setText(task.description)
-            editDuration.setText(task.duration)
             selectedStartDate = task.startDate ?: task.dueDate
             selectedEndDate = task.endDate ?: task.dueDate
             selectedColor = task.mainColor
@@ -228,7 +225,6 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             startDate = selectedStartDate,
             endDate = selectedEndDate,
             dueDate = selectedEndDate ?: selectedStartDate,
-            duration = editDuration.text.toString().trim(),
             mainColor = selectedColor,
             tagIds = selectedTagIds.toMutableList()
         )

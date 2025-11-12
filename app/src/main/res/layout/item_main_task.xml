@@ -54,13 +54,6 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
             <TextView
-                android:id="@+id/textTaskDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
-
-            <TextView
                 android:id="@+id/textTaskDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

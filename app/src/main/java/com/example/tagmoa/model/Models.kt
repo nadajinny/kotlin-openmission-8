@@ -12,7 +12,6 @@ data class MainTask(
     var startDate: Long? = null,
     var endDate: Long? = null,
     var dueDate: Long? = null,
-    var duration: String = "",
     var mainColor: String = "#559999",
     var tagIds: MutableList<String> = mutableListOf()
 )

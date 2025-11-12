@@ -44,7 +44,6 @@ class MainTaskAdapter(
         private val title: TextView = itemView.findViewById(R.id.textTaskTitle)
         private val tagsText: TextView = itemView.findViewById(R.id.textTaskTags)
         private val dateText: TextView = itemView.findViewById(R.id.textTaskDate)
-        private val durationText: TextView = itemView.findViewById(R.id.textTaskDuration)
         private val descriptionText: TextView = itemView.findViewById(R.id.textTaskDescription)
         private val colorStripe: View = itemView.findViewById(R.id.viewTaskColor)
 
@@ -64,13 +63,6 @@ class MainTaskAdapter(
             } else {
                 itemView.context.getString(R.string.label_with_date, dateLabel)
             }
-
-            val durationLabel = if (task.duration.isBlank()) {
-                itemView.context.getString(R.string.label_no_duration)
-            } else {
-                itemView.context.getString(R.string.label_with_duration, task.duration)
-            }
-            durationText.text = durationLabel
 
             descriptionText.text = task.description.ifBlank {
                 itemView.context.getString(R.string.label_no_description)

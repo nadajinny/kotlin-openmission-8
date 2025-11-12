@@ -10,8 +10,6 @@
     <string name="label_no_tags">태그 없음</string>
     <string name="label_no_date">일자 미정</string>
     <string name="label_with_date">일자: %1$s</string>
-    <string name="label_no_duration">기간 정보 없음</string>
-    <string name="label_with_duration">기간: %1$s</string>
     <string name="label_no_description">설명이 없습니다.</string>
     <string name="label_with_priority">중요도: %1$s</string>
     <string name="label_main_color">메인 컬러</string>
@@ -41,7 +39,6 @@
     <string name="title_edit_main_task">메인 테스크 작성 / 수정</string>
     <string name="hint_task_title">제목</string>
     <string name="hint_task_description">간단한 설명</string>
-    <string name="hint_task_duration">기간 (예: 2주)</string>
     <string name="action_select_tags">태그 선택</string>
     <string name="action_save">저장</string>
     <string name="message_no_tags_available">등록된 태그가 없습니다.</string>

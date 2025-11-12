@@ -37,7 +37,6 @@ class MainTaskDetailActivity : AppCompatActivity() {
 
     private lateinit var textTitle: TextView
     private lateinit var textDate: TextView
-    private lateinit var textDuration: TextView
     private lateinit var textTags: TextView
     private lateinit var textDescription: TextView
     private lateinit var colorView: View
@@ -71,7 +70,6 @@ class MainTaskDetailActivity : AppCompatActivity() {
 
         textTitle = findViewById(R.id.textDetailTitle)
         textDate = findViewById(R.id.textDetailDate)
-        textDuration = findViewById(R.id.textDetailDuration)
         textTags = findViewById(R.id.textDetailTags)
         textDescription = findViewById(R.id.textDetailDescription)
         colorView = findViewById(R.id.viewDetailColor)
@@ -171,11 +169,6 @@ class MainTaskDetailActivity : AppCompatActivity() {
             getString(R.string.label_no_date)
         } else {
             getString(R.string.label_with_date, dateLabel)
-        }
-        textDuration.text = if (task.duration.isBlank()) {
-            getString(R.string.label_no_duration)
-        } else {
-            getString(R.string.label_with_duration, task.duration)
         }
         val tagNames = task.tagIds.mapNotNull { tagsMap[it]?.name }
         textTags.text = if (tagNames.isEmpty()) getString(R.string.label_no_tags) else tagNames.joinToString(", ")
