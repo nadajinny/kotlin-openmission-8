@@ -35,6 +35,14 @@
         android:layout_height="24dp" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPickHomeBackground"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="@string/home_background_change" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnProfileLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

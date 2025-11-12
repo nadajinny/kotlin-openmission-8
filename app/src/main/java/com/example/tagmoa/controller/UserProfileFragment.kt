@@ -1,10 +1,12 @@
 package com.example.tagmoa.controller
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.tagmoa.R
 import com.example.tagmoa.model.AuthProvider
@@ -19,9 +21,18 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val googleClient by lazy { GoogleSignInHelper.getClient(requireContext()) }
+    private val selectHomeBackgroundLauncher =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                persistUriPermission(uri)
+                HomeBackgroundManager.saveBackgroundUri(requireContext(), uri)
+                Toast.makeText(requireContext(), getString(R.string.home_background_updated), Toast.LENGTH_SHORT).show()
+            }
+        }
 
     private lateinit var textName: TextView
     private lateinit var textEmail: TextView
+    private lateinit var btnPickBackground: MaterialButton
     private lateinit var btnLogout: MaterialButton
     private lateinit var btnDisconnect: MaterialButton
 
@@ -30,6 +41,7 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
         textName = view.findViewById(R.id.textProfileName)
         textEmail = view.findViewById(R.id.textProfileEmail)
+        btnPickBackground = view.findViewById(R.id.btnPickHomeBackground)
         btnLogout = view.findViewById(R.id.btnProfileLogout)
         btnDisconnect = view.findViewById(R.id.btnProfileDisconnect)
 
@@ -41,6 +53,10 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
         textName.text = getString(R.string.profile_name_format, session.displayName ?: "-")
         textEmail.text = getString(R.string.profile_email_format, session.email ?: "-")
+
+        btnPickBackground.setOnClickListener {
+            selectHomeBackgroundLauncher.launch(arrayOf("image/*"))
+        }
 
         btnLogout.setOnClickListener {
             when (session.provider) {
@@ -156,5 +172,15 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         }
         startActivity(intent)
         activity?.finish()
+    }
+
+    private fun persistUriPermission(uri: Uri) {
+        val contentResolver = requireContext().contentResolver
+        val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        try {
+            contentResolver.takePersistableUriPermission(uri, takeFlags)
+        } catch (_: SecurityException) {
+            // Permission already granted or not needed
+        }
     }
 }

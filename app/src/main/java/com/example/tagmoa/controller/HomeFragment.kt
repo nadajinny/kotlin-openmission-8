@@ -1,9 +1,13 @@
 package com.example.tagmoa.controller
 
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +28,7 @@ import java.util.Calendar
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
+    private var homeRoot: View? = null
     private lateinit var recyclerMainDue: RecyclerView
     private lateinit var recyclerSubDue: RecyclerView
     private lateinit var textMainEmpty: TextView
@@ -47,6 +52,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         tasksRef = UserDatabase.tasksRef(uid)
         subTasksRef = UserDatabase.subTasksRef(uid)
 
+        homeRoot = view.findViewById(R.id.homeRoot)
         recyclerMainDue = view.findViewById(R.id.recyclerHomeMainDue)
         recyclerSubDue = view.findViewById(R.id.recyclerHomeSubDue)
         textMainEmpty = view.findViewById(R.id.textHomeMainDueEmpty)
@@ -67,6 +73,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         recyclerSubDue.layoutManager = LinearLayoutManager(requireContext())
         recyclerSubDue.adapter = subAdapter
 
+        applySavedBackground()
         observeTasks()
         observeSubTasks()
     }
@@ -166,5 +173,40 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onDestroyView()
         tasksListener?.let { tasksRef.removeEventListener(it) }
         subTasksListener?.let { subTasksRef.removeEventListener(it) }
+        homeRoot = null
     }
+
+    private fun applySavedBackground() {
+        if (homeRoot == null) return
+        val uri = HomeBackgroundManager.getBackgroundUri(requireContext())
+        if (uri != null) {
+            applyBackground(uri)
+        } else {
+            resetToDefaultBackground()
+        }
+    }
+
+    private fun applyBackground(uri: Uri) {
+        val resolver = requireContext().contentResolver
+        try {
+            resolver.openInputStream(uri)?.use { input ->
+                val bitmap = BitmapFactory.decodeStream(input)
+                if (bitmap != null) {
+                    val drawable = BitmapDrawable(resources, bitmap)
+                    homeRoot?.background = drawable
+                } else {
+                    throw IllegalArgumentException("Bitmap decode failed")
+                }
+            } ?: throw IllegalArgumentException("Unable to open stream")
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), getString(R.string.home_background_load_failed), Toast.LENGTH_SHORT).show()
+            HomeBackgroundManager.clearBackgroundUri(requireContext())
+            resetToDefaultBackground()
+        }
+    }
+
+    private fun resetToDefaultBackground() {
+        homeRoot?.setBackgroundResource(R.color.color_f2f6f6)
+    }
+
 }
