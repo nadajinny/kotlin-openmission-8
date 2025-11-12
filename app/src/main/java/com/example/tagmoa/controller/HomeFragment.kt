@@ -2,10 +2,10 @@ package com.example.tagmoa.controller
 
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -28,7 +28,7 @@ import java.util.Calendar
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private var homeRoot: View? = null
+    private var backgroundView: ImageView? = null
     private lateinit var recyclerMainDue: RecyclerView
     private lateinit var recyclerSubDue: RecyclerView
     private lateinit var textMainEmpty: TextView
@@ -52,7 +52,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         tasksRef = UserDatabase.tasksRef(uid)
         subTasksRef = UserDatabase.subTasksRef(uid)
 
-        homeRoot = view.findViewById(R.id.homeRoot)
+        backgroundView = view.findViewById(R.id.imageHomeBackground)
         recyclerMainDue = view.findViewById(R.id.recyclerHomeMainDue)
         recyclerSubDue = view.findViewById(R.id.recyclerHomeSubDue)
         textMainEmpty = view.findViewById(R.id.textHomeMainDueEmpty)
@@ -173,11 +173,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onDestroyView()
         tasksListener?.let { tasksRef.removeEventListener(it) }
         subTasksListener?.let { subTasksRef.removeEventListener(it) }
-        homeRoot = null
+        backgroundView = null
     }
 
     private fun applySavedBackground() {
-        if (homeRoot == null) return
+        if (backgroundView == null) return
         val uri = HomeBackgroundManager.getBackgroundUri(requireContext())
         if (uri != null) {
             applyBackground(uri)
@@ -192,8 +192,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             resolver.openInputStream(uri)?.use { input ->
                 val bitmap = BitmapFactory.decodeStream(input)
                 if (bitmap != null) {
-                    val drawable = BitmapDrawable(resources, bitmap)
-                    homeRoot?.background = drawable
+                    backgroundView?.setImageBitmap(bitmap)
                 } else {
                     throw IllegalArgumentException("Bitmap decode failed")
                 }
@@ -206,7 +205,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun resetToDefaultBackground() {
-        homeRoot?.setBackgroundResource(R.color.color_f2f6f6)
+        backgroundView?.setImageResource(R.color.color_f2f6f6)
     }
 
 }
