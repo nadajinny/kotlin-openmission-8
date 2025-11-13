@@ -8,10 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tagmoa.R
@@ -42,9 +38,7 @@ class TagManagementActivity : AppCompatActivity() {
         userId = uid
         tagsRef = UserDatabase.tagsRef(userId)
         tasksRef = UserDatabase.tasksRef(userId)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_tag_management)
-        applyEdgeToEdgeInsets(findViewById(R.id.rootTagManagement))
 
         emptyState = findViewById(R.id.textTagEmptyState)
         inputTagName = findViewById(R.id.editTagName)
@@ -189,14 +183,5 @@ class TagManagementActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         tagsListener?.let { tagsRef.removeEventListener(it) }
-    }
-
-    private fun applyEdgeToEdgeInsets(root: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
-            insets
-        }
-        ViewCompat.requestApplyInsets(root)
     }
 }

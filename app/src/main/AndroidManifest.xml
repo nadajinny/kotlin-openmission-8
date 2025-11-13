@@ -34,13 +34,22 @@
         </activity>
 
         <activity
-            android:name=".controller.AddEditSubTaskActivity" />
+            android:name=".controller.AddEditSubTaskActivity"
+            android:exported="false"
+            android:label="@null"
+            android:theme="@style/Theme.TagMoa.AddEditSubTaskDialog" />
         <activity
             android:name=".controller.MainTaskDetailActivity" />
         <activity
-            android:name=".controller.AddEditMainTaskActivity" />
+            android:name=".controller.AddEditMainTaskActivity"
+            android:exported="false"
+            android:label="@null"
+            android:theme="@style/Theme.TagMoa.AddEditTaskDialog" />
         <activity
-            android:name=".controller.TagManagementActivity" />
+            android:name=".controller.TagManagementActivity"
+            android:exported="false"
+            android:label="@null"
+            android:theme="@style/Theme.TagMoa.TagManagementDialog" />
 
         <activity
             android:name=".controller.MainActivity"

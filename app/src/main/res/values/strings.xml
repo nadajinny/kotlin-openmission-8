@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Tagmoa</string>
 
-    <string name="title_main_tasks">할 일 메인 테스크</string>
-    <string name="action_add_main_task">메인 테스크 추가</string>
+    <string name="title_main_tasks">할 일 주요 일정</string>
+    <string name="action_add_main_task">주요 일정 추가</string>
     <string name="action_manage_tags">태그 관리</string>
-    <string name="message_no_main_tasks">등록된 메인 테스크가 없습니다.</string>
+    <string name="message_no_main_tasks">등록된 주요 일정이 없습니다.</string>
 
     <string name="label_no_title">제목 없음</string>
     <string name="label_no_tags">태그 없음</string>
@@ -17,7 +17,7 @@
     <string name="status_in_progress">진행 중</string>
     <string name="status_completed">완료</string>
     <string name="label_main_color">메인 컬러</string>
-    <string name="label_main_task">메인 테스크</string>
+    <string name="label_main_task">주요 일정</string>
     <string name="label_priority">중요도</string>
     <string name="title_select_date_range">기간 선택</string>
     <string name="action_ok">확인</string>
@@ -33,7 +33,7 @@
     <string name="message_no_tags">등록된 태그가 없습니다.</string>
     <string name="error_empty_tag_name">태그 이름을 입력해주세요.</string>
     <string name="message_tag_created">태그를 생성했습니다.</string>
-    <string name="message_no_tasks_for_tag">연결할 메인 테스크가 없습니다.</string>
+    <string name="message_no_tasks_for_tag">연결할 주요 일정이 없습니다.</string>
     <string name="title_assign_tag">%1$s 태그를 연결할 테스크 선택</string>
     <string name="action_apply">적용</string>
     <string name="message_tag_applied">태그를 선택한 테스크에 연결했습니다.</string>
@@ -41,7 +41,7 @@
     <string name="message_delete_tag">%1$s 태그를 삭제하시겠어요?</string>
     <string name="message_tag_deleted">태그를 삭제했습니다.</string>
 
-    <string name="title_edit_main_task">메인 테스크 작성 / 수정</string>
+    <string name="title_edit_main_task">주요 일정 작성 / 수정</string>
     <string name="hint_task_title">제목</string>
     <string name="hint_task_description">간단한 설명</string>
     <string name="action_select_tags">태그 선택</string>
@@ -49,35 +49,35 @@
     <string name="message_no_tags_available">등록된 태그가 없습니다.</string>
     <string name="title_select_tags">태그 선택</string>
     <string name="error_empty_title">제목을 입력해주세요.</string>
-    <string name="message_task_saved">메인 테스크를 저장했습니다.</string>
+    <string name="message_task_saved">주요 일정을 저장했습니다.</string>
     <string name="error_generic">처리 중 오류가 발생했습니다.</string>
 
-    <string name="title_edit_sub_task">서브 테스크 작성 / 수정</string>
+    <string name="title_edit_sub_task">세부 일정 작성 / 수정</string>
     <string name="hint_subtask_content">내용</string>
-    <string name="error_select_main_task">메인 테스크를 선택해주세요.</string>
+    <string name="error_select_main_task">주요 일정을 선택해주세요.</string>
     <string name="error_empty_subtask_content">내용을 입력해주세요.</string>
-    <string name="error_no_main_tasks">먼저 메인 테스크를 생성해주세요.</string>
-    <string name="message_subtask_saved">서브 테스크를 저장했습니다.</string>
-    <string name="desc_toggle_subtask_complete">%1$s 서브 테스크 완료 여부 전환</string>
+    <string name="error_no_main_tasks">먼저 주요 일정을 생성해주세요.</string>
+    <string name="message_subtask_saved">세부 일정을 저장했습니다.</string>
+    <string name="desc_toggle_subtask_complete">%1$s 세부 일정 완료 여부 전환</string>
 
     <string name="action_open_detail">상세 보기</string>
     <string name="action_edit_task">편집</string>
     <string name="action_delete_task">삭제</string>
     <string name="action_edit">수정</string>
     <string name="action_delete">삭제</string>
-    <string name="action_add_sub_task">서브 테스크 추가</string>
-    <string name="action_mark_task_complete">메인 테스크 완료</string>
-    <string name="action_mark_task_incomplete">메인 테스크 진행 중으로 변경</string>
-    <string name="title_sub_tasks">서브 테스크</string>
-    <string name="message_no_subtasks">등록된 서브 테스크가 없습니다.</string>
-    <string name="title_delete_task">메인 테스크 삭제</string>
-    <string name="message_delete_task">메인 테스크와 연결된 모든 서브 테스크가 삭제됩니다. 계속할까요?</string>
-    <string name="message_task_deleted">메인 테스크를 삭제했습니다.</string>
-    <string name="title_delete_subtask">서브 테스크 삭제</string>
-    <string name="message_delete_subtask">해당 서브 테스크를 삭제할까요?</string>
-    <string name="message_subtask_deleted">서브 테스크를 삭제했습니다.</string>
-    <string name="message_task_marked_complete">메인 테스크를 완료 처리했습니다.</string>
-    <string name="message_task_marked_incomplete">메인 테스크를 진행 중으로 변경했습니다.</string>
+    <string name="action_add_sub_task">세부 일정 추가</string>
+    <string name="action_mark_task_complete">주요 일정 완료</string>
+    <string name="action_mark_task_incomplete">주요 일정을 진행 중으로 변경</string>
+    <string name="title_sub_tasks">세부 일정</string>
+    <string name="message_no_subtasks">등록된 세부 일정이 없습니다.</string>
+    <string name="title_delete_task">주요 일정 삭제</string>
+    <string name="message_delete_task">주요 일정과 연결된 모든 세부 일정이 삭제됩니다. 계속할까요?</string>
+    <string name="message_task_deleted">주요 일정을 삭제했습니다.</string>
+    <string name="title_delete_subtask">세부 일정 삭제</string>
+    <string name="message_delete_subtask">해당 세부 일정을 삭제할까요?</string>
+    <string name="message_subtask_deleted">세부 일정을 삭제했습니다.</string>
+    <string name="message_task_marked_complete">주요 일정을 완료 처리했습니다.</string>
+    <string name="message_task_marked_incomplete">주요 일정을 진행 중으로 변경했습니다.</string>
 
     <string name="priority_low">낮음</string>
     <string name="priority_medium">보통</string>
@@ -85,25 +85,25 @@
 
     <string name="kakao_app_key">a34795d3954f3817b08003b1b9e6d6d7</string>
     <string name="nav_home">홈</string>
-    <string name="nav_tasks">메인 테스크</string>
+    <string name="nav_tasks">주요 일정</string>
     <string name="nav_add">추가</string>
     <string name="nav_calendar">캘린더</string>
     <string name="nav_profile">내 정보</string>
     <string name="add_quick_action_tag">태그 추가</string>
-    <string name="add_quick_action_main_task">메인 테스크 추가</string>
-    <string name="add_quick_action_sub_task">서브 테스크 추가</string>
+    <string name="add_quick_action_main_task">주요 일정 추가</string>
+    <string name="add_quick_action_sub_task">세부 일정 추가</string>
 
     <string name="home_today_label">오늘</string>
-    <string name="home_due_main_title">오늘까지 마감인 메인 테스크</string>
-    <string name="home_due_sub_title">오늘까지 마감인 서브 테스크</string>
-    <string name="home_due_main_today_title">오늘까지 마감인 메인 테스크</string>
-    <string name="home_due_sub_today_title">오늘까지 마감인 서브 테스크</string>
+    <string name="home_due_main_title">오늘까지 마감인 주요 일정</string>
+    <string name="home_due_sub_title">오늘까지 마감인 세부 일정</string>
+    <string name="home_due_main_today_title">오늘까지 마감인 주요 일정</string>
+    <string name="home_due_sub_today_title">오늘까지 마감인 세부 일정</string>
     <string name="home_due_empty">마감 예정인 항목이 없습니다.</string>
     <string name="home_background_change">배경 사진 선택</string>
     <string name="home_background_load_failed">이미지를 불러올 수 없습니다. 다른 이미지를 선택해주세요.</string>
     <string name="home_background_updated">홈 배경을 변경했습니다.</string>
 
-    <string name="hint_search_main_task">메인 테스크 검색</string>
+    <string name="hint_search_main_task">주요 일정 검색</string>
     <string name="action_search">검색</string>
     <string name="label_filter_tags">필터 태그</string>
 
@@ -113,9 +113,9 @@
     <string name="calendar_schedule_label_pending">미완료 일정</string>
     <string name="calendar_schedule_label_completed">완료한 일정</string>
     <string name="calendar_empty_state">선택한 날짜의 일정이 없습니다.</string>
-    <string name="calendar_subtask_header">%1$s의 서브 테스크</string>
-    <string name="calendar_subtask_empty">해당 조건의 서브 테스크가 없습니다.</string>
-    <string name="calendar_subtask_count">서브 테스크 %1$d개 (미완료 %2$d개)</string>
+    <string name="calendar_subtask_header">%1$s의 세부 일정</string>
+    <string name="calendar_subtask_empty">해당 조건의 세부 일정이 없습니다.</string>
+    <string name="calendar_subtask_count">세부 일정 %1$d개 (미완료 %2$d개)</string>
     <string name="calendar_year_month_format">yyyy년 MM월</string>
     <string name="calendar_week_sun">일</string>
     <string name="calendar_week_mon">월</string>

@@ -1,7 +1,6 @@
 package com.example.tagmoa.controller
 
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -9,10 +8,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
@@ -52,9 +47,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         userId = uid
         tasksRef = UserDatabase.tasksRef(userId)
         subTasksRef = UserDatabase.subTasksRef(userId)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_add_edit_sub_task)
-        applyEdgeToEdgeInsets(findViewById(R.id.rootAddEditSubTask))
 
         spinnerMainTasks = findViewById(R.id.spinnerMainTasks)
         spinnerPriority = findViewById(R.id.spinnerPriority)
@@ -62,7 +55,6 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         editContent = findViewById(R.id.editSubTaskContent)
 
         val btnSelectDateRange = findViewById<Button>(R.id.btnSelectSubTaskDateRange)
-        val btnClearDateRange = findViewById<Button>(R.id.btnClearSubTaskDateRange)
         val btnSave = findViewById<Button>(R.id.btnSaveSubTask)
 
         selectedMainTaskId = intent.getStringExtra(EXTRA_MAIN_TASK_ID)
@@ -70,11 +62,6 @@ class AddEditSubTaskActivity : AppCompatActivity() {
 
         setupPrioritySpinner()
         btnSelectDateRange.setOnClickListener { showDateRangePicker() }
-        btnClearDateRange.setOnClickListener {
-            selectedStartDate = null
-            selectedEndDate = null
-            updateDateRangeLabel()
-        }
         btnSave.setOnClickListener { saveSubTask() }
 
         loadMainTasks()
@@ -217,12 +204,4 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             }
     }
 
-    private fun applyEdgeToEdgeInsets(root: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
-            insets
-        }
-        ViewCompat.requestApplyInsets(root)
-    }
 }
