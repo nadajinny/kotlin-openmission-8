@@ -1,10 +1,12 @@
 package com.example.tagmoa.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tagmoa.R
@@ -36,44 +38,61 @@ class SubTaskAdapter(
     override fun getItemCount(): Int = subTasks.size
 
     inner class SubTaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val checkbox: CheckBox = itemView.findViewById(R.id.checkboxSubTaskCompleted)
+        private val checkbox: CheckBox = itemView.findViewById(R.id.checkboxSubTaskComplete)
         private val contentText: TextView = itemView.findViewById(R.id.textSubTaskContent)
         private val dateText: TextView = itemView.findViewById(R.id.textSubTaskDate)
-        private val priorityText: TextView = itemView.findViewById(R.id.textSubTaskPriority)
-        private val editButton: Button = itemView.findViewById(R.id.btnEditSubTask)
-        private val deleteButton: Button = itemView.findViewById(R.id.btnDeleteSubTask)
+        private val moreButton: ImageView = itemView.findViewById(R.id.buttonSubTaskMore)
 
         fun bind(subTask: SubTask) {
             val context = itemView.context
             contentText.text = subTask.content.ifBlank {
                 context.getString(R.string.label_no_description)
             }
+
             checkbox.setOnCheckedChangeListener(null)
             checkbox.isChecked = subTask.isCompleted
-            checkbox.contentDescription = context.getString(R.string.desc_toggle_subtask_complete, contentText.text)
+            checkbox.contentDescription = context.getString(
+                R.string.desc_toggle_subtask_complete,
+                contentText.text
+            )
             checkbox.setOnCheckedChangeListener { _, isChecked ->
                 onToggleComplete(subTask, isChecked)
             }
-            val contentAlpha = if (subTask.isCompleted) 0.6f else 1f
-            contentText.alpha = contentAlpha
-            dateText.alpha = contentAlpha
-            priorityText.alpha = contentAlpha
+
+            val alpha = if (subTask.isCompleted) 0.4f else 1f
+            contentText.alpha = alpha
+            dateText.alpha = alpha
+
             val dateLabel = formatDateRange(subTask.startDate, subTask.endDate, subTask.dueDate)
-            dateText.text = if (dateLabel.isEmpty()) {
-                context.getString(R.string.label_no_date)
+            if (dateLabel.isEmpty()) {
+                dateText.visibility = View.GONE
             } else {
-                context.getString(R.string.label_with_date, dateLabel)
+                dateText.visibility = View.VISIBLE
+                dateText.text = context.getString(R.string.label_with_date, dateLabel)
             }
-            priorityText.text = context.getString(
-                R.string.label_with_priority,
-                when (subTask.priority) {
-                    2 -> context.getString(R.string.priority_high)
-                    1 -> context.getString(R.string.priority_medium)
-                    else -> context.getString(R.string.priority_low)
+
+            moreButton.setOnClickListener {
+                showSubTaskMenu(context, subTask)
+            }
+        }
+
+        private fun showSubTaskMenu(context: Context, subTask: SubTask) {
+            PopupMenu(context, moreButton).apply {
+                menuInflater.inflate(R.menu.menu_subtask_item, menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.action_edit_subtask -> {
+                            onEdit(subTask)
+                            true
+                        }
+                        R.id.action_delete_subtask -> {
+                            onDelete(subTask)
+                            true
+                        }
+                        else -> false
+                    }
                 }
-            )
-            editButton.setOnClickListener { onEdit(subTask) }
-            deleteButton.setOnClickListener { onDelete(subTask) }
+            }.show()
         }
     }
 }

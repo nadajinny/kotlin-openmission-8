@@ -59,6 +59,7 @@
     <string name="error_no_main_tasks">먼저 주요 일정을 생성해주세요.</string>
     <string name="message_subtask_saved">세부 일정을 저장했습니다.</string>
     <string name="desc_toggle_subtask_complete">%1$s 세부 일정 완료 여부 전환</string>
+    <string name="desc_open_subtask_menu">세부 일정 옵션 열기</string>
 
     <string name="action_open_detail">상세 보기</string>
     <string name="action_edit_task">편집</string>

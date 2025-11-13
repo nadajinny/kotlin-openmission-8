@@ -1,81 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    android:padding="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardBackgroundColor="@color/color_f2f6f6"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/color_aad6eb">
+    android:layout_marginBottom="6dp"
+    android:background="@drawable/bg_subtask_chip"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="6dp">
+
+    <CheckBox
+        android:id="@+id/checkboxSubTaskComplete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:button="@drawable/bg_circle_checkbox_small"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textSubTaskContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <CheckBox
-                android:id="@+id/checkboxSubTaskCompleted"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-
-            <TextView
-                android:id="@+id/textSubTaskContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
         <TextView
             android:id="@+id/textSubTaskDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
-
-        <TextView
-            android:id="@+id/textSubTaskPriority"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="8dp">
-
-            <Button
-                android:id="@+id/btnEditSubTask"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/action_edit" />
-
-            <Space
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/btnDeleteSubTask"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/action_delete" />
-        </LinearLayout>
-
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="@android:color/darker_gray"
+            android:visibility="gone" />
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    <ImageView
+        android:id="@+id/buttonSubTaskMore"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@string/desc_open_subtask_menu"
+        android:padding="4dp"
+        android:src="@drawable/ic_more_vert_24"
+        android:tint="@android:color/darker_gray" />
+
+</LinearLayout>

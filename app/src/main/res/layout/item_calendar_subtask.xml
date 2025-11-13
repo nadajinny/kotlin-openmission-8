@@ -37,7 +37,8 @@
             android:layout_marginTop="2dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textColor="@color/calendar_text_muted"
-            android:text="@string/label_no_date" />
+            android:text="@string/label_no_date"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>
