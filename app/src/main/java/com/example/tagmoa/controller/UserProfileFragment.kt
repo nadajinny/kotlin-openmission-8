@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.example.tagmoa.R
 import com.example.tagmoa.model.AuthProvider
 import com.example.tagmoa.model.SessionManager
-import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NidOAuth
@@ -32,18 +31,18 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
     private lateinit var textName: TextView
     private lateinit var textEmail: TextView
-    private lateinit var btnPickBackground: MaterialButton
-    private lateinit var btnLogout: MaterialButton
-    private lateinit var btnDisconnect: MaterialButton
+    private lateinit var rowPickBackground: View
+    private lateinit var rowLogout: View
+    private lateinit var rowDisconnect: View
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         textName = view.findViewById(R.id.textProfileName)
         textEmail = view.findViewById(R.id.textProfileEmail)
-        btnPickBackground = view.findViewById(R.id.btnPickHomeBackground)
-        btnLogout = view.findViewById(R.id.btnProfileLogout)
-        btnDisconnect = view.findViewById(R.id.btnProfileDisconnect)
+        rowPickBackground = view.findViewById(R.id.rowPickHomeBackground)
+        rowLogout = view.findViewById(R.id.rowLogout)
+        rowDisconnect = view.findViewById(R.id.rowDisconnect)
 
         val session = SessionManager.currentSession
         if (session == null) {
@@ -54,11 +53,11 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         textName.text = getString(R.string.profile_name_format, session.displayName ?: "-")
         textEmail.text = getString(R.string.profile_email_format, session.email ?: "-")
 
-        btnPickBackground.setOnClickListener {
+        rowPickBackground.setOnClickListener {
             selectHomeBackgroundLauncher.launch(arrayOf("image/*"))
         }
 
-        btnLogout.setOnClickListener {
+        rowLogout.setOnClickListener {
             when (session.provider) {
                 AuthProvider.GOOGLE -> logoutGoogle()
                 AuthProvider.KAKAO -> logoutKakao()
@@ -66,7 +65,7 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             }
         }
 
-        btnDisconnect.setOnClickListener {
+        rowDisconnect.setOnClickListener {
             when (session.provider) {
                 AuthProvider.GOOGLE -> disconnectGoogle()
                 AuthProvider.KAKAO -> disconnectKakao()

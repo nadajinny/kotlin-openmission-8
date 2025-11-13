@@ -3,19 +3,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
-import com.google.android.material.card.MaterialCardView
 
 class CalendarScheduleAdapter(
     private val onItemLongClick: (MainTask) -> Unit,
     private val onToggleComplete: (MainTask, Boolean) -> Unit,
-    private val onToggleSubTaskComplete: (SubTask, Boolean) -> Unit
+    private val onToggleSubTaskComplete: (SubTask, Boolean) -> Unit,
+    private val onMoreClick: (MainTask) -> Unit
 ) : RecyclerView.Adapter<CalendarScheduleAdapter.ScheduleViewHolder>() {
 
     private val items = mutableListOf<MainTask>()
@@ -46,33 +46,19 @@ class CalendarScheduleAdapter(
 
     inner class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val mainRow: LinearLayout = itemView.findViewById(R.id.layoutMainRow)
         private val titleView: TextView = itemView.findViewById(R.id.textScheduleTitle)
-        private val dateView: TextView = itemView.findViewById(R.id.textScheduleDate)
-        private val subTaskCount: TextView = itemView.findViewById(R.id.textScheduleSubTaskCount)
         private val checkbox: CheckBox = itemView.findViewById(R.id.checkboxScheduleComplete)
-        private val card: MaterialCardView = itemView as MaterialCardView
         private val subTaskContainer: LinearLayout =
             itemView.findViewById(R.id.layoutScheduleSubTasks)
+        private val moreButton: ImageButton = itemView.findViewById(R.id.buttonScheduleMore)
 
         fun bind(item: MainTask) {
             val context = itemView.context
             val title = item.title.ifBlank { context.getString(R.string.label_no_title) }
-            val dateRange = formatDateRange(item.startDate, item.endDate, item.dueDate)
-                .ifBlank { context.getString(R.string.label_no_date) }
             val subTasks = subTasksByTaskId[item.id].orEmpty()
-            val total = subTasks.size
-            val incomplete = subTasks.count { !it.isCompleted }
 
             titleView.text = title
-            dateView.text = dateRange
-
-            if (total > 0) {
-                subTaskCount.visibility = View.VISIBLE
-                subTaskCount.text =
-                    context.getString(R.string.calendar_subtask_count, total, incomplete)
-            } else {
-                subTaskCount.visibility = View.GONE
-            }
 
             checkbox.setOnCheckedChangeListener(null)
             checkbox.isChecked = item.isCompleted
@@ -82,23 +68,21 @@ class CalendarScheduleAdapter(
 
             val alpha = if (item.isCompleted) 0.5f else 1f
             titleView.alpha = alpha
-            dateView.alpha = alpha
-            subTaskCount.alpha = alpha
 
-            val highlightColor = ContextCompat.getColor(context, R.color.color_aad6eb)
-            val defaultColor = ContextCompat.getColor(context, R.color.gray_200)
             val isExpanded = expandedTaskIds.contains(item.id) && subTasks.isNotEmpty()
-            card.strokeColor = if (isExpanded) highlightColor else defaultColor
 
             bindSubTasks(subTasks, isExpanded)
 
-            itemView.setOnClickListener {
+            mainRow.setOnClickListener {
                 if (subTasks.isEmpty()) return@setOnClickListener
                 toggleExpansion(item)
             }
             itemView.setOnLongClickListener {
                 onItemLongClick(item)
                 true
+            }
+            moreButton.setOnClickListener {
+                onMoreClick(item)
             }
         }
 

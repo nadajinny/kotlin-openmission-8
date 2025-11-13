@@ -70,4 +70,9 @@
     <color name="calendar_today_stroke">@color/brand_cloud</color>
     <color name="main_color">@color/brand_primary</color>
     <color name="enabled_date_color">#B0B5C3</color>
+
+    <!-- Utility neutrals for lists -->
+    <color name="black">#FF000000</color>
+    <color name="gray_600">#FF757575</color>
+    <color name="gray_500">#FF9E9E9E</color>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +38,8 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
     private lateinit var dateText: TextView
     private lateinit var pendingLabel: TextView
     private lateinit var completedLabel: TextView
+    private lateinit var pendingCard: View
+    private lateinit var completedCard: View
 
     private lateinit var pendingAdapter: CalendarScheduleAdapter
     private lateinit var completedAdapter: CalendarScheduleAdapter
@@ -56,11 +59,13 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
     private val allTasks = mutableListOf<MainTask>()
     private val subTasksByMain = mutableMapOf<String, MutableList<SubTask>>()
     private var selectedDay: CalendarDay = CalendarDay.today()
+    private lateinit var userId: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val uid = requireUserIdOrRedirect() ?: return
+        userId = uid
         tasksRef = UserDatabase.tasksRef(uid)
         subTasksRef = UserDatabase.subTasksRef(uid)
 
@@ -69,18 +74,22 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         recyclerCompleted = view.findViewById(R.id.recyclerCalendarScheduleCompleted)
         emptyState = view.findViewById(R.id.textCalendarEmpty)
         dateText = view.findViewById(R.id.textCalendarSelectedDate)
+        pendingCard = view.findViewById(R.id.cardCalendarPending)
+        completedCard = view.findViewById(R.id.cardCalendarCompleted)
         pendingLabel = view.findViewById(R.id.textCalendarSchedulePendingLabel)
         completedLabel = view.findViewById(R.id.textCalendarScheduleCompletedLabel)
 
         pendingAdapter = CalendarScheduleAdapter(
             onItemLongClick = { openTaskDetail(it) },
             onToggleComplete = { task, isChecked -> toggleMainTaskCompletion(task, isChecked) },
-            onToggleSubTaskComplete = { subTask, isChecked -> toggleSubTaskCompletion(subTask, isChecked) }
+            onToggleSubTaskComplete = { subTask, isChecked -> toggleSubTaskCompletion(subTask, isChecked) },
+            onMoreClick = { task -> showTaskOptionsDialog(task) }
         )
         completedAdapter = CalendarScheduleAdapter(
             onItemLongClick = { openTaskDetail(it) },
             onToggleComplete = { task, isChecked -> toggleMainTaskCompletion(task, isChecked) },
-            onToggleSubTaskComplete = { subTask, isChecked -> toggleSubTaskCompletion(subTask, isChecked) }
+            onToggleSubTaskComplete = { subTask, isChecked -> toggleSubTaskCompletion(subTask, isChecked) },
+            onMoreClick = { task -> showTaskOptionsDialog(task) }
         )
 
         recyclerPending.layoutManager = LinearLayoutManager(requireContext())
@@ -239,15 +248,24 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         val filtered = allTasks.filter { task ->
             overlapsWithRange(task.startDate, task.endDate, targetStart, targetEnd, task.dueDate)
         }
+
+        val pendingTasks = filtered
+            .filter { !it.isCompleted }
+            .sortedWith(
+                compareBy<MainTask> { it.dueDate ?: Long.MAX_VALUE }
+                    .thenBy { it.startDate ?: Long.MAX_VALUE }
+            )
+
+        val completedTasks = filtered
+            .filter { it.isCompleted }
+            .sortedByDescending { it.completedAt ?: 0L }
+
         val subTaskMap = mutableMapOf<String, List<SubTask>>()
-        filtered.forEach { task ->
+        (pendingTasks + completedTasks).forEach { task ->
             if (task.id.isNotBlank()) {
                 subTaskMap[task.id] = getRelevantSubTasks(task.id)
             }
         }
-
-        val pendingTasks = filtered.filter { !it.isCompleted }
-        val completedTasks = filtered.filter { it.isCompleted }
 
         pendingAdapter.submitList(pendingTasks, subTaskMap)
         completedAdapter.submitList(completedTasks, subTaskMap)
@@ -255,10 +273,8 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         val hasPending = pendingTasks.isNotEmpty()
         val hasCompleted = completedTasks.isNotEmpty()
 
-        pendingLabel.visibility = if (hasPending) View.VISIBLE else View.GONE
-        recyclerPending.visibility = if (hasPending) View.VISIBLE else View.GONE
-        completedLabel.visibility = if (hasCompleted) View.VISIBLE else View.GONE
-        recyclerCompleted.visibility = if (hasCompleted) View.VISIBLE else View.GONE
+        pendingCard.visibility = if (hasPending) View.VISIBLE else View.GONE
+        completedCard.visibility = if (hasCompleted) View.VISIBLE else View.GONE
         emptyState.visibility = if (hasPending || hasCompleted) View.GONE else View.VISIBLE
     }
 
@@ -290,6 +306,55 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         startActivity(intent)
     }
 
+    private fun showTaskOptionsDialog(task: MainTask) {
+        val options = arrayOf(
+            getString(R.string.action_edit),
+            getString(R.string.action_delete)
+        )
+        AlertDialog.Builder(requireContext())
+            .setTitle(task.title.ifBlank { getString(R.string.label_no_title) })
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> openTaskDetail(task)
+                    1 -> confirmDeleteTaskFromCalendar(task)
+                }
+            }
+            .show()
+    }
+
+    private fun confirmDeleteTaskFromCalendar(task: MainTask) {
+        if (task.id.isBlank()) return
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.title_delete_task)
+            .setMessage(R.string.message_delete_task)
+            .setPositiveButton(R.string.action_delete) { _, _ ->
+                deleteTaskFromCalendar(task)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun deleteTaskFromCalendar(task: MainTask) {
+        val taskId = task.id
+        if (taskId.isBlank()) return
+        tasksRef.child(taskId).removeValue()
+            .addOnSuccessListener {
+                subTasksRef.child(taskId).removeValue()
+                Toast.makeText(
+                    requireContext(),
+                    R.string.message_task_deleted,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener { error ->
+                Toast.makeText(
+                    requireContext(),
+                    error.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
     private fun getRelevantSubTasks(mainTaskId: String): List<SubTask> {
         val dayStart = selectedDayAtStartMillis()
         val dayEnd = selectedDayAtEndMillis()
@@ -305,10 +370,35 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
 
     private fun toggleMainTaskCompletion(task: MainTask, isCompleted: Boolean) {
         if (task.id.isBlank()) return
+        if (!this::userId.isInitialized) return
+
+        val originalIsCompleted = task.isCompleted
+        val originalCompletedAt = task.completedAt
+        val originalDueDate = task.dueDate
+
+        val newCompletedAt = if (isCompleted) System.currentTimeMillis() else null
+        val affectsDueDate = !task.manualSchedule
+        val updatedDueDate = if (affectsDueDate) {
+            if (isCompleted) task.dueDate ?: System.currentTimeMillis() else null
+        } else {
+            task.dueDate
+        }
+        task.isCompleted = isCompleted
+        task.completedAt = newCompletedAt
+        if (affectsDueDate) {
+            task.dueDate = updatedDueDate
+        }
+        updateCachedTask(task.id, isCompleted, newCompletedAt, if (affectsDueDate) updatedDueDate else task.dueDate)
+        filterSchedulesForSelectedDate()
+
         val updates = mutableMapOf<String, Any?>(
             "isCompleted" to isCompleted,
-            "completedAt" to if (isCompleted) System.currentTimeMillis() else null
+            "completed" to isCompleted,
+            "completedAt" to newCompletedAt
         )
+        if (affectsDueDate) {
+            updates["dueDate"] = updatedDueDate
+        }
         tasksRef.child(task.id).updateChildren(updates)
             .addOnSuccessListener {
                 val message = if (isCompleted) {
@@ -319,6 +409,11 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
                 context?.let { ctx -> Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show() }
             }
             .addOnFailureListener { error ->
+                task.isCompleted = originalIsCompleted
+                task.completedAt = originalCompletedAt
+                task.dueDate = originalDueDate
+                updateCachedTask(task.id, originalIsCompleted, originalCompletedAt, originalDueDate)
+                filterSchedulesForSelectedDate()
                 context?.let { ctx ->
                     Toast.makeText(
                         ctx,
@@ -335,6 +430,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
         if (mainId.isBlank()) return
         val updates = mapOf<String, Any?>(
             "isCompleted" to isCompleted,
+            "completed" to isCompleted,
             "completedAt" to if (isCompleted) System.currentTimeMillis() else null
         )
         subTasksRef.child(mainId).child(subTask.id).updateChildren(updates)
@@ -347,5 +443,19 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
                     ).show()
                 }
             }
+    }
+
+    private fun updateCachedTask(
+        taskId: String,
+        isCompleted: Boolean,
+        completedAt: Long?,
+        dueDate: Long?
+    ) {
+        val index = allTasks.indexOfFirst { it.id == taskId }
+        if (index == -1) return
+        val cached = allTasks[index]
+        cached.isCompleted = isCompleted
+        cached.completedAt = completedAt
+        cached.dueDate = dueDate
     }
 }

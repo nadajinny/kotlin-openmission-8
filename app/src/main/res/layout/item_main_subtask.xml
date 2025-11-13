@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <CheckBox
+        android:id="@+id/checkboxSubTask"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:button="@drawable/bg_circle_checkbox_small" />
+
+    <TextView
+        android:id="@+id/textSubTaskContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:maxLines="1"
+        android:ellipsize="end" />
+</LinearLayout>

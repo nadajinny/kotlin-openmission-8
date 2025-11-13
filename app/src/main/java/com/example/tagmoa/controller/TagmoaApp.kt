@@ -3,9 +3,12 @@ package com.example.tagmoa.controller
 import android.app.Application
 import com.example.tagmoa.R
 import com.example.tagmoa.model.SessionManager
+import com.example.tagmoa.model.TaskCompletionSyncManager
 import com.kakao.sdk.common.KakaoSdk
 import com.navercorp.nid.NidOAuth
 import com.navercorp.nid.core.data.datastore.NidOAuthInitializingCallback
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DatabaseException
 
 class TagmoaApp : Application() {
 
@@ -13,6 +16,8 @@ class TagmoaApp : Application() {
         super.onCreate()
         instance = this
         SessionManager.init(this)
+        TaskCompletionSyncManager.init(this)
+        enableFirebasePersistence()
         KakaoSdk.init(this, getString(R.string.kakao_app_key))
         initializeNaverSdk()
     }
@@ -35,5 +40,13 @@ class TagmoaApp : Application() {
                 }
             }
         )
+    }
+
+    private fun enableFirebasePersistence() {
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        } catch (_: DatabaseException) {
+            // Already enabled elsewhere; ignore.
+        }
     }
 }

@@ -17,6 +17,7 @@ import com.example.tagmoa.model.MainTask
 import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
+import com.example.tagmoa.model.TaskCompletionSyncManager
 import com.example.tagmoa.model.ensureManualScheduleFlag
 import com.example.tagmoa.view.SubTaskAdapter
 import com.example.tagmoa.view.buildScheduleLabel
@@ -69,6 +70,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
         tasksRef = UserDatabase.tasksRef(userId)
         subTasksRef = UserDatabase.subTasksRef(userId)
         tagsRef = UserDatabase.tagsRef(userId)
+        TaskCompletionSyncManager.flushPending(userId, tasksRef)
 
         textTitle = findViewById(R.id.textDetailTitle)
         textDate = findViewById(R.id.textDetailDate)
@@ -243,16 +245,42 @@ class MainTaskDetailActivity : AppCompatActivity() {
     private fun toggleMainTaskCompletion() {
         val task = currentTask ?: return
         val newStatus = !task.isCompleted
+        val newCompletedAt = if (newStatus) System.currentTimeMillis() else null
+        val affectsDueDate = !task.manualSchedule
+        val updatedDueDate = if (affectsDueDate) {
+            if (newStatus) task.dueDate ?: System.currentTimeMillis() else null
+        } else {
+            task.dueDate
+        }
+
+        val originalCompletedAt = task.completedAt
+        val originalDueDate = task.dueDate
+
+        task.isCompleted = newStatus
+        task.completedAt = newCompletedAt
+        if (affectsDueDate) {
+            task.dueDate = updatedDueDate
+        }
+        renderTask()
+
+        TaskCompletionSyncManager.enqueue(
+            userId,
+            taskId,
+            TaskCompletionSyncManager.CompletionPayload(
+                isCompleted = newStatus,
+                completedAt = newCompletedAt,
+                dueDate = updatedDueDate,
+                updatesDueDate = affectsDueDate
+            )
+        )
+
         val updates = mutableMapOf<String, Any?>(
             "isCompleted" to newStatus,
-            "completedAt" to if (newStatus) System.currentTimeMillis() else null
+            "completed" to newStatus,
+            "completedAt" to newCompletedAt
         )
-        if (!task.manualSchedule) {
-            updates["dueDate"] = if (newStatus) {
-                task.dueDate ?: System.currentTimeMillis()
-            } else {
-                null
-            }
+        if (affectsDueDate) {
+            updates["dueDate"] = updatedDueDate
         }
         tasksRef.child(taskId).updateChildren(updates)
             .addOnSuccessListener {
@@ -261,9 +289,17 @@ class MainTaskDetailActivity : AppCompatActivity() {
                 } else {
                     R.string.message_task_marked_incomplete
                 }
+                TaskCompletionSyncManager.markSynced(userId, taskId)
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { error ->
+                task.isCompleted = !newStatus
+                task.completedAt = originalCompletedAt
+                if (affectsDueDate) {
+                    task.dueDate = originalDueDate
+                }
+                renderTask()
+                TaskCompletionSyncManager.markSynced(userId, taskId)
                 Toast.makeText(
                     this,
                     error.message ?: getString(R.string.error_generic),
@@ -276,6 +312,7 @@ class MainTaskDetailActivity : AppCompatActivity() {
         if (subTask.id.isBlank()) return
         val updates = mutableMapOf<String, Any?>(
             "isCompleted" to isCompleted,
+            "completed" to isCompleted,
             "completedAt" to if (isCompleted) System.currentTimeMillis() else null
         )
         subTasksRef.child(taskId).child(subTask.id).updateChildren(updates)

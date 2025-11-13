@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import com.example.tagmoa.R
 import com.example.tagmoa.model.AuthProvider
 import com.example.tagmoa.model.SessionManager
+import com.example.tagmoa.model.TaskCompletionSyncManager
+import com.example.tagmoa.model.UserDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         if (!ensureAuthenticated()) {
             return
+        }
+
+        SessionManager.currentSession?.uid?.let { uid ->
+            TaskCompletionSyncManager.flushPending(uid, UserDatabase.tasksRef(uid))
         }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)

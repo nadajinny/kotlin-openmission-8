@@ -1,59 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="top"
-    android:dividerPadding="16dp">
+    android:padding="24dp">
 
-    <TextView
-        android:id="@+id/textProfileTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/profile_title"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:paddingBottom="16dp" />
-
-    <TextView
-        android:id="@+id/textProfileName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        android:text="@string/profile_name_placeholder" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textProfileEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:text="@string/profile_email_placeholder" />
+        <TextView
+            android:id="@+id/textProfileTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_title"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:paddingBottom="16dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        <TextView
+            android:id="@+id/textProfileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:text="@string/profile_name_placeholder" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPickHomeBackground"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="@string/home_background_change" />
+        <TextView
+            android:id="@+id/textProfileEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:text="@string/profile_email_placeholder" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnProfileLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_logout" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnProfileDisconnect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:text="@string/action_disconnect_account" />
+        <LinearLayout
+            android:id="@+id/layoutSettingsGroup1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_settings_group"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-</LinearLayout>
+            <LinearLayout
+                android:id="@+id/rowPickHomeBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:background="?attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/home_background_change"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right_24"
+                    android:tint="@color/gray_600" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_200" />
+
+            <LinearLayout
+                android:id="@+id/rowLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:background="?attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_logout"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right_24"
+                    android:tint="@color/gray_600" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_200" />
+
+            <LinearLayout
+                android:id="@+id/rowDisconnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:background="?attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_disconnect_account"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right_24"
+                    android:tint="@color/gray_600" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

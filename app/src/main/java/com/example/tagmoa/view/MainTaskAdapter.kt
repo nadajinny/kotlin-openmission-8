@@ -1,81 +1,135 @@
 package com.example.tagmoa.view
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
+import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.Tag
 
 class MainTaskAdapter(
-    private val onTaskClick: (MainTask) -> Unit
+    private val onMoreClick: (MainTask) -> Unit,
+    private val onToggleMainComplete: (MainTask, Boolean) -> Unit,
+    private val onToggleSubTaskComplete: (SubTask, Boolean) -> Unit
 ) : RecyclerView.Adapter<MainTaskAdapter.MainTaskViewHolder>() {
 
-    private val tasks = mutableListOf<MainTask>()
-    private var tags = emptyMap<String, Tag>()
+    private val items = mutableListOf<MainTask>()
+    private val subTasksByTaskId = mutableMapOf<String, List<SubTask>>()
+    private val expandedIds = mutableSetOf<String>()
 
-    fun submitTasks(newTasks: List<MainTask>) {
-        tasks.clear()
-        tasks.addAll(newTasks)
+    fun submitTasks(tasks: List<MainTask>, subTasks: Map<String, List<SubTask>> = emptyMap()) {
+        items.clear()
+        items.addAll(tasks)
+        subTasksByTaskId.clear()
+        subTasksByTaskId.putAll(subTasks)
+        val validIds = tasks.mapNotNull { it.id.takeIf { id -> id.isNotBlank() } }.toSet()
+        expandedIds.retainAll(validIds)
         notifyDataSetChanged()
     }
 
-    fun updateTags(newTags: Map<String, Tag>) {
-        tags = newTags
-        notifyDataSetChanged()
+    fun updateTags(tagMap: Map<String, Tag>) {
+        // Reserved for future use
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainTaskViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_main_task, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_main_task, parent, false)
         return MainTaskViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MainTaskViewHolder, position: Int) {
-        holder.bind(tasks[position], tags)
+        holder.bind(items[position])
     }
 
-    override fun getItemCount(): Int = tasks.size
+    override fun getItemCount(): Int = items.size
 
     inner class MainTaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val title: TextView = itemView.findViewById(R.id.textTaskTitle)
-        private val tagsText: TextView = itemView.findViewById(R.id.textTaskTags)
-        private val dateText: TextView = itemView.findViewById(R.id.textTaskDate)
-        private val descriptionText: TextView = itemView.findViewById(R.id.textTaskDescription)
-        private val colorStripe: View = itemView.findViewById(R.id.viewTaskColor)
 
-        fun bind(task: MainTask, tagMap: Map<String, Tag>) {
-            title.text = task.title.ifBlank { itemView.context.getString(R.string.label_no_title) }
-            tagsText.text = if (task.tagIds.isEmpty()) {
-                itemView.context.getString(R.string.label_no_tags)
+        private val mainRow: View = itemView.findViewById(R.id.layoutMainRow)
+        private val titleView: TextView = itemView.findViewById(R.id.textTaskTitle)
+        private val checkbox: CheckBox = itemView.findViewById(R.id.checkboxMainComplete)
+        private val moreButton: ImageButton = itemView.findViewById(R.id.buttonTaskMore)
+        private val subTaskContainer: LinearLayout = itemView.findViewById(R.id.layoutSubTasks)
+
+        fun bind(task: MainTask) {
+            val context = itemView.context
+            val subTasks = subTasksByTaskId[task.id].orEmpty()
+
+            titleView.text = task.title.ifBlank { context.getString(R.string.label_no_title) }
+
+            checkbox.setOnCheckedChangeListener(null)
+            checkbox.isChecked = task.isCompleted
+            checkbox.setOnCheckedChangeListener { _, isChecked ->
+                onToggleMainComplete(task, isChecked)
+            }
+
+            val alpha = if (task.isCompleted) 0.4f else 1f
+            titleView.alpha = alpha
+            checkbox.alpha = alpha
+
+            val expanded = expandedIds.contains(task.id) && subTasks.isNotEmpty()
+            bindSubTasks(subTasks, expanded)
+
+            mainRow.setOnClickListener {
+                if (subTasks.isEmpty()) return@setOnClickListener
+                toggleExpand(task)
+            }
+
+            moreButton.setOnClickListener {
+                onMoreClick(task)
+            }
+        }
+
+        private fun bindSubTasks(subTasks: List<SubTask>, expanded: Boolean) {
+            subTaskContainer.removeAllViews()
+            if (!expanded || subTasks.isEmpty()) {
+                subTaskContainer.visibility = View.GONE
+                return
+            }
+            subTaskContainer.visibility = View.VISIBLE
+
+            val inflater = LayoutInflater.from(subTaskContainer.context)
+            subTasks.forEach { sub ->
+                val child = inflater.inflate(
+                    R.layout.item_main_subtask,
+                    subTaskContainer,
+                    false
+                )
+                val cb: CheckBox = child.findViewById(R.id.checkboxSubTask)
+                val content: TextView = child.findViewById(R.id.textSubTaskContent)
+
+                content.text = sub.content
+
+                cb.setOnCheckedChangeListener(null)
+                cb.isChecked = sub.isCompleted
+                cb.setOnCheckedChangeListener { _, isChecked ->
+                    onToggleSubTaskComplete(sub, isChecked)
+                }
+
+                val alpha = if (sub.isCompleted) 0.4f else 1f
+                content.alpha = alpha
+
+                subTaskContainer.addView(child)
+            }
+        }
+
+        private fun toggleExpand(task: MainTask) {
+            if (task.id.isBlank()) return
+            if (expandedIds.contains(task.id)) {
+                expandedIds.remove(task.id)
             } else {
-                task.tagIds.mapNotNull { tagMap[it]?.name }.takeIf { it.isNotEmpty() }
-                    ?.joinToString(separator = ", ")
-                    ?: itemView.context.getString(R.string.label_no_tags)
+                expandedIds.add(task.id)
             }
-
-            dateText.text = task.buildScheduleLabel(itemView.context)
-
-            descriptionText.text = task.description.ifBlank {
-                itemView.context.getString(R.string.label_no_description)
+            val pos = bindingAdapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                notifyItemChanged(pos)
             }
-            val contentAlpha = if (task.isCompleted) 0.5f else 1f
-            title.alpha = contentAlpha
-            tagsText.alpha = contentAlpha
-            dateText.alpha = contentAlpha
-            descriptionText.alpha = contentAlpha
-
-            val parsedColor = try {
-                Color.parseColor(task.mainColor)
-            } catch (e: IllegalArgumentException) {
-                ContextCompat.getColor(itemView.context, R.color.brand_primary)
-            }
-            colorStripe.setBackgroundColor(parsedColor)
-
-            itemView.setOnClickListener { onTaskClick(task) }
         }
     }
 }

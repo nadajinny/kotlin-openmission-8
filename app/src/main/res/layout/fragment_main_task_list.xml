@@ -7,64 +7,88 @@
     android:padding="16dp"
     android:background="@android:color/transparent">
 
-    <LinearLayout
+    <!-- Search Bar (Card Style) -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/bg_panel_soft"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp">
+        android:elevation="2dp"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="@android:color/white"
+        android:layout_marginBottom="12dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/hint_search_main_task">
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editSearchMainTask"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_search_main_task"
+                app:startIconDrawable="@drawable/ic_search">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editSearchMainTask"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSearchMainTask"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/action_search" />
-    </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSearchMainTask"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:minWidth="48dp"
+                android:text="@string/action_search" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- Filter Label -->
     <TextView
         android:id="@+id/textFilterLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="12dp"
+        android:paddingVertical="4dp"
         android:text="@string/label_filter_tags"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:textColor="@color/color_918ce5" />
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textStyle="bold"
+        android:textColor="@color/color_918ce5"
+        android:layout_marginBottom="4dp" />
 
-    <HorizontalScrollView
+    <!-- Chip Group (Soft Rounded Bar) -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:background="@drawable/bg_panel_soft"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp">
+        android:elevation="2dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="@android:color/white">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupTags"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:singleSelection="false"
-            app:selectionRequired="false"
-            android:isScrollContainer="false" />
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:padding="8dp">
 
-    </HorizontalScrollView>
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="false"
+                app:selectionRequired="false"
+                android:isScrollContainer="false" />
+        </HorizontalScrollView>
+    </com.google.android.material.card.MaterialCardView>
+
 
     <ProgressBar
         android:id="@+id/progressMainList"

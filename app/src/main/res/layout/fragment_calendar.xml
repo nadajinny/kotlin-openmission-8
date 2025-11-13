@@ -50,55 +50,87 @@
             app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText"
             tools:mcv_currentDate="2024-05-20" />
 
-        <TextView
-            android:id="@+id/textCalendarSchedulePendingLabel"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCalendarPending"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
-            android:text="@string/calendar_schedule_label_pending"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:textColor="@color/calendar_text_primary" />
+            android:visibility="gone"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCalendarSchedulePending"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="14dp">
+
+                <TextView
+                    android:id="@+id/textCalendarSchedulePendingLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calendar_schedule_label_pending"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="@color/calendar_text_primary" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerCalendarSchedulePending"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_calendar_schedule" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCalendarCompleted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:paddingBottom="8dp"
-            tools:listitem="@layout/item_calendar_schedule" />
-
-        <TextView
-            android:id="@+id/textCalendarScheduleCompletedLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/calendar_schedule_label_completed"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:textColor="@color/calendar_text_primary"
-            tools:visibility="visible" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCalendarScheduleCompleted"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:paddingBottom="8dp"
-            tools:listitem="@layout/item_calendar_schedule" />
+            android:visibility="gone"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="14dp">
+
+                <TextView
+                    android:id="@+id/textCalendarScheduleCompletedLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calendar_schedule_label_completed"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textColor="@color/calendar_text_primary"
+                    tools:visibility="visible" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerCalendarScheduleCompleted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_calendar_schedule" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/textCalendarEmpty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="16dp"
             android:gravity="center"
             android:paddingVertical="24dp"
             android:text="@string/calendar_empty_state"

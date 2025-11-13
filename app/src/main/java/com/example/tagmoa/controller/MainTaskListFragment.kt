@@ -7,11 +7,14 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
 import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
+import com.example.tagmoa.model.SubTask
 import com.example.tagmoa.model.Tag
 import com.example.tagmoa.model.UserDatabase
 import com.example.tagmoa.model.ensureManualScheduleFlag
@@ -37,21 +40,22 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
 
     private lateinit var tasksRef: DatabaseReference
     private lateinit var tagsRef: DatabaseReference
+    private lateinit var subTasksRef: DatabaseReference
 
-    private val adapter = MainTaskAdapter { task ->
-        if (task.id.isBlank()) return@MainTaskAdapter
-        val intent = Intent(requireContext(), MainTaskDetailActivity::class.java).apply {
-            putExtra(MainTaskDetailActivity.EXTRA_TASK_ID, task.id)
-        }
-        startActivity(intent)
-    }
+    private val adapter = MainTaskAdapter(
+        onMoreClick = { task -> showTaskOptionsDialog(task) },
+        onToggleMainComplete = { task, isChecked -> toggleMainTaskCompletion(task, isChecked) },
+        onToggleSubTaskComplete = { subTask, isChecked -> toggleSubTaskCompletion(subTask, isChecked) }
+    )
 
     private val allTasks = mutableListOf<MainTask>()
     private val tagMap = mutableMapOf<String, Tag>()
     private val selectedTagIds = mutableSetOf<String>()
+    private val subTasksByMain = mutableMapOf<String, List<SubTask>>()
 
     private var tasksListener: ValueEventListener? = null
     private var tagsListener: ValueEventListener? = null
+    private var subTasksListener: ValueEventListener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,6 +63,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         val uid = requireUserIdOrRedirect() ?: return
         tasksRef = UserDatabase.tasksRef(uid)
         tagsRef = UserDatabase.tagsRef(uid)
+        subTasksRef = UserDatabase.subTasksRef(uid)
 
         searchInput = view.findViewById(R.id.editSearchMainTask)
         btnSearch = view.findViewById(R.id.btnSearchMainTask)
@@ -81,6 +86,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
 
         observeTags()
         observeTasks()
+        observeSubTasks()
     }
 
     private fun observeTags() {
@@ -158,29 +164,188 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         })
     }
 
+    private fun observeSubTasks() {
+        subTasksListener?.let { subTasksRef.removeEventListener(it) }
+        subTasksListener = subTasksRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                subTasksByMain.clear()
+                for (mainSnapshot in snapshot.children) {
+                    val mainId = mainSnapshot.key.orEmpty()
+                    val list = mutableListOf<SubTask>()
+                    for (child in mainSnapshot.children) {
+                        val subTask = child.getValue(SubTask::class.java) ?: continue
+                        subTask.id = subTask.id.ifBlank { child.key.orEmpty() }
+                        subTask.mainTaskId = subTask.mainTaskId.ifBlank { mainId }
+                        list.add(subTask)
+                    }
+                    subTasksByMain[mainId] = list
+                }
+                filterTasks()
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
     private fun filterTasks() {
         val query = searchInput.text?.toString().orEmpty().trim().lowercase(Locale.getDefault())
-        val filtered = allTasks.filter { task ->
-            val matchesQuery = if (query.isEmpty()) {
-                true
-            } else {
-                task.title.lowercase(Locale.getDefault()).contains(query) ||
-                    task.description.lowercase(Locale.getDefault()).contains(query)
+
+        val filtered = allTasks
+            .asSequence()
+            .filter { !it.isCompleted }
+            .filter { task ->
+                if (query.isEmpty()) true
+                else {
+                    task.title.lowercase(Locale.getDefault()).contains(query) ||
+                        task.description.lowercase(Locale.getDefault()).contains(query)
+                }
             }
-            val matchesTags = if (selectedTagIds.isEmpty()) {
-                true
-            } else {
-                selectedTagIds.all { task.tagIds.contains(it) }
+            .filter { task ->
+                if (selectedTagIds.isEmpty()) true
+                else selectedTagIds.all { task.tagIds.contains(it) }
             }
-            matchesQuery && matchesTags
-        }
-        adapter.submitTasks(filtered)
+            .sortedWith(
+                compareBy<MainTask> { it.dueDate ?: Long.MAX_VALUE }
+                    .thenBy { it.startDate ?: Long.MAX_VALUE }
+            )
+            .toList()
+
+        adapter.submitTasks(filtered, subTasksByMain)
         emptyState.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun toggleMainTaskCompletion(task: MainTask, isCompleted: Boolean) {
+        if (task.id.isBlank()) return
+
+        val newCompletedAt = if (isCompleted) System.currentTimeMillis() else null
+        val affectsDueDate = !task.manualSchedule
+        val updatedDueDate = if (affectsDueDate) {
+            if (isCompleted) task.dueDate ?: System.currentTimeMillis() else null
+        } else {
+            task.dueDate
+        }
+
+        task.isCompleted = isCompleted
+        task.completedAt = newCompletedAt
+        if (affectsDueDate) {
+            task.dueDate = updatedDueDate
+        }
+        filterTasks()
+
+        val updates = mutableMapOf<String, Any?>(
+            "isCompleted" to isCompleted,
+            "completed" to isCompleted,
+            "completedAt" to newCompletedAt
+        )
+        if (affectsDueDate) {
+            updates["dueDate"] = updatedDueDate
+        }
+        tasksRef.child(task.id).updateChildren(updates)
+            .addOnSuccessListener {
+                val message = if (isCompleted) {
+                    R.string.message_task_marked_complete
+                } else {
+                    R.string.message_task_marked_incomplete
+                }
+                context?.let { ctx -> Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show() }
+            }
+            .addOnFailureListener { error ->
+                context?.let { ctx ->
+                    Toast.makeText(
+                        ctx,
+                        error.message ?: getString(R.string.error_generic),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun toggleSubTaskCompletion(subTask: SubTask, isCompleted: Boolean) {
+        if (subTask.id.isBlank()) return
+        val mainId = subTask.mainTaskId
+        if (mainId.isBlank()) return
+        val updates = mapOf<String, Any?>(
+            "isCompleted" to isCompleted,
+            "completed" to isCompleted,
+            "completedAt" to if (isCompleted) System.currentTimeMillis() else null
+        )
+        subTasksRef.child(mainId).child(subTask.id).updateChildren(updates)
+            .addOnFailureListener { error ->
+                context?.let { ctx ->
+                    Toast.makeText(
+                        ctx,
+                        error.message ?: getString(R.string.error_generic),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun showTaskOptionsDialog(task: MainTask) {
+        val items = arrayOf(
+            getString(R.string.action_open_detail),
+            getString(R.string.action_edit_task),
+            getString(R.string.action_delete_task)
+        )
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(task.title.ifBlank { getString(R.string.label_no_title) })
+            .setItems(items) { _, which ->
+                when (which) {
+                    0 -> {
+                        if (task.id.isBlank()) return@setItems
+                        val intent = Intent(requireContext(), MainTaskDetailActivity::class.java).apply {
+                            putExtra(MainTaskDetailActivity.EXTRA_TASK_ID, task.id)
+                        }
+                        startActivity(intent)
+                    }
+                    1 -> {
+                        val intent = Intent(requireContext(), AddEditMainTaskActivity::class.java).apply {
+                            putExtra(AddEditMainTaskActivity.EXTRA_TASK_ID, task.id)
+                        }
+                        startActivity(intent)
+                    }
+                    2 -> confirmDeleteTask(task)
+                }
+            }
+            .show()
+    }
+
+    private fun confirmDeleteTask(task: MainTask) {
+        if (task.id.isBlank()) return
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.title_delete_task)
+            .setMessage(R.string.message_delete_task)
+            .setPositiveButton(R.string.action_delete) { _, _ -> deleteTask(task) }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun deleteTask(task: MainTask) {
+        val taskId = task.id
+        if (taskId.isBlank()) return
+        tasksRef.child(taskId).removeValue()
+            .addOnSuccessListener {
+                subTasksRef.child(taskId).removeValue()
+                context?.let { ctx ->
+                    Toast.makeText(ctx, R.string.message_task_deleted, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { error ->
+                context?.let { ctx ->
+                    Toast.makeText(
+                        ctx,
+                        error.message ?: getString(R.string.error_generic),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         tasksListener?.let { tasksRef.removeEventListener(it) }
         tagsListener?.let { tagsRef.removeEventListener(it) }
+        subTasksListener?.let { subTasksRef.removeEventListener(it) }
     }
 }
