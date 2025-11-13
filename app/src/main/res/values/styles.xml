@@ -17,6 +17,8 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/calendar_text_primary</item>
         <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/paperlogy_6semibold</item>
+        <item name="android:fontFamily">@font/paperlogy_6semibold</item>
     </style>
 
     <style name="Theme.TagMoa.DialogBase" parent="Theme.MaterialComponents.DayNight.Dialog">
@@ -56,5 +58,20 @@
     <style name="TextAppearance.Tagmoa.Caption" parent="@style/TextAppearance.MaterialComponents.Caption">
         <item name="fontFamily">@font/paperlogy_3light</item>
         <item name="android:fontFamily">@font/paperlogy_3light</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.BodySecondary" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/paperlogy_4regular</item>
+        <item name="android:fontFamily">@font/paperlogy_4regular</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.SubtitleSmall" parent="@style/TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/paperlogy_5medium</item>
+        <item name="android:fontFamily">@font/paperlogy_5medium</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.Title" parent="@style/TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/paperlogy_7bold</item>
+        <item name="android:fontFamily">@font/paperlogy_7bold</item>
     </style>
 </resources>

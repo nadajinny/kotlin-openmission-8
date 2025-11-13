@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_select_date_range"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textAppearance="@style/TextAppearance.Tagmoa.Headline"
         android:textStyle="bold"
         android:gravity="center_horizontal" />
 
@@ -22,7 +22,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
         android:text="@string/label_select_period_placeholder"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+        android:textAppearance="@style/TextAppearance.Tagmoa.BodySecondary" />
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/dialogCalendarView"

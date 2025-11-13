@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_edit_main_task"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Headline"
             android:paddingBottom="12dp" />
 
         <EditText
@@ -40,7 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/label_no_date" />
+            android:text="@string/label_no_date"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
         <Button
             android:id="@+id/btnSelectDateRange"
@@ -53,7 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/label_main_color" />
+            android:text="@string/label_main_color"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle" />
 
         <Spinner
             android:id="@+id/spinnerTaskColor"
@@ -66,7 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/label_no_tags" />
+            android:text="@string/label_no_tags"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
         <Button
             android:id="@+id/btnSelectTags"

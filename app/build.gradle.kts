@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tagmoa"
+    namespace = "com.ndjinny.tagmoa"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.tagmoa"
+        applicationId = "com.ndjinny.tagmoa"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

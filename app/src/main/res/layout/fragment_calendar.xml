@@ -19,7 +19,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="@string/calendar_header_title"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Headline"
             android:textColor="@color/calendar_text_primary" />
 
         <TextView
@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Body"
             android:textColor="@color/calendar_text_muted"
-            android:textSize="16sp"
             tools:text="5.12. 일" />
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/calendar_schedule_label_pending"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
                     android:textColor="@color/calendar_text_primary" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -110,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/calendar_schedule_label_completed"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:textAppearance="@style/TextAppearance.Tagmoa.SubtitleSmall"
                     android:textColor="@color/calendar_text_primary"
                     tools:visibility="visible" />
 
@@ -134,6 +134,7 @@
             android:gravity="center"
             android:paddingVertical="24dp"
             android:text="@string/calendar_empty_state"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Body"
             android:textColor="@color/calendar_text_muted"
             android:visibility="gone" />
 
