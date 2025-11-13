@@ -75,4 +75,6 @@
     <color name="black">#FF000000</color>
     <color name="gray_600">#FF757575</color>
     <color name="gray_500">#FF9E9E9E</color>
+    <color name="white_25">#40FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
 </resources>

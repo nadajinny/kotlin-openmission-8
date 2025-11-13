@@ -24,7 +24,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -33,6 +35,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var recyclerSubDue: RecyclerView
     private lateinit var textMainEmpty: TextView
     private lateinit var textSubEmpty: TextView
+    private lateinit var textTodayDate: TextView
+    private lateinit var textTodayTime: TextView
 
     private lateinit var mainAdapter: DueMainTaskAdapter
     private lateinit var subAdapter: DueSubTaskAdapter
@@ -57,6 +61,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         recyclerSubDue = view.findViewById(R.id.recyclerHomeSubDue)
         textMainEmpty = view.findViewById(R.id.textHomeMainDueEmpty)
         textSubEmpty = view.findViewById(R.id.textHomeSubDueEmpty)
+        textTodayDate = view.findViewById(R.id.textHomeTodayDate)
+        textTodayTime = view.findViewById(R.id.textHomeTodayTime)
 
         mainAdapter = DueMainTaskAdapter { mainTask ->
             if (mainTask.id.isBlank()) return@DueMainTaskAdapter
@@ -73,9 +79,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         recyclerSubDue.layoutManager = LinearLayoutManager(requireContext())
         recyclerSubDue.adapter = subAdapter
 
+        updateTodayInfo()
         applySavedBackground()
         observeTasks()
         observeSubTasks()
+    }
+
+    private fun updateTodayInfo() {
+        val now = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일 (E)", Locale.KOREA)
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
+        textTodayDate.text = dateFormat.format(now)
+        textTodayTime.text = timeFormat.format(now)
     }
 
     private fun observeTasks() {
