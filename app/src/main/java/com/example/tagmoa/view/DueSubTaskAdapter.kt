@@ -17,7 +17,9 @@ data class DueSubTaskItem(
     val dueDate: Long?
 )
 
-class DueSubTaskAdapter : RecyclerView.Adapter<DueSubTaskAdapter.DueSubTaskViewHolder>() {
+class DueSubTaskAdapter(
+    private val onLongClick: (DueSubTaskItem) -> Unit
+) : RecyclerView.Adapter<DueSubTaskAdapter.DueSubTaskViewHolder>() {
 
     private val items = mutableListOf<DueSubTaskItem>()
 
@@ -51,6 +53,10 @@ class DueSubTaskAdapter : RecyclerView.Adapter<DueSubTaskAdapter.DueSubTaskViewH
                 itemView.context.getString(R.string.label_no_date)
             } else {
                 itemView.context.getString(R.string.label_with_date, dateLabel)
+            }
+            itemView.setOnLongClickListener {
+                onLongClick(item)
+                true
             }
         }
     }

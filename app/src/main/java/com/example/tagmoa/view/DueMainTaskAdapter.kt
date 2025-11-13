@@ -9,7 +9,8 @@ import com.example.tagmoa.R
 import com.example.tagmoa.model.MainTask
 
 class DueMainTaskAdapter(
-    private val onClick: (MainTask) -> Unit
+    private val onClick: (MainTask) -> Unit,
+    private val onLongClick: (MainTask) -> Unit
 ) : RecyclerView.Adapter<DueMainTaskAdapter.DueMainTaskViewHolder>() {
 
     private val items = mutableListOf<MainTask>()
@@ -42,6 +43,10 @@ class DueMainTaskAdapter(
             titleText.alpha = alpha
             dateText.alpha = alpha
             itemView.setOnClickListener { onClick(task) }
+            itemView.setOnLongClickListener {
+                onLongClick(task)
+                true
+            }
         }
     }
 }

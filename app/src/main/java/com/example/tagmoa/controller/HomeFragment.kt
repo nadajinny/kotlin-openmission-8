@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,14 +65,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         textTodayDate = view.findViewById(R.id.textHomeTodayDate)
         textTodayTime = view.findViewById(R.id.textHomeTodayTime)
 
-        mainAdapter = DueMainTaskAdapter { mainTask ->
-            if (mainTask.id.isBlank()) return@DueMainTaskAdapter
-            val intent = Intent(requireContext(), MainTaskDetailActivity::class.java).apply {
-                putExtra(MainTaskDetailActivity.EXTRA_TASK_ID, mainTask.id)
-            }
-            startActivity(intent)
+        mainAdapter = DueMainTaskAdapter(
+            onClick = { mainTask ->
+                if (mainTask.id.isBlank()) return@DueMainTaskAdapter
+                val intent = Intent(requireContext(), MainTaskDetailActivity::class.java).apply {
+                    putExtra(MainTaskDetailActivity.EXTRA_TASK_ID, mainTask.id)
+                }
+                startActivity(intent)
+            },
+            onLongClick = { task -> showCompleteMainDialog(task) }
+        )
+        subAdapter = DueSubTaskAdapter { item ->
+            showCompleteSubDialog(item)
         }
-        subAdapter = DueSubTaskAdapter()
 
         recyclerMainDue.layoutManager = LinearLayoutManager(requireContext())
         recyclerMainDue.adapter = mainAdapter
@@ -221,6 +227,76 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun resetToDefaultBackground() {
         backgroundView?.setImageResource(R.color.color_f2f6f6)
+    }
+
+    private fun showCompleteMainDialog(task: MainTask) {
+        if (task.id.isBlank()) return
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.title_complete_main)
+            .setMessage(R.string.message_complete_main)
+            .setPositiveButton(R.string.action_complete) { _, _ ->
+                completeMainTask(task)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun completeMainTask(task: MainTask) {
+        val id = task.id
+        if (id.isBlank()) return
+        val now = System.currentTimeMillis()
+        val updates = mapOf<String, Any?>(
+            "isCompleted" to true,
+            "completed" to true,
+            "completedAt" to now
+        )
+        tasksRef.child(id).updateChildren(updates)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), R.string.message_task_completed, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    requireContext(),
+                    e.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
+    private fun showCompleteSubDialog(item: DueSubTaskItem) {
+        if (item.id.isBlank() || item.mainTaskId.isBlank()) return
+        val content = item.content.ifBlank { getString(R.string.label_no_title) }
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.title_complete_sub)
+            .setMessage(content)
+            .setPositiveButton(R.string.action_complete) { _, _ ->
+                completeSubTask(item)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun completeSubTask(item: DueSubTaskItem) {
+        val mainId = item.mainTaskId
+        val subId = item.id
+        if (mainId.isBlank() || subId.isBlank()) return
+        val now = System.currentTimeMillis()
+        val updates = mapOf<String, Any?>(
+            "isCompleted" to true,
+            "completed" to true,
+            "completedAt" to now
+        )
+        subTasksRef.child(mainId).child(subId).updateChildren(updates)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), R.string.message_subtask_completed, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    requireContext(),
+                    e.message ?: getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
     }
 
 }

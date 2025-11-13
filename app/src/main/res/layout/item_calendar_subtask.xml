@@ -8,9 +8,10 @@
 
     <CheckBox
         android:id="@+id/checkboxCalendarSubTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginEnd="12dp"
+        android:button="@drawable/bg_circle_checkbox"
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
