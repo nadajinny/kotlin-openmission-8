@@ -37,29 +37,14 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/textHomeTodayLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_today_label"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:textColor="@android:color/black" />
-
-                <TextView
                     android:id="@+id/textHomeTodayDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_marginTop="16dp"
+                    android:paddingTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Tagmoa.Display"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textHomeTodayTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:textColor="@android:color/black" />
 
             </LinearLayout>
 
@@ -91,7 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/home_due_main_today_title"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
 
@@ -107,6 +92,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
                         android:text="@string/home_due_empty"
                         android:textColor="@android:color/black"
                         android:visibility="gone" />
@@ -136,7 +122,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/home_due_sub_today_title"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
 
@@ -152,6 +138,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
                         android:text="@string/home_due_empty"
                         android:textColor="@android:color/black"
                         android:visibility="gone" />

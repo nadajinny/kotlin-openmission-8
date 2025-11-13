@@ -21,7 +21,7 @@
             android:id="@+id/textDueSubTaskContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
             android:textStyle="bold" />
 
         <TextView
@@ -29,14 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="2dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+            android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
         <TextView
             android:id="@+id/textDueSubTaskDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="4dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+            android:textAppearance="@style/TextAppearance.Tagmoa.Caption" />
 
     </LinearLayout>
 

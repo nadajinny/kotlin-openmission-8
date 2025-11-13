@@ -105,6 +105,7 @@ class MainTaskAdapter(
                 val content: TextView = child.findViewById(R.id.textSubTaskContent)
 
                 content.text = sub.content
+                PriorityFontUtil.apply(content, sub.priority)
 
                 cb.setOnCheckedChangeListener(null)
                 cb.isChecked = sub.isCompleted

@@ -30,14 +30,14 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
         <TextView
             android:id="@+id/textSubTaskDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Caption"
             android:textColor="@android:color/darker_gray"
             android:visibility="gone" />
     </LinearLayout>

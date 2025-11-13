@@ -106,6 +106,8 @@ class CalendarScheduleAdapter(
                 val context = child.context
                 content.text =
                     subTask.content.ifBlank { context.getString(R.string.label_no_description) }
+                PriorityFontUtil.apply(content, subTask.priority)
+                PriorityFontUtil.apply(date, subTask.priority)
                 val dateLabel = formatDateRange(subTask.startDate, subTask.endDate, subTask.dueDate)
                 date.text = if (dateLabel.isEmpty()) {
                     context.getString(R.string.label_no_date)

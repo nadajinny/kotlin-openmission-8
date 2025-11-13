@@ -32,7 +32,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@string/label_no_title"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
             android:textColor="@color/calendar_text_primary"
             android:textStyle="bold" />
 

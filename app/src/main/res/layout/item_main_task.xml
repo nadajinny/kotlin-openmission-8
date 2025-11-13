@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="12dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:maxLines="2"

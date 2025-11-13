@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="4dp"
         android:text="@string/label_filter_tags"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
         android:textStyle="bold"
         android:textColor="@color/color_918ce5"
         android:layout_marginBottom="4dp" />
@@ -104,6 +104,7 @@
         android:gravity="center"
         android:paddingTop="16dp"
         android:text="@string/message_no_main_tasks"
+        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

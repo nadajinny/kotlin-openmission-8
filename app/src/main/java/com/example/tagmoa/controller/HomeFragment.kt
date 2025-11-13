@@ -37,7 +37,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var textMainEmpty: TextView
     private lateinit var textSubEmpty: TextView
     private lateinit var textTodayDate: TextView
-    private lateinit var textTodayTime: TextView
 
     private lateinit var mainAdapter: DueMainTaskAdapter
     private lateinit var subAdapter: DueSubTaskAdapter
@@ -63,7 +62,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         textMainEmpty = view.findViewById(R.id.textHomeMainDueEmpty)
         textSubEmpty = view.findViewById(R.id.textHomeSubDueEmpty)
         textTodayDate = view.findViewById(R.id.textHomeTodayDate)
-        textTodayTime = view.findViewById(R.id.textHomeTodayTime)
 
         mainAdapter = DueMainTaskAdapter(
             onClick = { mainTask ->
@@ -93,10 +91,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun updateTodayInfo() {
         val now = Calendar.getInstance().time
-        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일 (E)", Locale.KOREA)
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
+        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
         textTodayDate.text = dateFormat.format(now)
-        textTodayTime.text = timeFormat.format(now)
     }
 
     private fun observeTasks() {
@@ -146,7 +142,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                                     parentTitle = parentTitle,
                                     startDate = subTask.startDate,
                                     endDate = subTask.endDate,
-                                    dueDate = subTask.dueDate
+                                    dueDate = subTask.dueDate,
+                                    priority = subTask.priority
                                 )
                             )
                         }

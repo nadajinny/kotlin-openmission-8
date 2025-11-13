@@ -41,6 +41,8 @@ class CalendarSubTaskAdapter(
         fun bind(subTask: SubTask) {
             val context = itemView.context
             contentText.text = subTask.content.ifBlank { context.getString(R.string.label_no_description) }
+            PriorityFontUtil.apply(contentText, subTask.priority)
+            PriorityFontUtil.apply(dateText, subTask.priority)
             val dateLabel = formatDateRange(subTask.startDate, subTask.endDate, subTask.dueDate)
             dateText.text = if (dateLabel.isEmpty()) {
                 context.getString(R.string.label_no_date)

@@ -48,6 +48,8 @@ class SubTaskAdapter(
             contentText.text = subTask.content.ifBlank {
                 context.getString(R.string.label_no_description)
             }
+            PriorityFontUtil.apply(contentText, subTask.priority)
+            PriorityFontUtil.apply(dateText, subTask.priority)
 
             checkbox.setOnCheckedChangeListener(null)
             checkbox.isChecked = subTask.isCompleted

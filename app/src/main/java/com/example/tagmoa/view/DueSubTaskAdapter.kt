@@ -14,7 +14,8 @@ data class DueSubTaskItem(
     val parentTitle: String,
     val startDate: Long?,
     val endDate: Long?,
-    val dueDate: Long?
+    val dueDate: Long?,
+    val priority: Int
 )
 
 class DueSubTaskAdapter(
@@ -47,6 +48,9 @@ class DueSubTaskAdapter(
 
         fun bind(item: DueSubTaskItem) {
             contentText.text = item.content.ifBlank { itemView.context.getString(R.string.label_no_title) }
+            PriorityFontUtil.apply(contentText, item.priority)
+            PriorityFontUtil.apply(parentText, item.priority)
+            PriorityFontUtil.apply(dateText, item.priority)
             parentText.text = itemView.context.getString(R.string.label_main_task) + ": " + item.parentTitle
             val dateLabel = formatDateRange(item.startDate, item.endDate, item.dueDate)
             dateText.text = if (dateLabel.isBlank()) {

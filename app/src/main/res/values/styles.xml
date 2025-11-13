@@ -31,4 +31,30 @@
     <style name="Theme.TagMoa.AddEditTaskDialog" parent="@style/Theme.TagMoa.DialogBase" />
     <style name="Theme.TagMoa.AddEditSubTaskDialog" parent="@style/Theme.TagMoa.DialogBase" />
     <style name="Theme.TagMoa.TagManagementDialog" parent="@style/Theme.TagMoa.DialogBase" />
+
+    <!-- Typography -->
+    <style name="TextAppearance.Tagmoa.Display" parent="@style/TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/paperlogy_8extrabold</item>
+        <item name="android:fontFamily">@font/paperlogy_8extrabold</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.Headline" parent="@style/TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/paperlogy_7bold</item>
+        <item name="android:fontFamily">@font/paperlogy_7bold</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.Subtitle" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/paperlogy_5medium</item>
+        <item name="android:fontFamily">@font/paperlogy_5medium</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.Body" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/paperlogy_4regular</item>
+        <item name="android:fontFamily">@font/paperlogy_4regular</item>
+    </style>
+
+    <style name="TextAppearance.Tagmoa.Caption" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/paperlogy_3light</item>
+        <item name="android:fontFamily">@font/paperlogy_3light</item>
+    </style>
 </resources>
