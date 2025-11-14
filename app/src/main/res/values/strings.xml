@@ -19,6 +19,7 @@
     <string name="label_main_color">메인 컬러</string>
     <string name="label_main_task">주요 일정</string>
     <string name="label_priority">중요도</string>
+    <string name="label_subtask_period">기간 선택</string>
     <string name="title_select_date_range">기간 선택</string>
     <string name="action_ok">확인</string>
     <string name="action_cancel">취소</string>
@@ -53,9 +54,9 @@
     <string name="error_generic">처리 중 오류가 발생했습니다.</string>
 
     <string name="title_edit_sub_task">세부 일정 작성 / 수정</string>
-    <string name="hint_subtask_content">내용</string>
+    <string name="hint_subtask_content">일정</string>
     <string name="error_select_main_task">주요 일정을 선택해주세요.</string>
-    <string name="error_empty_subtask_content">내용을 입력해주세요.</string>
+    <string name="error_empty_subtask_content">일정을 입력해주세요.</string>
     <string name="error_no_main_tasks">먼저 주요 일정을 생성해주세요.</string>
     <string name="message_subtask_saved">세부 일정을 저장했습니다.</string>
     <string name="desc_toggle_subtask_complete">%1$s 세부 일정 완료 여부 전환</string>

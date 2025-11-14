@@ -65,20 +65,24 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp" />
 
+        <!-- 카카오 로그인 버튼은 임시로 숨김 처리 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_kakao_login"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/action_kakao_login" />
+            android:text="@string/action_kakao_login"
+            android:visibility="gone" />
 
+        <!-- 네이버 로그인 버튼은 임시로 숨김 처리 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_naver_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/action_naver_login" />
+            android:text="@string/action_naver_login"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -14,13 +14,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
             android:text="@string/title_edit_sub_task"
-            android:textAppearance="@style/TextAppearance.Tagmoa.Headline"
-            android:paddingBottom="12dp" />
+            android:textAppearance="@style/TextAppearance.Tagmoa.Headline" />
+
+        <EditText
+            android:id="@+id/editSubTaskContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="top"
+            android:hint="@string/hint_subtask_content"
+            android:inputType="textMultiLine"
+            android:minLines="3" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:text="@string/label_main_task"
             android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle" />
 
@@ -34,20 +45,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/label_priority"
+            android:text="@string/label_subtask_period"
             android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle" />
-
-        <Spinner
-            android:id="@+id/spinnerPriority"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/textSubTaskDateRange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="4dp"
             android:text="@string/label_no_date"
             android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
@@ -58,15 +63,21 @@
             android:layout_marginTop="4dp"
             android:text="@string/action_select_date_range" />
 
-        <EditText
-            android:id="@+id/editSubTaskContent"
+        <!-- 중요도는 기본값(낮음)만 유지하고 화면에서는 숨김 -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:gravity="top"
-            android:hint="@string/hint_subtask_content"
-            android:minLines="3"
-            android:inputType="textMultiLine" />
+            android:text="@string/label_priority"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
+            android:visibility="gone" />
+
+        <Spinner
+            android:id="@+id/spinnerPriority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnSaveSubTask"

@@ -72,6 +72,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPriority.adapter = adapter
+        spinnerPriority.setSelection(0, false) // 기본값: 낮음
     }
 
     private fun loadMainTasks() {
