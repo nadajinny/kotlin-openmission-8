@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="12dp"
-            android:text="@string/title_manage_tags"
+            android:text="@string/action_add_tag"
             android:textAppearance="@style/TextAppearance.Tagmoa.Headline" />
 
         <EditText
@@ -42,23 +42,6 @@
             android:textSize="16sp"
             app:backgroundTint="#2563FF"
             app:cornerRadius="26dp" />
-
-        <TextView
-            android:id="@+id/textTagEmptyState"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/message_no_tags"
-            android:textAppearance="@style/TextAppearance.Tagmoa.Body"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerTags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:paddingTop="8dp" />
 
     </LinearLayout>
 

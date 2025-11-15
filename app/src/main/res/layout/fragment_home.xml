@@ -30,18 +30,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:background="@android:color/transparent"
-                android:elevation="2dp"
-                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:gravity="center_horizontal"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="32dp">
 
                 <TextView
                     android:id="@+id/textHomeTodayDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingTop="8dp"
+                    android:autoSizeMaxTextSize="32sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.Tagmoa.Display"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />

@@ -36,6 +36,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
     private lateinit var btnSearch: MaterialButton
     private lateinit var checkShowCompleted: MaterialCheckBox
     private lateinit var chipGroup: ChipGroup
+    private lateinit var filterLabel: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyState: TextView
@@ -72,6 +73,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         btnSearch = view.findViewById(R.id.btnSearchMainTask)
         checkShowCompleted = view.findViewById(R.id.checkShowCompleted)
         chipGroup = view.findViewById(R.id.chipGroupTags)
+        filterLabel = view.findViewById(R.id.textFilterLabel)
         recyclerView = view.findViewById(R.id.recyclerMainTaskList)
         progressBar = view.findViewById(R.id.progressMainList)
         emptyState = view.findViewById(R.id.textMainListEmpty)
@@ -80,6 +82,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         recyclerView.adapter = adapter
 
         btnSearch.setOnClickListener { filterTasks() }
+        filterLabel.setOnClickListener { showTagManagementDialog() }
         checkShowCompleted.setOnCheckedChangeListener { _, isChecked ->
             showCompletedTasks = isChecked
             updateCompletedToggleLabel()
@@ -148,6 +151,25 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
             chipGroup.addView(chip)
         }
         filterTasks()
+    }
+
+    private fun showTagManagementDialog() {
+        if (tagMap.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_no_tags, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val tags = tagMap.values.sortedBy { it.name }
+        val tagNames = tags.map { it.name.ifBlank { getString(R.string.label_no_title) } }.toTypedArray()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.label_filter_tags)
+            .setItems(tagNames) { _, which ->
+                val target = tags.getOrNull(which) ?: return@setItems
+                confirmDeleteTag(target)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun observeTasks() {
@@ -359,6 +381,48 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
                     ).show()
                 }
             }
+    }
+
+    private fun confirmDeleteTag(tag: Tag) {
+        if (tag.id.isBlank()) return
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.title_delete_tag)
+            .setMessage(getString(R.string.message_delete_tag, tag.name))
+            .setPositiveButton(R.string.action_delete) { _, _ -> deleteTag(tag) }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun deleteTag(tag: Tag) {
+        if (tag.id.isBlank()) return
+        tagsRef.child(tag.id).removeValue()
+            .addOnSuccessListener {
+                removeTagFromTasks(tag.id)
+                context?.let { ctx ->
+                    Toast.makeText(ctx, R.string.message_tag_deleted, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { error ->
+                context?.let { ctx ->
+                    Toast.makeText(
+                        ctx,
+                        error.message ?: getString(R.string.error_generic),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun removeTagFromTasks(tagId: String) {
+        tasksRef.get().addOnSuccessListener { snapshot ->
+            snapshot.children.forEach { child ->
+                val taskId = child.key ?: return@forEach
+                val task = child.getValue(MainTask::class.java)
+                if (task != null && task.tagIds.remove(tagId)) {
+                    tasksRef.child(taskId).child("tagIds").setValue(task.tagIds)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

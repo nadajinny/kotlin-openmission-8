@@ -1,5 +1,6 @@
 package com.ndjinny.tagmoa.controller
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -32,6 +33,8 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
     private lateinit var textName: TextView
     private lateinit var textEmail: TextView
     private lateinit var rowPickBackground: View
+    private lateinit var rowOnboardingGuide: View
+    private lateinit var rowContactSupport: View
     private lateinit var rowLogout: View
     private lateinit var rowDisconnect: View
 
@@ -41,6 +44,8 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         textName = view.findViewById(R.id.textProfileName)
         textEmail = view.findViewById(R.id.textProfileEmail)
         rowPickBackground = view.findViewById(R.id.rowPickHomeBackground)
+        rowOnboardingGuide = view.findViewById(R.id.rowViewOnboarding)
+        rowContactSupport = view.findViewById(R.id.rowContactSupport)
         rowLogout = view.findViewById(R.id.rowLogout)
         rowDisconnect = view.findViewById(R.id.rowDisconnect)
 
@@ -55,6 +60,17 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
         rowPickBackground.setOnClickListener {
             selectHomeBackgroundLauncher.launch(arrayOf("image/*"))
+        }
+
+        rowOnboardingGuide.setOnClickListener {
+            val intent = Intent(requireContext(), OnboardingActivity::class.java).apply {
+                putExtra(OnboardingActivity.EXTRA_FORCE_SHOW, true)
+            }
+            startActivity(intent)
+        }
+
+        rowContactSupport.setOnClickListener {
+            openSupportEmail()
         }
 
         rowLogout.setOnClickListener {
@@ -161,6 +177,19 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
                 ).show()
             }
         })
+    }
+
+    private fun openSupportEmail() {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("nadajinny@gmail.com"))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.profile_contact_support_subject))
+        }
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), getString(R.string.profile_contact_support_error), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun redirectToLogin() {

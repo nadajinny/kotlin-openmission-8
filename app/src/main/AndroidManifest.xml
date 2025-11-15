@@ -57,12 +57,20 @@
 
         <activity
             android:name=".controller.LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controller.OnboardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".controller.QnaActivity"
+            android:exported="false" />
 
     </application>
 

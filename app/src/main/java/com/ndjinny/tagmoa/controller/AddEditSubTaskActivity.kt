@@ -77,9 +77,18 @@ class AddEditSubTaskActivity : AppCompatActivity() {
 
     private fun loadMainTasks() {
         tasksRef.get().addOnSuccessListener { snapshot ->
-            mainTasks = snapshot.children.mapNotNull { child ->
+            val allTasks = snapshot.children.mapNotNull { child ->
                 val task = child.getValue(MainTask::class.java)
                 task?.apply { id = id.ifBlank { child.key.orEmpty() } }
+            }
+            val previouslySelected = selectedMainTaskId?.let { id ->
+                allTasks.firstOrNull { it.id == id }
+            }
+            val incompleteTasks = allTasks.filter { !it.isCompleted }
+            mainTasks = if (previouslySelected != null && previouslySelected.isCompleted) {
+                listOf(previouslySelected) + incompleteTasks.filter { it.id != previouslySelected.id }
+            } else {
+                incompleteTasks
             }
             if (mainTasks.isEmpty()) {
                 Toast.makeText(this, R.string.error_no_main_tasks, Toast.LENGTH_SHORT).show()

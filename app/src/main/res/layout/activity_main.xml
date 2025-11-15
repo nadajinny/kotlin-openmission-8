@@ -146,7 +146,7 @@
         app:backgroundTint="@android:color/white"
         android:clipToPadding="false"
         app:itemIconTint="@color/selector_bottom_nav"
-        app:itemRippleColor="@color/bottom_nav_ripple"
+        app:itemBackground="@drawable/bg_bottom_nav_item"
         app:itemTextColor="@color/selector_bottom_nav"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"

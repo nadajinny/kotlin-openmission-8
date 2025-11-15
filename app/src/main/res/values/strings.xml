@@ -141,6 +141,11 @@
     <string name="profile_email_placeholder">이메일: -</string>
     <string name="profile_name_format">이름: %1$s</string>
     <string name="profile_email_format">이메일: %1$s</string>
+    <string name="profile_view_onboarding">앱 사용 설명서 다시 보기</string>
+    <string name="profile_contact_support">문의하기</string>
+    <string name="profile_contact_support_subject">Tagmoa 앱 문의</string>
+    <string name="profile_contact_support_error">이메일 앱을 찾을 수 없습니다.</string>
+    <string name="profile_open_qna">Q&amp;A 작성하기</string>
 
     <string name="login_title">Tagmoa에 로그인</string>
     <string name="login_subtitle">구글 계정으로 로그인하면 기기마다 동일한 태그와 테스크를 불러올 수 있습니다.</string>
@@ -155,6 +160,41 @@
     <string name="action_naver_login">네이버 로그인</string>
     <string name="error_kakao_email_required">카카오 계정 이메일을 가져오지 못했습니다. 동의 항목을 확인하고 다시 시도해주세요.</string>
     <string name="error_naver_email_required">네이버 계정 이메일을 받아오지 못했습니다. 이메일 제공에 동의한 뒤 다시 시도해주세요.</string>
+
+    <string name="onboarding_skip">건너뛰기</string>
+    <string name="onboarding_next">다음</string>
+    <string name="onboarding_get_started">시작하기</string>
+    <string name="onboarding_title_tasks">태그로 더 똑똑하게 정리</string>
+    <string name="onboarding_desc_tasks">중요도와 태그를 붙여 주요 일정을 한눈에 관리하세요.</string>
+    <string name="onboarding_title_calendar">달력에서 일정 확인</string>
+    <string name="onboarding_desc_calendar">월별 캘린더를 넘기며 다가오는 일정과 세부 작업을 확인할 수 있어요.</string>
+    <string name="onboarding_title_personalize">나만의 작업 환경</string>
+    <string name="onboarding_desc_personalize">계정에 동기화된 태그와 테스크를 어디서든 이어서 작업하세요.</string>
+
+    <string name="qna_title">Q&amp;A</string>
+    <string name="qna_empty">등록된 Q&amp;A가 없습니다. 첫 글을 남겨보세요!</string>
+    <string name="qna_visibility_public_badge">공개</string>
+    <string name="qna_visibility_private_badge">비공개</string>
+    <string name="qna_comment_count">%1$d개의 댓글</string>
+    <string name="qna_dialog_title">Q&amp;A 작성</string>
+    <string name="qna_dialog_description">공개로 작성하면 모든 사용자가 이 글을 볼 수 있어요.</string>
+    <string name="qna_field_title_hint">제목</string>
+    <string name="qna_field_content_hint">내용</string>
+    <string name="qna_field_visibility">공개 설정</string>
+    <string name="qna_visibility_public_option">모든 사용자에게 공개</string>
+    <string name="qna_visibility_private_option">나만 보기</string>
+    <string name="qna_submit">등록</string>
+    <string name="qna_cancel">취소</string>
+    <string name="qna_toast_saved">Q&amp;A를 등록했습니다.</string>
+    <string name="qna_toast_comment_saved">댓글을 등록했습니다.</string>
+    <string name="qna_toast_comment_validation">댓글 내용을 입력해주세요.</string>
+    <string name="qna_toast_error">내용을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="qna_toast_validation">제목과 내용을 입력해주세요.</string>
+    <string name="qna_meta_format">%1$s · %2$s</string>
+    <string name="qna_meta_unknown_author">익명</string>
+    <string name="qna_comments_title">댓글</string>
+    <string name="qna_comments_empty">아직 댓글이 없습니다.</string>
+    <string name="qna_comments_only_owner">작성자만 댓글을 남길 수 있어요.</string>
 
     <string name="naver_client_id">pf6vBJZnLeefkegYBoCO</string>
     <string name="naver_client_secret">sDnnZLiJIa</string>
