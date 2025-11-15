@@ -38,13 +38,24 @@ class TagManagementActivity : AppCompatActivity() {
         }
         tagsRef.get()
             .addOnSuccessListener { snapshot ->
-                val exists = snapshot.children.any { child ->
+                val duplicate = snapshot.children.mapNotNull { child ->
                     val tag = child.getValue(Tag::class.java)
-                    val existingName = tag?.name ?: return@any false
-                    existingName.equals(name, ignoreCase = true)
-                }
-                if (exists) {
-                    Toast.makeText(this, R.string.error_duplicate_tag_name, Toast.LENGTH_SHORT).show()
+                    val existingName = tag?.name ?: return@mapNotNull null
+                    if (existingName.equals(name, ignoreCase = true)) {
+                        tag
+                    } else {
+                        null
+                    }
+                }.firstOrNull()
+
+                if (duplicate != null) {
+                    val stateLabel = if (duplicate.hidden) {
+                        getString(R.string.label_tag_state_hidden)
+                    } else {
+                        getString(R.string.label_tag_state_visible)
+                    }
+                    val message = getString(R.string.error_duplicate_tag_name_with_state, stateLabel)
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                     return@addOnSuccessListener
                 }
 

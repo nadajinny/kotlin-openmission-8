@@ -38,6 +38,9 @@
     <string name="message_no_tags">등록된 태그가 없습니다.</string>
     <string name="error_empty_tag_name">태그 이름을 입력해주세요.</string>
     <string name="error_duplicate_tag_name">이미 존재하는 태그입니다.</string>
+    <string name="error_duplicate_tag_name_with_state">이미 존재하는 태그입니다. (현재 상태: %1$s)</string>
+    <string name="label_tag_state_hidden">숨김</string>
+    <string name="label_tag_state_visible">표시</string>
     <string name="message_tag_created">태그를 생성했습니다.</string>
     <string name="message_tag_hidden">태그를 숨김 처리했습니다.</string>
     <string name="message_tag_shown">태그를 다시 표시했습니다.</string>
