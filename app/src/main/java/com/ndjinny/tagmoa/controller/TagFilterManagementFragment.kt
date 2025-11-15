@@ -5,14 +5,16 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.MainTask
 import com.ndjinny.tagmoa.model.Tag
 import com.ndjinny.tagmoa.model.UserDatabase
 import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
+import com.ndjinny.tagmoa.view.OnStartDragListener
+import com.ndjinny.tagmoa.view.SimpleItemTouchHelperCallback
 import com.ndjinny.tagmoa.view.TagAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,12 +22,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import java.util.Locale
 
-class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_management) {
+class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_management), OnStartDragListener {
 
     private lateinit var tagsRef: DatabaseReference
     private lateinit var tasksRef: DatabaseReference
     private lateinit var adapter: TagAdapter
     private lateinit var emptyState: TextView
+    private lateinit var itemTouchHelper: ItemTouchHelper
 
     private var tagsListener: ValueEventListener? = null
 
@@ -39,20 +42,20 @@ class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_manage
         tagsRef = UserDatabase.tagsRef(uid)
         tasksRef = UserDatabase.tasksRef(uid)
 
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbarTagFilter)
-        toolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
         emptyState = view.findViewById(R.id.textTagEmptyState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerTags)
 
         adapter = TagAdapter(
             onToggleHidden = { tag -> toggleTagVisibility(tag) },
-            onDelete = { tag -> confirmDeleteTag(tag) }
+            onDelete = { tag -> confirmDeleteTag(tag) },
+            dragStartListener = this
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+
+        val callback = SimpleItemTouchHelperCallback(adapter) { persistTagOrder() }
+        itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
         observeTags()
     }
@@ -75,6 +78,7 @@ class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_manage
                 }
                 tags.sortWith(
                     compareBy<Tag> { it.hidden }
+                        .thenBy { it.order }
                         .thenBy { it.name.lowercase(Locale.getDefault()) }
                 )
                 adapter.submitTags(tags)
@@ -146,6 +150,23 @@ class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_manage
                         tasksRef.child(taskId).child("tagIds").setValue(task.tagIds)
                     }
                 }
+            }
+        }
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
+    }
+
+    private fun persistTagOrder() {
+        val current = adapter.getCurrentList()
+        if (current.isEmpty()) return
+        current.forEachIndexed { index, tag ->
+            if (tag.id.isBlank()) return@forEachIndexed
+            val orderValue = index.toLong()
+            if (tag.order != orderValue) {
+                tag.order = orderValue
+                tagsRef.child(tag.id).child("order").setValue(orderValue)
             }
         }
     }

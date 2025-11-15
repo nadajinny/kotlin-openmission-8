@@ -133,7 +133,12 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
     private fun buildTagChips() {
         chipGroup.removeAllViews()
         selectedTagIds.clear()
-        val visibleTags = tagMap.values.filter { !it.hidden }
+        val visibleTags = tagMap.values
+            .filter { !it.hidden }
+            .sortedWith(
+                compareBy<Tag> { it.order }
+                    .thenBy { it.name.lowercase(Locale.getDefault()) }
+            )
         if (visibleTags.isEmpty()) {
             val chip = Chip(requireContext()).apply {
                 text = getString(R.string.message_no_tags)

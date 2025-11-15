@@ -7,7 +7,8 @@ import com.google.firebase.database.PropertyName
 data class Tag(
     var id: String = "",
     var name: String = "",
-    var hidden: Boolean = false
+    var hidden: Boolean = false,
+    var order: Long = Long.MAX_VALUE
 )
 
 @IgnoreExtraProperties

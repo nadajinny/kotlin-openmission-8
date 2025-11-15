@@ -15,6 +15,7 @@ import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
 import com.ndjinny.tagmoa.view.TaskDateRangePicker
 import com.ndjinny.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
+import java.util.Locale
 
 class AddEditMainTaskActivity : AppCompatActivity() {
 
@@ -95,10 +96,15 @@ class AddEditMainTaskActivity : AppCompatActivity() {
 
     private fun loadTags() {
         tagsRef.get().addOnSuccessListener { snapshot ->
-            allTags = snapshot.children.mapNotNull { child ->
+            val tags = snapshot.children.mapNotNull { child ->
                 val tag = child.getValue(Tag::class.java)
                 tag?.apply { id = id.ifBlank { child.key.orEmpty() } }
             }
+            allTags = tags.sortedWith(
+                compareBy<Tag> { it.hidden }
+                    .thenBy { it.order }
+                    .thenBy { it.name.lowercase(Locale.getDefault()) }
+            )
             updateTagLabel()
         }
     }

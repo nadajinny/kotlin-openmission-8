@@ -59,8 +59,12 @@ class TagManagementActivity : AppCompatActivity() {
                     return@addOnSuccessListener
                 }
 
+                val maxOrder = snapshot.children.mapNotNull { child ->
+                    val order = child.getValue(Tag::class.java)?.order
+                    order?.takeUnless { it == Long.MAX_VALUE }
+                }.maxOrNull() ?: -1L
                 val newId = tagsRef.push().key ?: return@addOnSuccessListener
-                val newTag = Tag(id = newId, name = name, hidden = false)
+                val newTag = Tag(id = newId, name = name, hidden = false, order = maxOrder + 1)
                 tagsRef.child(newId).setValue(newTag)
                     .addOnSuccessListener {
                         inputTagName.text.clear()
