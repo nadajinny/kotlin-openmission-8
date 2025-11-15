@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         fabAddSubTask = findViewById(R.id.fabAddSubTask)
 
         fabAddTag.setOnClickListener {
-            hideFabMenu(shouldReselectContent = true)
+            hideFabMenu(shouldReselectContent = false)
             startActivity(Intent(this, TagManagementActivity::class.java))
         }
         fabAddMainTask.setOnClickListener {
