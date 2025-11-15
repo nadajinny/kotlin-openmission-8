@@ -15,66 +15,126 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <View
+        android:id="@+id/fabMenuOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:alpha="0"
+        android:background="#D9FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:id="@+id/addFabMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/add_fab_menu_bottom_margin"
-        android:gravity="center_horizontal"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="start"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddTag"
-            style="@style/Widget.MaterialComponents.FloatingActionButton"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/add_fab_menu_item_spacing"
-            android:contentDescription="@string/add_quick_action_tag"
-            android:padding="4dp"
-            android:stateListAnimator="@null"
-            app:backgroundTint="@android:color/black"
-            app:elevation="0dp"
-            app:fabCustomSize="@dimen/cbn_fab_size"
-            app:maxImageSize="24dp"
-            app:pressedTranslationZ="0dp"
-            app:srcCompat="@drawable/ic_fab_tag"
-            app:tint="@android:color/white" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddMainTask"
-            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddTag"
+                style="@style/Widget.MaterialComponents.FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/add_quick_action_tag"
+                android:padding="4dp"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@android:color/black"
+                app:elevation="0dp"
+                app:fabCustomSize="@dimen/cbn_fab_size"
+                app:maxImageSize="24dp"
+                app:pressedTranslationZ="0dp"
+                app:srcCompat="@drawable/ic_fab_tag"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/action_add_tag"
+                android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/add_fab_menu_item_spacing"
-            android:contentDescription="@string/add_quick_action_main_task"
-            android:padding="4dp"
-            android:stateListAnimator="@null"
-            app:backgroundTint="@android:color/black"
-            app:elevation="0dp"
-            app:fabCustomSize="@dimen/cbn_fab_size"
-            app:maxImageSize="24dp"
-            app:pressedTranslationZ="0dp"
-            app:srcCompat="@drawable/ic_fab_main_task"
-            app:tint="@android:color/white" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddSubTask"
-            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddMainTask"
+                style="@style/Widget.MaterialComponents.FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/add_quick_action_main_task"
+                android:padding="4dp"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@android:color/black"
+                app:elevation="0dp"
+                app:fabCustomSize="@dimen/cbn_fab_size"
+                app:maxImageSize="24dp"
+                app:pressedTranslationZ="0dp"
+                app:srcCompat="@drawable/ic_fab_main_task"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/action_add_main_task"
+                android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/add_quick_action_sub_task"
-            android:padding="4dp"
-            android:stateListAnimator="@null"
-            app:backgroundTint="@android:color/black"
-            app:elevation="0dp"
-            app:fabCustomSize="@dimen/cbn_fab_size"
-            app:maxImageSize="24dp"
-            app:pressedTranslationZ="0dp"
-            app:srcCompat="@drawable/ic_fab_sub_task"
-            app:tint="@android:color/white" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddSubTask"
+                style="@style/Widget.MaterialComponents.FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/add_quick_action_sub_task"
+                android:padding="4dp"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@android:color/black"
+                app:elevation="0dp"
+                app:fabCustomSize="@dimen/cbn_fab_size"
+                app:maxImageSize="24dp"
+                app:pressedTranslationZ="0dp"
+                app:srcCompat="@drawable/ic_fab_sub_task"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/action_add_sub_task"
+                android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
+        </LinearLayout>
 
     </LinearLayout>
 

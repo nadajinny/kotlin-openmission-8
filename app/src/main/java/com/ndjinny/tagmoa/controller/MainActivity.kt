@@ -3,6 +3,7 @@ package com.ndjinny.tagmoa.controller
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.doOnLayout
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private lateinit var rootContainer: View
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var fabMenuOverlay: View
     private lateinit var fabMenuContainer: View
     private lateinit var fabAddTag: FloatingActionButton
     private lateinit var fabAddMainTask: FloatingActionButton
@@ -50,6 +52,11 @@ class MainActivity : AppCompatActivity() {
 
         rootContainer = findViewById(R.id.rootMain)
         bottomNavigation = findViewById(R.id.bottomNavigation)
+        fabMenuOverlay = findViewById(R.id.fabMenuOverlay)
+
+        fabMenuOverlay.setOnClickListener {
+            hideFabMenu(shouldReselectContent = true)
+        }
 
         applyEdgeToEdgeInsets()
 
@@ -186,12 +193,21 @@ class MainActivity : AppCompatActivity() {
         if (fabMenuContainer.isVisible) return
         fabMenuContainer.animate().cancel()
         fabMenuContainer.alpha = 0f
+        fabMenuContainer.translationY = 48f
         fabMenuContainer.visibility = View.VISIBLE
         fabMenuContainer.bringToFront()
+        fabMenuOverlay.animate().cancel()
+        fabMenuOverlay.visibility = View.VISIBLE
+        fabMenuOverlay.alpha = 0f
+        fabMenuOverlay.animate()
+            .alpha(0.35f)
+            .setDuration(180L)
+            .start()
         fabMenuContainer.post {
             alignFabMenuWithAddButton()
             fabMenuContainer.animate()
                 .alpha(1f)
+                .translationY(0f)
                 .setDuration(180L)
                 .start()
         }
@@ -199,6 +215,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideFabMenu(shouldReselectContent: Boolean) {
         if (!fabMenuContainer.isVisible) {
+            fabMenuOverlay.animate().cancel()
+            if (fabMenuOverlay.isVisible) {
+                fabMenuOverlay.animate()
+                    .alpha(0f)
+                    .setDuration(150L)
+                    .withEndAction {
+                        fabMenuOverlay.visibility = View.GONE
+                    }
+                    .start()
+            }
             if (shouldReselectContent) {
                 bottomNavigation.selectedItemId = lastContentItemId
             }
@@ -207,13 +233,23 @@ class MainActivity : AppCompatActivity() {
         fabMenuContainer.animate().cancel()
         fabMenuContainer.animate()
             .alpha(0f)
+            .translationY(48f)
             .setDuration(150L)
             .withEndAction {
                 fabMenuContainer.visibility = View.GONE
                 fabMenuContainer.alpha = 1f
+                fabMenuContainer.translationY = 0f
                 if (shouldReselectContent) {
                     bottomNavigation.selectedItemId = lastContentItemId
                 }
+            }
+            .start()
+        fabMenuOverlay.animate().cancel()
+        fabMenuOverlay.animate()
+            .alpha(0f)
+            .setDuration(150L)
+            .withEndAction {
+                fabMenuOverlay.visibility = View.GONE
             }
             .start()
     }
@@ -229,6 +265,11 @@ class MainActivity : AppCompatActivity() {
         val horizontalOffset = resources.getDimension(R.dimen.add_fab_menu_horizontal_offset)
         val desiredLeft = navLeft + addCenterX - fabMenuContainer.width / 2f + horizontalOffset
         val currentLeft = fabMenuContainer.left.toFloat()
-        fabMenuContainer.translationX = desiredLeft - currentLeft
+        val layoutParams = fabMenuContainer.layoutParams as? ViewGroup.MarginLayoutParams
+        val parentWidth = rootContainer.width
+        val minLeft = (layoutParams?.leftMargin ?: 0).toFloat()
+        val maxLeft = (parentWidth - (layoutParams?.rightMargin ?: 0) - fabMenuContainer.width).toFloat()
+        val clampedLeft = desiredLeft.coerceIn(minLeft, maxLeft)
+        fabMenuContainer.translationX = clampedLeft - currentLeft
     }
 }
