@@ -20,6 +20,7 @@ import com.ndjinny.tagmoa.model.UserDatabase
 import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
 import com.ndjinny.tagmoa.view.MainTaskAdapter
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
@@ -33,6 +34,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
 
     private lateinit var searchInput: TextInputEditText
     private lateinit var btnSearch: MaterialButton
+    private lateinit var checkShowCompleted: MaterialCheckBox
     private lateinit var chipGroup: ChipGroup
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
@@ -52,6 +54,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
     private val tagMap = mutableMapOf<String, Tag>()
     private val selectedTagIds = mutableSetOf<String>()
     private val subTasksByMain = mutableMapOf<String, List<SubTask>>()
+    private var showCompletedTasks: Boolean = false
 
     private var tasksListener: ValueEventListener? = null
     private var tagsListener: ValueEventListener? = null
@@ -67,6 +70,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
 
         searchInput = view.findViewById(R.id.editSearchMainTask)
         btnSearch = view.findViewById(R.id.btnSearchMainTask)
+        checkShowCompleted = view.findViewById(R.id.checkShowCompleted)
         chipGroup = view.findViewById(R.id.chipGroupTags)
         recyclerView = view.findViewById(R.id.recyclerMainTaskList)
         progressBar = view.findViewById(R.id.progressMainList)
@@ -76,6 +80,12 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         recyclerView.adapter = adapter
 
         btnSearch.setOnClickListener { filterTasks() }
+        checkShowCompleted.setOnCheckedChangeListener { _, isChecked ->
+            showCompletedTasks = isChecked
+            updateCompletedToggleLabel()
+            filterTasks()
+        }
+        updateCompletedToggleLabel()
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -192,7 +202,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
 
         val filtered = allTasks
             .asSequence()
-            .filter { !it.isCompleted }
+            .filter { showCompletedTasks || !it.isCompleted }
             .filter { task ->
                 if (query.isEmpty()) true
                 else {
@@ -212,6 +222,15 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
 
         adapter.submitTasks(filtered, subTasksByMain)
         emptyState.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun updateCompletedToggleLabel() {
+        checkShowCompleted.apply {
+            isChecked = showCompletedTasks
+            text = getString(
+                if (showCompletedTasks) R.string.action_hide_completed else R.string.action_show_completed
+            )
+        }
     }
 
     private fun toggleMainTaskCompletion(task: MainTask, isCompleted: Boolean) {

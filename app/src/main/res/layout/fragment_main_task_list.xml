@@ -11,10 +11,11 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
         android:elevation="2dp"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="@android:color/white"
-        android:layout_marginBottom="12dp">
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,48 +29,72 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/hint_search_main_task"
-                app:startIconDrawable="@drawable/ic_search">
+                app:startIconDrawable="@drawable/ic_search"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editSearchMainTask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"/>
-
+                    android:background="@android:color/transparent" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSearchMainTask"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginStart="8dp"
-                android:minWidth="48dp"
-                android:text="@string/action_search" />
-
+                android:minWidth="0dp"
+                android:paddingHorizontal="16dp"
+                android:text="@string/action_search"
+                android:textAllCaps="false"
+                android:textSize="14sp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-
-    <!-- Filter Label -->
-    <TextView
-        android:id="@+id/textFilterLabel"
-        android:layout_width="wrap_content"
+    <!-- 필터 라벨 + 완료 보기 토글 한 줄 배치 -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="4dp"
-        android:text="@string/label_filter_tags"
-        android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
-        android:textStyle="bold"
-        android:textColor="@color/color_918ce5"
-        android:layout_marginBottom="4dp" />
+        android:gravity="center_vertical"
+        android:layout_marginBottom="4dp">
+
+        <!-- Filter Label -->
+        <TextView
+            android:id="@+id/textFilterLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingVertical="4dp"
+            android:text="@string/label_filter_tags"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
+            android:textStyle="bold"
+            android:textColor="@color/color_918ce5" />
+
+        <!-- 완료 일정 토글 체크박스 -->
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkShowCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:layoutDirection="rtl"
+            android:textDirection="ltr"
+            android:paddingHorizontal="12dp"
+            android:text="@string/action_show_completed"
+            android:textSize="13sp"
+            android:fontFamily="@font/paperlogy_5medium"
+            app:useMaterialThemeColors="true" />
+    </LinearLayout>
 
     <!-- Chip Group (Soft Rounded Bar) -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="2dp"
         android:layout_marginBottom="16dp"
+        android:elevation="2dp"
         app:cardCornerRadius="12dp"
+        app:cardUseCompatPadding="true"
         app:cardBackgroundColor="@android:color/white">
 
         <HorizontalScrollView
@@ -83,13 +108,13 @@
                 android:id="@+id/chipGroupTags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:isScrollContainer="false"
                 app:singleSelection="false"
-                app:selectionRequired="false"
-                android:isScrollContainer="false" />
+                app:selectionRequired="false" />
         </HorizontalScrollView>
     </com.google.android.material.card.MaterialCardView>
 
-
+    <!-- 아래부터는 기존 그대로 -->
     <ProgressBar
         android:id="@+id/progressMainList"
         android:layout_width="wrap_content"
