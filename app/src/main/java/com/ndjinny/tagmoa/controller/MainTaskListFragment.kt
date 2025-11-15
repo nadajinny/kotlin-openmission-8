@@ -133,7 +133,8 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
     private fun buildTagChips() {
         chipGroup.removeAllViews()
         selectedTagIds.clear()
-        if (tagMap.isEmpty()) {
+        val visibleTags = tagMap.values.filter { !it.hidden }
+        if (visibleTags.isEmpty()) {
             val chip = Chip(requireContext()).apply {
                 text = getString(R.string.message_no_tags)
                 isEnabled = false
@@ -142,7 +143,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
             filterTasks()
             return
         }
-        tagMap.values.forEach { tag ->
+        visibleTags.forEach { tag ->
             val chip = Chip(requireContext()).apply {
                 text = tag.name
                 isCheckable = true

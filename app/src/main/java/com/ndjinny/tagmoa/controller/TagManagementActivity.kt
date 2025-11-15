@@ -36,12 +36,32 @@ class TagManagementActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.error_empty_tag_name, Toast.LENGTH_SHORT).show()
             return
         }
-        val newId = tagsRef.push().key ?: return
-        val newTag = Tag(id = newId, name = name)
-        tagsRef.child(newId).setValue(newTag)
-            .addOnSuccessListener {
-                inputTagName.text.clear()
-                Toast.makeText(this, R.string.message_tag_created, Toast.LENGTH_SHORT).show()
+        tagsRef.get()
+            .addOnSuccessListener { snapshot ->
+                val exists = snapshot.children.any { child ->
+                    val tag = child.getValue(Tag::class.java)
+                    val existingName = tag?.name ?: return@any false
+                    existingName.equals(name, ignoreCase = true)
+                }
+                if (exists) {
+                    Toast.makeText(this, R.string.error_duplicate_tag_name, Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
+                val newId = tagsRef.push().key ?: return@addOnSuccessListener
+                val newTag = Tag(id = newId, name = name, hidden = false)
+                tagsRef.child(newId).setValue(newTag)
+                    .addOnSuccessListener {
+                        inputTagName.text.clear()
+                        Toast.makeText(this, R.string.message_tag_created, Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { error ->
+                        Toast.makeText(
+                            this,
+                            error.message ?: getString(R.string.error_generic),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
             }
             .addOnFailureListener { error ->
                 Toast.makeText(

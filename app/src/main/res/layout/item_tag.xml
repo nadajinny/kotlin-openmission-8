@@ -12,10 +12,33 @@
         android:layout_weight="1"
         android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
-    <Button
+    <TextView
+        android:id="@+id/btnToggleHidden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:text="@string/action_hide_tag"
+        android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
+
+    <TextView
         android:id="@+id/btnDeleteTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/action_delete" />
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:text="@string/action_delete"
+        android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
 </LinearLayout>

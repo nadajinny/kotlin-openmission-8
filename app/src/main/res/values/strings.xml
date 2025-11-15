@@ -33,9 +33,14 @@
     <string name="title_manage_tags">태그 관리</string>
     <string name="hint_tag_name">새 태그 이름</string>
     <string name="action_add_tag">태그 추가</string>
+    <string name="action_hide_tag">숨김</string>
+    <string name="action_show_tag">표시</string>
     <string name="message_no_tags">등록된 태그가 없습니다.</string>
     <string name="error_empty_tag_name">태그 이름을 입력해주세요.</string>
+    <string name="error_duplicate_tag_name">이미 존재하는 태그입니다.</string>
     <string name="message_tag_created">태그를 생성했습니다.</string>
+    <string name="message_tag_hidden">태그를 숨김 처리했습니다.</string>
+    <string name="message_tag_shown">태그를 다시 표시했습니다.</string>
     <string name="message_no_tasks_for_tag">연결할 주요 일정이 없습니다.</string>
     <string name="title_assign_tag">%1$s 태그를 연결할 테스크 선택</string>
     <string name="action_apply">적용</string>

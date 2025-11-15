@@ -3,9 +3,11 @@ package com.ndjinny.tagmoa.model
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
 
+@IgnoreExtraProperties
 data class Tag(
     var id: String = "",
-    var name: String = ""
+    var name: String = "",
+    var hidden: Boolean = false
 )
 
 @IgnoreExtraProperties

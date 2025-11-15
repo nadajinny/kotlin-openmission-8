@@ -104,19 +104,20 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     }
 
     private fun showTagSelector() {
-        if (allTags.isEmpty()) {
+        val selectableTags = allTags.filter { !it.hidden }
+        if (selectableTags.isEmpty()) {
             Toast.makeText(this, R.string.message_no_tags_available, Toast.LENGTH_SHORT).show()
             return
         }
-        val tagNames = allTags.map { it.name }.toTypedArray()
-        val checked = BooleanArray(allTags.size) { index ->
-            allTags[index].id in selectedTagIds
+        val tagNames = selectableTags.map { it.name }.toTypedArray()
+        val checked = BooleanArray(selectableTags.size) { index ->
+            selectableTags[index].id in selectedTagIds
         }
 
         AlertDialog.Builder(this)
             .setTitle(R.string.title_select_tags)
             .setMultiChoiceItems(tagNames, checked) { _, which, isChecked ->
-                val tagId = allTags[which].id
+                val tagId = selectableTags[which].id
                 if (isChecked) {
                     selectedTagIds.add(tagId)
                 } else {

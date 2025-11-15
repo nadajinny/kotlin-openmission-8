@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import java.util.Locale
 
 class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_management) {
 
@@ -46,7 +47,10 @@ class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_manage
         emptyState = view.findViewById(R.id.textTagEmptyState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerTags)
 
-        adapter = TagAdapter { tag -> confirmDeleteTag(tag) }
+        adapter = TagAdapter(
+            onToggleHidden = { tag -> toggleTagVisibility(tag) },
+            onDelete = { tag -> confirmDeleteTag(tag) }
+        )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
@@ -69,6 +73,10 @@ class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_manage
                     tag.id = tagId
                     tags.add(tag)
                 }
+                tags.sortWith(
+                    compareBy<Tag> { it.hidden }
+                        .thenBy { it.name.lowercase(Locale.getDefault()) }
+                )
                 adapter.submitTags(tags)
                 emptyState.visibility = if (tags.isEmpty()) View.VISIBLE else View.GONE
             }
@@ -95,6 +103,26 @@ class TagFilterManagementFragment : Fragment(R.layout.fragment_tag_filter_manage
                 context?.let { ctx ->
                     Toast.makeText(ctx, R.string.message_tag_deleted, Toast.LENGTH_SHORT).show()
                 }
+            }
+            .addOnFailureListener { error ->
+                context?.let { ctx ->
+                    Toast.makeText(
+                        ctx,
+                        error.message ?: getString(R.string.error_generic),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun toggleTagVisibility(tag: Tag) {
+        if (tag.id.isBlank()) return
+        val newHidden = !tag.hidden
+        val updatedTag = tag.copy(hidden = newHidden)
+        tagsRef.child(tag.id).setValue(updatedTag)
+            .addOnSuccessListener {
+                val message = if (newHidden) R.string.message_tag_hidden else R.string.message_tag_shown
+                context?.let { ctx -> Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show() }
             }
             .addOnFailureListener { error ->
                 context?.let { ctx ->
