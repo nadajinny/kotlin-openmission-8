@@ -116,6 +116,7 @@
     <string name="hint_search_main_task">주요 일정 검색</string>
     <string name="action_search">검색</string>
     <string name="label_filter_tags">필터 태그</string>
+    <string name="title_filter_tag_management">필터 태그 관리</string>
 
     <string name="calendar_placeholder">캘린더 화면은 준비 중입니다.</string>
     <string name="calendar_header_title">캘린더</string>

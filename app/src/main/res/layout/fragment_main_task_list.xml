@@ -60,17 +60,34 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="4dp">
 
-        <!-- Filter Label -->
-        <TextView
-            android:id="@+id/textFilterLabel"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingVertical="4dp"
-            android:text="@string/label_filter_tags"
-            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
-            android:textStyle="bold"
-            android:textColor="@color/color_918ce5" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/textFilterLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="4dp"
+                android:text="@string/label_filter_tags"
+                android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
+                android:textStyle="bold"
+                android:textColor="@color/color_918ce5" />
+
+            <ImageButton
+                android:id="@+id/btnOpenTagFilterSettings"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:contentDescription="@string/title_filter_tag_management"
+                android:src="@drawable/ic_settings"
+                android:tint="@color/color_918ce5" />
+        </LinearLayout>
 
         <!-- 완료 일정 토글 체크박스 -->
         <com.google.android.material.checkbox.MaterialCheckBox
