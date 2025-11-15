@@ -1,10 +1,8 @@
 package com.ndjinny.tagmoa.controller
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -14,7 +12,6 @@ import com.ndjinny.tagmoa.model.MainTask
 import com.ndjinny.tagmoa.model.Tag
 import com.ndjinny.tagmoa.model.UserDatabase
 import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
-import com.ndjinny.tagmoa.view.SimpleItemSelectedListener
 import com.ndjinny.tagmoa.view.TaskDateRangePicker
 import com.ndjinny.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
@@ -33,18 +30,18 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private lateinit var editDescription: EditText
     private lateinit var textDateRange: TextView
     private lateinit var textSelectedTags: TextView
-    private lateinit var spinnerColor: Spinner
+    //private lateinit var spinnerColor: Spinner
 
     private var selectedStartDate: Long? = null
     private var selectedEndDate: Long? = null
-    private var selectedColor: String = "#559999"
+    private var selectedColor: String = "#A0A7B3" // default gray tone
     private val selectedTagIds = mutableSetOf<String>()
     private var taskId: String? = null
     private var hasManualSchedule: Boolean = false
     private var isTaskCompleted: Boolean = false
     private var taskCompletedAt: Long? = null
     private var allTags: List<Tag> = emptyList()
-    private lateinit var colorValues: Array<String>
+    //private lateinit var colorValues: Array<String>
     private var loadedTask: MainTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,13 +56,13 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         editDescription = findViewById(R.id.editTaskDescription)
         textDateRange = findViewById(R.id.textTaskDateRange)
         textSelectedTags = findViewById(R.id.textSelectedTags)
-        spinnerColor = findViewById(R.id.spinnerTaskColor)
+        //spinnerColor = findViewById(R.id.spinnerTaskColor)
 
         val btnSelectDateRange = findViewById<Button>(R.id.btnSelectDateRange)
         val btnSelectTags = findViewById<Button>(R.id.btnSelectTags)
         val btnSaveTask = findViewById<Button>(R.id.btnSaveTask)
 
-        setupColorSpinner()
+        //setupColorSpinner()
         loadTags()
 
         btnSelectDateRange.setOnClickListener { showDateRangePicker() }
@@ -81,20 +78,20 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupColorSpinner() {
-        val colorNames = resources.getStringArray(R.array.main_task_color_names)
-        colorValues = resources.getStringArray(R.array.main_task_color_values)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, colorNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerColor.adapter = adapter
-        spinnerColor.setSelection(0)
-        selectedColor = colorValues.getOrNull(0) ?: selectedColor
-        spinnerColor.onItemSelectedListener = SimpleItemSelectedListener { index ->
-            if (index in colorValues.indices) {
-                selectedColor = colorValues[index]
-            }
-        }
-    }
+//    private fun setupColorSpinner() {
+//        val colorNames = resources.getStringArray(R.array.main_task_color_names)
+//        colorValues = resources.getStringArray(R.array.main_task_color_values)
+//        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, colorNames)
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//        spinnerColor.adapter = adapter
+//        spinnerColor.setSelection(0)
+//        selectedColor = colorValues.getOrNull(0) ?: selectedColor
+//        spinnerColor.onItemSelectedListener = SimpleItemSelectedListener { index ->
+//            if (index in colorValues.indices) {
+//                selectedColor = colorValues[index]
+//            }
+//        }
+//    }
 
     private fun loadTags() {
         tagsRef.get().addOnSuccessListener { snapshot ->
@@ -183,18 +180,18 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             selectedColor = task.mainColor
             selectedTagIds.clear()
             selectedTagIds.addAll(task.tagIds)
-            setColorSelection(selectedColor)
+            //setColorSelection(selectedColor)
             updateDateRangeLabel()
             updateTagLabel()
         }
     }
 
-    private fun setColorSelection(colorHex: String) {
-        val index = colorValues.indexOfFirst { it.equals(colorHex, ignoreCase = true) }
-        if (index >= 0) {
-            spinnerColor.setSelection(index)
-        }
-    }
+//    private fun setColorSelection(colorHex: String) {
+//        val index = colorValues.indexOfFirst { it.equals(colorHex, ignoreCase = true) }
+//        if (index >= 0) {
+//            spinnerColor.setSelection(index)
+//        }
+//    }
 
     private fun saveTask() {
         val title = editTitle.text.toString().trim()

@@ -10,12 +10,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ndjinny.tagmoa.view.TagAdapter
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.MainTask
 import com.ndjinny.tagmoa.model.Tag
 import com.ndjinny.tagmoa.model.UserDatabase
 import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
+import com.ndjinny.tagmoa.view.TagAdapter
+import com.ndjinny.tagmoa.view.dialog.TwoButtonDialogFragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -144,12 +145,14 @@ class TagManagementActivity : AppCompatActivity() {
     }
 
     private fun confirmDeleteTag(tag: Tag) {
-        AlertDialog.Builder(this)
-            .setTitle(R.string.title_delete_tag)
-            .setMessage(getString(R.string.message_delete_tag, tag.name))
-            .setPositiveButton(R.string.action_delete) { _, _ -> deleteTag(tag) }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
+        TwoButtonDialogFragment(
+            title = getString(R.string.title_delete_tag),
+            message = getString(R.string.message_delete_tag, tag.name),
+            primaryText = getString(R.string.action_delete),
+            secondaryText = getString(android.R.string.cancel),
+            onPrimaryClick = { deleteTag(tag) },
+            onSecondaryClick = {}
+        ).show(supportFragmentManager, "ConfirmDeleteTag")
     }
 
     private fun deleteTag(tag: Tag) {

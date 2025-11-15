@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootAddEditMainTask"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_dialog_round"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="24dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,13 +47,19 @@
             android:text="@string/label_no_date"
             android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSelectDateRange"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginTop="4dp"
-            android:text="@string/action_select_date_range" />
+            android:text="@string/action_select_date_range"
+            android:textAllCaps="false"
+            android:textColor="#222831"
+            app:backgroundTint="#F1F3F6"
+            app:cornerRadius="24dp" />
 
+        <!--
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp" />
+        -->
 
         <TextView
             android:id="@+id/textSelectedTags"
@@ -71,20 +82,30 @@
             android:text="@string/label_no_tags"
             android:textAppearance="@style/TextAppearance.Tagmoa.Body" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSelectTags"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginTop="4dp"
-            android:text="@string/action_select_tags" />
+            android:text="@string/action_select_tags"
+            android:textAllCaps="false"
+            android:textColor="#222831"
+            app:backgroundTint="#F1F3F6"
+            app:cornerRadius="24dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveTask"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_marginTop="16dp"
             android:text="@string/action_save"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:backgroundTint="#2563FF"
+            app:cornerRadius="26dp" />
 
     </LinearLayout>
 </ScrollView>
