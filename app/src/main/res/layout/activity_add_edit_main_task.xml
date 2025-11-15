@@ -34,10 +34,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="@string/hint_task_description"
-            android:minLines="3"
+            android:background="@drawable/bg_input_box"
             android:gravity="top"
-            android:inputType="textMultiLine" />
+            android:hint="@string/hint_task_description"
+            android:inputType="textMultiLine"
+            android:minLines="3" />
 
         <TextView
             android:id="@+id/textTaskDateRange"

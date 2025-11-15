@@ -25,12 +25,11 @@
         <EditText
             android:id="@+id/editSubTaskContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginTop="4dp"
-            android:gravity="top"
+            android:gravity="center_vertical"
             android:hint="@string/hint_subtask_content"
-            android:inputType="textMultiLine"
-            android:minLines="3" />
+            android:inputType="textCapSentences" />
 
         <TextView
             android:layout_width="match_parent"
