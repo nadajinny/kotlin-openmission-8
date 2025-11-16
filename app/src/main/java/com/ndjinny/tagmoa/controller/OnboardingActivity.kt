@@ -27,19 +27,22 @@ class OnboardingActivity : AppCompatActivity() {
     private val pages by lazy {
         listOf(
             OnboardingPage(
-                imageRes = R.drawable.img_usage_1
+                imageRes = R.drawable.image_usage_1
             ),
             OnboardingPage(
-                imageRes = R.drawable.img_usage_2
+                imageRes = R.drawable.image_usage_2
             ),
             OnboardingPage(
-                imageRes = R.drawable.img_usage_3
+                imageRes = R.drawable.image_usage_3
             ),
             OnboardingPage(
-                imageRes = R.drawable.img_usage_4
+                imageRes = R.drawable.image_usage_4
             ),
             OnboardingPage(
-                imageRes = R.drawable.img_usage_5
+                imageRes = R.drawable.image_usage_5
+            ),
+            OnboardingPage(
+                imageRes = R.drawable.image_usage_6
             )
         )
     }
