@@ -25,7 +25,8 @@ data class MainTask(
     var completedAt: Long? = null,
     var manualSchedule: Boolean = false,
     var mainColor: String = "#559999",
-    var tagIds: MutableList<String> = mutableListOf()
+    var tagIds: MutableList<String> = mutableListOf(),
+    var alarmEnabled: Boolean = true
 )
 
 @IgnoreExtraProperties

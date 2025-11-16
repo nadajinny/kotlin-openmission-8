@@ -24,6 +24,8 @@
     <string name="label_subtask_end_time">종료 시간</string>
     <string name="label_time_placeholder">미설정</string>
     <string name="action_select_time">시간 선택</string>
+    <string name="label_main_task_alarm">주요 일정 알림 받기</string>
+    <string name="label_main_task_alarm_hint">알림 관리에서 설정한 주요 일정 알람 시간에 맞춰 알림을 보낼게요.</string>
     <string name="label_subtask_alarm">세부 일정 알림 받기</string>
     <string name="label_alarm_offset">얼마 전에 알림을 받을까요?</string>
     <string name="label_subtask_alarm_hint">종료 시간이 없으면 사용자 설정 기본 시간으로 알림을 보낼게요.</string>

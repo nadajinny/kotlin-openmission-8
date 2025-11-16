@@ -95,6 +95,34 @@
             app:backgroundTint="#F1F3F6"
             app:cornerRadius="24dp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_main_task_alarm"
+                android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchMainTaskAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textMainTaskAlarmHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/label_main_task_alarm_hint"
+            android:textAppearance="@style/TextAppearance.Tagmoa.Caption" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveTask"
             style="@style/Widget.MaterialComponents.Button"

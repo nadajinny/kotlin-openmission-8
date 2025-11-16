@@ -15,6 +15,7 @@ import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
 import com.ndjinny.tagmoa.view.TaskDateRangePicker
 import com.ndjinny.tagmoa.view.formatDateRange
 import com.google.firebase.database.DatabaseReference
+import com.google.android.material.switchmaterial.SwitchMaterial
 import java.util.Locale
 
 class AddEditMainTaskActivity : AppCompatActivity() {
@@ -31,6 +32,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private lateinit var editDescription: EditText
     private lateinit var textDateRange: TextView
     private lateinit var textSelectedTags: TextView
+    private lateinit var switchAlarm: SwitchMaterial
     //private lateinit var spinnerColor: Spinner
 
     private var selectedStartDate: Long? = null
@@ -41,6 +43,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
     private var hasManualSchedule: Boolean = false
     private var isTaskCompleted: Boolean = false
     private var taskCompletedAt: Long? = null
+    private var isAlarmEnabled: Boolean = true
     private var allTags: List<Tag> = emptyList()
     //private lateinit var colorValues: Array<String>
     private var loadedTask: MainTask? = null
@@ -57,7 +60,12 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         editDescription = findViewById(R.id.editTaskDescription)
         textDateRange = findViewById(R.id.textTaskDateRange)
         textSelectedTags = findViewById(R.id.textSelectedTags)
+        switchAlarm = findViewById(R.id.switchMainTaskAlarm)
         //spinnerColor = findViewById(R.id.spinnerTaskColor)
+        switchAlarm.setOnCheckedChangeListener { _, isChecked ->
+            isAlarmEnabled = isChecked
+        }
+        switchAlarm.isChecked = isAlarmEnabled
 
         val btnSelectDateRange = findViewById<Button>(R.id.btnSelectDateRange)
         val btnSelectTags = findViewById<Button>(R.id.btnSelectTags)
@@ -76,6 +84,7 @@ class AddEditMainTaskActivity : AppCompatActivity() {
         } else {
             updateDateRangeLabel()
             updateTagLabel()
+            switchAlarm.isChecked = isAlarmEnabled
         }
     }
 
@@ -177,6 +186,8 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             hasManualSchedule = task.manualSchedule
             isTaskCompleted = task.isCompleted
             taskCompletedAt = task.completedAt
+            isAlarmEnabled = task.alarmEnabled
+            switchAlarm.isChecked = isAlarmEnabled
             if (task.manualSchedule) {
                 selectedStartDate = task.startDate ?: task.dueDate
                 selectedEndDate = task.endDate ?: task.dueDate
@@ -245,7 +256,8 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             completedAt = finalCompletedAt,
             manualSchedule = hasManualSchedule,
             mainColor = selectedColor,
-            tagIds = selectedTagIds.toMutableList()
+            tagIds = selectedTagIds.toMutableList(),
+            alarmEnabled = switchAlarm.isChecked
         )
 
         tasksRef.child(task.id).setValue(task)

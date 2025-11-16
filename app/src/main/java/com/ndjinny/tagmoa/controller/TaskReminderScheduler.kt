@@ -55,7 +55,7 @@ object TaskReminderScheduler {
         Log.d(TAG, "syncMainTaskReminders: tasks=${tasks.size}")
         val timePreference = AlarmPreferences.getMajorAlarmTime(context)
         val reminders = tasks.asSequence()
-            .filter { !it.isCompleted }
+            .filter { !it.isCompleted && it.alarmEnabled }
             .mapNotNull { task ->
                 val dueDate = task.dueDate ?: return@mapNotNull null
                 val triggerAt = buildTriggerTime(dueDate, timePreference)
