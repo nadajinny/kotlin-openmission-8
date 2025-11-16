@@ -210,10 +210,10 @@
     <string name="alarm_exact_permission_required">정확한 알람 권한을 허용해야 알림을 예약할 수 있어요.</string>
     <string name="notification_channel_task_deadline">마감 알림</string>
     <string name="notification_channel_task_deadline_desc">주요 일정 마감 시간이 되면 알림을 보내드려요.</string>
-    <string name="notification_deadline_title">주요 일정 마감</string>
+    <string name="notification_deadline_title">%1$s 마감</string>
     <string name="notification_deadline_body">%1$s 마감 시간이 되었어요.</string>
     <string name="notification_deadline_title_placeholder">주요 일정</string>
-    <string name="notification_sub_deadline_title">세부 일정 마감</string>
+    <string name="notification_sub_deadline_title">%1$s 마감</string>
     <string name="notification_sub_deadline_body">%1$s 마감 시간이 되었어요.</string>
     <string name="notification_sub_deadline_title_placeholder">세부 일정</string>
     <string name="notification_channel_remote">푸시 알림</string>

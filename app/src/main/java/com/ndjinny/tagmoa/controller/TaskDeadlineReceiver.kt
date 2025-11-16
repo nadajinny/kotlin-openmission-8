@@ -16,15 +16,13 @@ class TaskDeadlineReceiver : BroadcastReceiver() {
         val taskTitle = intent.getStringExtra(EXTRA_TASK_TITLE).orEmpty()
         val isSubTask = intent.getBooleanExtra(EXTRA_IS_SUBTASK, false)
 
-        val displayTitle = if (taskTitle.isBlank()) {
-            if (isSubTask) {
-                context.getString(R.string.notification_sub_deadline_title_placeholder)
-            } else {
-                context.getString(R.string.notification_deadline_title_placeholder)
-            }
+        val placeholderRes = if (isSubTask) {
+            R.string.notification_sub_deadline_title_placeholder
         } else {
-            taskTitle
+            R.string.notification_deadline_title_placeholder
         }
+        val scheduleName = taskTitle.takeIf { it.isNotBlank() }
+            ?: context.getString(placeholderRes)
 
         val titleRes = if (isSubTask) {
             R.string.notification_sub_deadline_title
@@ -37,7 +35,8 @@ class TaskDeadlineReceiver : BroadcastReceiver() {
             R.string.notification_deadline_body
         }
 
-        val contentText = context.getString(bodyRes, displayTitle)
+        val notificationTitle = context.getString(titleRes, scheduleName)
+        val contentText = context.getString(bodyRes, scheduleName)
         val launchIntent = Intent(context, MainActivity::class.java)
         val pendingIntent = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(launchIntent)
@@ -48,7 +47,7 @@ class TaskDeadlineReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, TaskReminderScheduler.CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_nav_tasks)
-            .setContentTitle(context.getString(titleRes))
+            .setContentTitle(notificationTitle)
             .setContentText(contentText)
             .setStyle(NotificationCompat.BigTextStyle().bigText(contentText))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
