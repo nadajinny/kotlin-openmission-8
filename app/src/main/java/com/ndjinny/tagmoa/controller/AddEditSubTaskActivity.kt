@@ -333,9 +333,9 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         } else {
             0
         }
-        val targetEnd = selectedEndDate ?: selectedStartDate
-        val computedAlarmTime = if (alarmEnabled && targetEnd != null) {
-            targetEnd - alarmOffset * 60_000L
+        val resolvedDueDate = selectedEndDate ?: selectedStartDate?.let { buildPreferredSubAlarmTime(it) }
+        val computedAlarmTime = if (alarmEnabled && resolvedDueDate != null) {
+            resolvedDueDate - alarmOffset * 60_000L
         } else {
             null
         }
@@ -351,7 +351,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             priority = priority,
             startDate = selectedStartDate,
             endDate = selectedEndDate,
-            dueDate = selectedEndDate ?: selectedStartDate,
+            dueDate = resolvedDueDate ?: selectedStartDate,
             isCompleted = isCompleted,
             completedAt = completedAt,
             alarmEnabled = alarmEnabled,
@@ -381,6 +381,19 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         dateCal.set(Calendar.HOUR_OF_DAY, prevCal.get(Calendar.HOUR_OF_DAY))
         dateCal.set(Calendar.MINUTE, prevCal.get(Calendar.MINUTE))
         return dateCal.timeInMillis
+    }
+
+    private fun buildPreferredSubAlarmTime(dateMillis: Long): Long {
+        val timeValue = AlarmPreferences.getSubAlarmTime(this)
+        val parts = timeValue.split(":")
+        val hour = parts.getOrNull(0)?.toIntOrNull() ?: 8
+        val minute = parts.getOrNull(1)?.toIntOrNull() ?: 0
+        val calendar = Calendar.getInstance().apply { timeInMillis = dateMillis }
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar.timeInMillis
     }
 
     private fun ensureChronology() {
