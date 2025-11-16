@@ -27,19 +27,19 @@ class OnboardingActivity : AppCompatActivity() {
     private val pages by lazy {
         listOf(
             OnboardingPage(
-                imageRes = R.drawable.ic_nav_tasks,
-                titleRes = R.string.onboarding_title_tasks,
-                descriptionRes = R.string.onboarding_desc_tasks
+                imageRes = R.drawable.img_usage_1
             ),
             OnboardingPage(
-                imageRes = R.drawable.ic_nav_calendar,
-                titleRes = R.string.onboarding_title_calendar,
-                descriptionRes = R.string.onboarding_desc_calendar
+                imageRes = R.drawable.img_usage_2
             ),
             OnboardingPage(
-                imageRes = R.drawable.ic_nav_profile,
-                titleRes = R.string.onboarding_title_personalize,
-                descriptionRes = R.string.onboarding_desc_personalize
+                imageRes = R.drawable.img_usage_3
+            ),
+            OnboardingPage(
+                imageRes = R.drawable.img_usage_4
+            ),
+            OnboardingPage(
+                imageRes = R.drawable.img_usage_5
             )
         )
     }

@@ -4,14 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ndjinny.tagmoa.R
 
 data class OnboardingPage(
-    val imageRes: Int,
-    val titleRes: Int,
-    val descriptionRes: Int
+    val imageRes: Int
 )
 
 class OnboardingPagerAdapter(
@@ -32,13 +29,9 @@ class OnboardingPagerAdapter(
 
     class PageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val image: ImageView = itemView.findViewById(R.id.imageOnboarding)
-        private val title: TextView = itemView.findViewById(R.id.textOnboardingTitle)
-        private val description: TextView = itemView.findViewById(R.id.textOnboardingDescription)
 
         fun bind(page: OnboardingPage) {
             image.setImageResource(page.imageRes)
-            title.setText(page.titleRes)
-            description.setText(page.descriptionRes)
         }
     }
 }

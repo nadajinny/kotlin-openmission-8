@@ -187,13 +187,6 @@
     <string name="onboarding_skip">건너뛰기</string>
     <string name="onboarding_next">다음</string>
     <string name="onboarding_get_started">시작하기</string>
-    <string name="onboarding_title_tasks">태그로 더 똑똑하게 정리</string>
-    <string name="onboarding_desc_tasks">중요도와 태그를 붙여 주요 일정을 한눈에 관리하세요.</string>
-    <string name="onboarding_title_calendar">달력에서 일정 확인</string>
-    <string name="onboarding_desc_calendar">월별 캘린더를 넘기며 다가오는 일정과 세부 작업을 확인할 수 있어요.</string>
-    <string name="onboarding_title_personalize">나만의 작업 환경</string>
-    <string name="onboarding_desc_personalize">계정에 동기화된 태그와 테스크를 어디서든 이어서 작업하세요.</string>
-
     <string name="qna_title">Q&amp;A</string>
     <string name="qna_empty">등록된 Q&amp;A가 없습니다. 첫 글을 남겨보세요!</string>
     <string name="qna_visibility_public_badge">공개</string>

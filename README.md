@@ -2,6 +2,21 @@
 
 Firebase Realtime Database를 기반으로 대(태그) → 중(메인 테스크) → 소(서브 테스크) 구조의 할 일 관리를 돕는 안드로이드 앱입니다. 태그를 중심으로 업무를 분류하고, 각 메인 테스크/서브 테스크의 일자·색상·중요도를 세분화해서 기록하도록 설계했습니다.
 
+## 앱 사용 설명서
+아래 온보딩 이미지 다섯 장으로 Tagmoa의 핵심 흐름을 빠르게 파악할 수 있습니다. 이미지는 앱 내 온보딩과 동일한 순서로 배치했습니다.
+
+| 홈에서 전체 흐름 파악 | 태그 관리로 프로젝트 정리 |
+| --- | --- |
+| ![홈 화면 요약](app/src/main/res/drawable/img_usage_1.png) | ![태그 관리](app/src/main/res/drawable/img_usage_2.png) |
+
+| 메인 테스크 목록 | 메인 테스크 작성 폼 |
+| --- | --- |
+| ![테스크 리스트](app/src/main/res/drawable/img_usage_3.png) | ![메인 테스크 작성](app/src/main/res/drawable/img_usage_4.png) |
+
+| 상세 + 서브 테스크 관리 |
+| --- |
+| ![세부 작업 관리](app/src/main/res/drawable/img_usage_5.png) |
+
 ## 구성 개요
 - **플랫폼**: Android (minSdk 24, targetSdk 36)
 - **언어 / 프레임워크**: Kotlin, AndroidX, Material Components

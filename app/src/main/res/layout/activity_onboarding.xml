@@ -4,20 +4,7 @@
     android:id="@+id/rootOnboarding"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_f2f6f6">
-
-    <ImageView
-        android:id="@+id/imageBackgroundAccent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.35"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_app_gradient"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@android:color/white">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerOnboarding"

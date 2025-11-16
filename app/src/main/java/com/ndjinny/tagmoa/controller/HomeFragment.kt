@@ -20,7 +20,6 @@ import com.ndjinny.tagmoa.model.ensureManualScheduleFlag
 import com.ndjinny.tagmoa.view.DueMainTaskAdapter
 import com.ndjinny.tagmoa.view.DueSubTaskAdapter
 import com.ndjinny.tagmoa.view.DueSubTaskItem
-import com.ndjinny.tagmoa.view.overlapsWithRange
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -133,7 +132,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         val subTask = child.getValue(SubTask::class.java) ?: continue
                         val subId = subTask.id.ifBlank { child.key.orEmpty() }
                         if (subTask.isCompleted) continue
-                        if (isRangeDueToday(subTask.startDate, subTask.endDate, subTask.dueDate)) {
+                        if (isDueToday(subTask.dueDate)) {
                             val parentTitle = taskMap[mainId]?.title ?: getString(R.string.label_no_title)
                             result.add(
                                 DueSubTaskItem(
@@ -162,11 +161,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun isTaskDueToday(task: MainTask): Boolean {
         if (task.isCompleted) return false
-        if (!task.manualSchedule && task.dueDate == null) return false
-        return isRangeDueToday(task.startDate, task.endDate, task.dueDate)
+        return isDueToday(task.dueDate)
     }
 
-    private fun isRangeDueToday(startDate: Long?, endDate: Long?, fallbackDate: Long?): Boolean {
+    private fun isDueToday(targetDate: Long?): Boolean {
+        targetDate ?: return false
         val startCal = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -179,13 +178,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             set(Calendar.SECOND, 59)
             set(Calendar.MILLISECOND, 999)
         }
-        return overlapsWithRange(
-            startDate,
-            endDate,
-            startCal.timeInMillis,
-            endCal.timeInMillis,
-            fallbackDate
-        )
+        val startMillis = startCal.timeInMillis
+        val endMillis = endCal.timeInMillis
+        return targetDate in startMillis..endMillis
     }
 
     override fun onDestroyView() {
