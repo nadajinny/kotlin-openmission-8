@@ -1,143 +1,85 @@
 # Tagmoa
 
-Firebase Realtime Database를 기반으로 대(태그) → 중(메인 테스크) → 소(서브 테스크) 구조의 할 일 관리를 돕는 안드로이드 앱입니다. 태그를 중심으로 업무를 분류하고, 각 메인 테스크/서브 테스크의 일자·색상·중요도를 세분화해서 기록하도록 설계했습니다.
+일이 많을수록 더 단순하게. 태그로 정리하는 가장 깔끔한 할 일 관리 앱.
 
-## 앱 사용 설명서
-아래 온보딩 이미지 다섯 장으로 Tagmoa의 핵심 흐름을 빠르게 파악할 수 있습니다. 이미지는 앱 내 온보딩과 동일한 순서로 배치했습니다.
+Tagmoa는 복잡해지는 할 일들을 태그 중심으로 구조화해 한눈에 정리할 수 있도록 도와주는 일정·작업 관리 앱입니다. 프로젝트가 여러 개여도, 해야 할 일이 많아도, 무엇부터 해야 할지 헷갈리지 않도록 ‘태그 → 메인 테스크 → 서브 테스크’ 흐름으로 깔끔하게 정돈해줍니다.
 
-| 홈에서 전체 흐름 파악 | 태그 관리로 프로젝트 정리 |
-| --- | --- |
-| ![홈 화면 요약](app/src/main/res/drawable/img_usage_1.png) | ![태그 관리](app/src/main/res/drawable/img_usage_2.png) |
+---
 
-| 메인 테스크 목록 | 메인 테스크 작성 폼 |
-| --- | --- |
-| ![테스크 리스트](app/src/main/res/drawable/img_usage_3.png) | ![메인 테스크 작성](app/src/main/res/drawable/img_usage_4.png) |
+## ✨ Tagmoa가 해결하는 문제
 
-| 상세 + 서브 테스크 관리 |
-| --- |
-| ![세부 작업 관리](app/src/main/res/drawable/img_usage_5.png) |
+- ✔ **프로젝트별로 할 일이 섞여 정신없던 경험**  
+  → 태그 기반 분류로 프로젝트·업무별 흐름을 한눈에 확인
+- ✔ **큰 일과 작은 일이 뒤섞여 우선순위를 놓치는 상황**  
+  → “메인 테스크 → 서브 테스크” 구조로 큰 그림부터 세부 작업까지 자연스럽게 정리
+- ✔ **일정이 많아질수록 어떤 일이 어디에 속하는지 헷갈리는 문제**  
+  → 색상, 날짜, 태그를 통해 직관적으로 파악
 
-## 구성 개요
-- **플랫폼**: Android (minSdk 24, targetSdk 36)
-- **언어 / 프레임워크**: Kotlin, AndroidX, Material Components
-- **백엔드**: Firebase Realtime Database (+ Analytics, Google Services)
-- **주요 모듈**
-  - `MainActivity`: 메인 테스크 목록과 태그/테스크 생성 플로우 진입점
-  - `TagManagementActivity`: 태그 CRUD 및 메인 테스크 일괄 태깅
-  - `AddEditMainTaskActivity`: 메인 테스크 생성/수정 폼
-  - `MainTaskDetailActivity`: 메인 테스크 상세 + 서브 테스크 관리
-  - `AddEditSubTaskActivity`: 서브 테스크 생성/수정 폼
-  - `Models.kt`: Tag/MainTask/SubTask 데이터 클래스
+---
 
-## 구현된 주요 기능
-### 태그(Tag)
-- 새 태그 생성 시 이름 중복을 제외하고 Firebase `tags` 노드에 저장
-- 생성 직후 다이얼로그로 모든 메인 테스크에 선택적 연결 (체크박스로 복수 선택)
-- 태그 삭제 시 Firebase에서 제거하고, 모든 메인 테스크의 `tagIds` 배열에서 해당 태그 ID를 정리
+## 💡 Tagmoa의 핵심 경험
 
-### 메인 테스크(Main Task)
-- 입력 항목: 제목(필수), 설명, 시작/종료일(선택), 대표 색상 스피너, 태그 멀티 선택
-- 컬러/태그/날짜 상태는 XML 리소스(배열)와 다이얼로그를 통해 선택하도록 구성
-- 목록 화면에서 RecyclerView + 카드 UI로 제목/태그/설명/색상 스트립을 시각화
-- 상세 화면에서 수정·삭제·서브 테스크 추가 진입 버튼 제공, 삭제 시 연결된 서브 테스크까지 일괄 삭제
+### 1. 태그로 묶어서 정리하는 업무 흐름
+“업무 분야”, “프로젝트”, “테마” 등 원하는 기준으로 태그를 만들고 모든 작업을 직관적으로 묶어서 관리할 수 있습니다.  
+예: 디자인 / 개발 / 회의 / 학교 / 개인 / 사이드 프로젝트...  
+한 태그만 봐도 “지금 내가 해야 할 일”의 전체 그림이 나타납니다.
 
-### 서브 테스크(Sub Task)
-- 메인 테스크 스피너 선택 또는 상세 화면에서 해당 테스크 고정 진입
-- 입력 항목: 내용(필수), 중요도(낮음/보통/높음 스피너), 시작/종료일(선택)
-- RecyclerView 항목에서 내용/일자/중요도 노출 및 수정·삭제 버튼 제공
-- 삭제는 서브 테스크만 제거하며, 메인 테스크 본문은 영향 없음
+### 2. 메인 테스크로 큰 줄기 파악
+메인 테스크는 하나의 ‘큰 작업’ 또는 ‘프로젝트 단위’를 의미합니다.  
+예: “앱 온보딩 페이지 개선”, “중간고사 준비”, “포트폴리오 리뉴얼”  
+메인 테스크만 봐도 이번 주의 핵심 목표가 자연스럽게 정리됩니다.
 
-### 공통
-- Firebase Realtime Database 경로
-  - `tags/{tagId}`
-  - `mainTasks/{taskId}`
-  - `subTasks/{mainTaskId}/{subTaskId}`
-- `google-services.json`을 통해 Firebase 프로젝트와 연동 (이미 `app/google-services.json` 위치에 포함됨)
-- `./gradlew lint`로 기본 정적 분석 수행
+### 3. 서브 테스크로 작은 일까지 빠짐없이
+큰 작업을 세부 단계로 나누면 “지금 바로 해야 할 일”이 명확해집니다.
 
-## 데이터 스키마 예시
-```json
-{
-  "tags": {
-    "tagA": { "id": "tagA", "name": "디자인" }
-  },
-  "mainTasks": {
-    "task1": {
-      "id": "task1",
-      "title": "신규 온보딩",
-      "description": "신규 사용자 체험 개선",
-      "startDate": 1735689600000,
-      "endDate": 1736294400000,
-      "dueDate": 1736294400000,
-      "mainColor": "#FF6200EE",
-      "tagIds": ["tagA", "tagB"]
-    }
-  },
-  "subTasks": {
-    "task1": {
-      "sub1": {
-        "id": "sub1",
-        "mainTaskId": "task1",
-        "content": "인터뷰 가이드 작성",
-        "priority": 2,
-        "startDate": 1735257600000,
-        "endDate": 1735344000000,
-        "dueDate": 1735344000000
-      }
-    }
-  }
-}
-```
+- 인터뷰 준비하기
+- 문서 정리
+- 자료 수집
+- 초안 작성
+- 검토하기
 
-## 개발 환경 설정
-1. **Firebase 프로젝트**
-   - 콘솔에서 Android 앱을 등록하고 `com.example.tagmoa` 패키지명을 사용합니다.
-   - `app/google-services.json`을 다운로드해 동일 경로에 위치시킵니다 (현재 파일이 있다면 자신의 프로젝트 설정으로 교체).
-2. **로컬 빌드**
-   - JDK 11 이상, Android Studio Koala 이상 버전 권장
-   - 의존성 설치: `./gradlew tasks` (필요 시)
-   - 정적 분석: `./gradlew lint`
-   - 에뮬레이터/디바이스에서 실행: Android Studio “Run” 사용
-3. **실행 전 체크리스트**
-   - Firebase Database > Realtime Database 활성화 및 읽기/쓰기 규칙 설정
-   - 네트워크 권한은 기본 Manifest로 충분 (추가 퍼미션 불필요)
+작은 일들을 체크해가며 자연스럽게 작업이 완성되는 경험을 제공합니다.
 
-## 화면 흐름
-1. **홈(MainActivity)** — 메인 테스크 목록, “메인 테스크 추가” & “태그 관리” 버튼
-2. **태그 관리(TagManagementActivity)** — 태그 추가, 전체 리스트, 각 태그별 삭제
-3. **메인 테스크 작성(AddEditMainTaskActivity)** — 폼 입력 후 저장
-4. **메인 테스크 상세(MainTaskDetailActivity)** — 테스크 정보 + 서브 테스크 리스트, 편집/삭제/추가
-5. **서브 테스크 작성(AddEditSubTaskActivity)** — 메인 테스크 지정 후 내용/중요도/일자 입력
+### 4. 색상·날짜·중요도로 더 명확하게 구분
+각 테스크는 색상 라벨, 날짜, 중요도를 지정해 보다 시각적이고 명확하게 정리할 수 있습니다.
 
-## 현재 구현 상태 vs 향후 계획
-### ✅ 구현 완료
-- Firebase Realtime Database CRUD (태그/메인/서브)
-- 태그 생성 시 다중 메인 테스크 연결/삭제 시 일괄 해제 로직
-- 메인 테스크 컬러·태그·일자 입력 및 목록/상세 뷰 표현
-- 서브 테스크 중요도/일자/내용 관리, 메인 테스크별 중첩 저장 구조
-- RecyclerView 어댑터 3종(Main/Tag/Sub) + Material Card UI
-- 공통 유틸 (`DateUtils.asDateLabel`) 및 스피너 리스너 래퍼
-- Lint 기반 기초 품질 검사 스크립트
+- 색상: 프로젝트나 우선순위 구분
+- 날짜: 시작/종료/마감일로 작업 타임라인 파악
+- 중요도: 지금 당장 해야 할 일부터 표시
 
-### 📌 향후 구현하면 좋은 항목
-1. **태그 편집 기능**: 이름 변경 및 다이얼로그 재사용, 연동된 테스크에 실시간 반영
-2. **정렬/필터**: 메인 테스크 리스트를 마감일/태그/색상별로 정렬하거나 필터링하는 UX
-3. **검색 & 빠른 이동**: 상단 검색창에서 태그/테스크 제목 검색
-4. **서브 테스크 완료 상태**: 체크박스로 완료 여부 토글 및 정렬(완료/미완료 분리)
-5. **입력 검증 고도화**: 태그 중복 이름 방지, 날짜 범위 포맷 안내, 날짜 유효성 (시작/종료) 추가
-6. **오프라인 캐시/로컬 DB**: Room 또는 DataStore를 이용한 임시 저장 및 오프라인 편집
-7. **알림 연동**: 마감일 기반 로컬 알림 또는 FCM Push 알림
-8. **다크 모드 & 테마 커스터마이징**: 색상 팔레트 확장, 사용자 지정 색상 입력
-9. **테스트 자동화**: UI 테스트(Espresso), ViewModel/Repository 분리 및 단위 테스트 도입
-10. **다중 사용자 지원**: Firebase Auth 연동으로 사용자별 데이터 분리
+---
 
-## 빌드 & 테스트
-```bash
-./gradlew lint        # 정적 분석
-./gradlew assembleDebug  # 디버그 APK 빌드
-```
-필요 시 Android Studio에서 `Run > Run 'app'`으로 에뮬레이터/실단말 실행이 가능합니다.
+## 📱 Tagmoa 화면 미리보기
 
-## 참고
-- Firebase 규칙을 공개 프로젝트에 맞게 조정해야 합니다 (예: 인증 사용자만 쓰기 가능).
-- `google-services.json`에는 민감 정보가 포함되므로 외부 저장소에 업로드 시 주의하세요.
+<details>
+  <summary><strong>▶ 온보딩 이미지 보기 (가로 스크롤)</strong></summary>
+  <div style="display: flex; overflow-x: auto; gap: 12px; padding: 10px 0;">
+    <img src="app/src/main/res/drawable/img_usage_1.png" height="420" />
+    <img src="app/src/main/res/drawable/img_usage_2.png" height="420" />
+    <img src="app/src/main/res/drawable/img_usage_3.png" height="420" />
+    <img src="app/src/main/res/drawable/img_usage_4.png" height="420" />
+    <img src="app/src/main/res/drawable/img_usage_5.png" height="420" />
+  </div>
+</details>
+
+---
+
+## 🌱 Tagmoa가 추구하는 방향
+
+Tagmoa는 ‘일정 관리’보다 **‘일 정리’**에 집중합니다.  
+사용자가 지금 집중해야 할 일을 더 빠르게 찾고, 작업 흐름이 자연스럽게 이어지도록 만드는 것이 목표입니다.
+
+앞으로는 더 똑똑한 추천, 간단한 업무 분석, 태그 기반 통계 등을 통해 일상을 더 효율적으로 만드는 방향으로 확장할 예정입니다.
+
+---
+
+## 🧡 Tagmoa를 추천하는 사람
+
+- 여러 프로젝트를 동시에 진행하는 사람
+- 해야 할 일은 많은데 무엇부터 해야 할지 헷갈리는 사람
+- 관리 방식이 복잡한 앱 대신 단순하고 직관적인 구조를 원하는 사람
+- 큰 작업과 작은 작업을 구분해 정리하고 싶은 사람
+
+---
+
+Tagmoa와 함께 일의 흐름을 태그로 붙잡고, 해야 할 일을 더 단순하게 관리해 보세요!
