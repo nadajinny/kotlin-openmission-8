@@ -85,6 +85,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         updateTodayInfo()
         applySavedBackground()
+        applySavedDateTextColor()
         observeTasks()
         observeSubTasks()
     }
@@ -224,6 +225,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun resetToDefaultBackground() {
         backgroundView?.setImageResource(R.color.color_f2f6f6)
+    }
+
+    private fun applySavedDateTextColor() {
+        val colorInt = HomeBackgroundManager.getDateTextColorInt(requireContext())
+        textTodayDate.setTextColor(colorInt)
     }
 
     private fun showCompleteMainDialog(task: MainTask) {

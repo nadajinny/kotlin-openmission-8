@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.AuthProvider
@@ -21,14 +20,6 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
 
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val googleClient by lazy { GoogleSignInHelper.getClient(requireContext()) }
-    private val selectHomeBackgroundLauncher =
-        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri != null) {
-                persistUriPermission(uri)
-                HomeBackgroundManager.saveBackgroundUri(requireContext(), uri)
-                Toast.makeText(requireContext(), getString(R.string.home_background_updated), Toast.LENGTH_SHORT).show()
-            }
-        }
 
     private lateinit var textName: TextView
     private lateinit var textEmail: TextView
@@ -58,9 +49,7 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         textName.text = getString(R.string.profile_name_format, session.displayName ?: "-")
         textEmail.text = getString(R.string.profile_email_format, session.email ?: "-")
 
-        rowPickBackground.setOnClickListener {
-            selectHomeBackgroundLauncher.launch(arrayOf("image/*"))
-        }
+        rowPickBackground.setOnClickListener { openHomeBackgroundSettings() }
 
         rowOnboardingGuide.setOnClickListener {
             val intent = Intent(requireContext(), OnboardingActivity::class.java).apply {
@@ -202,13 +191,8 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         activity?.finish()
     }
 
-    private fun persistUriPermission(uri: Uri) {
-        val contentResolver = requireContext().contentResolver
-        val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        try {
-            contentResolver.takePersistableUriPermission(uri, takeFlags)
-        } catch (_: SecurityException) {
-            // Permission already granted or not needed
-        }
+    private fun openHomeBackgroundSettings() {
+        val intent = Intent(requireContext(), HomeBackgroundSettingsActivity::class.java)
+        startActivity(intent)
     }
 }

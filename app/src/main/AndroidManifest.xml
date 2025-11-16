@@ -52,6 +52,10 @@
             android:theme="@style/Theme.TagMoa.TagManagementDialog" />
 
         <activity
+            android:name=".controller.HomeBackgroundSettingsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".controller.MainActivity"
             android:exported="false" />
 
