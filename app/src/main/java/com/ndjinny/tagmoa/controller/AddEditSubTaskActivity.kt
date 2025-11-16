@@ -238,7 +238,11 @@ class AddEditSubTaskActivity : AppCompatActivity() {
     }
 
     private fun showTimePicker(isStart: Boolean) {
-        val base = if (isStart) selectedStartDate else selectedEndDate
+        val base = if (isStart) {
+            selectedStartDate
+        } else {
+            selectedEndDate ?: selectedStartDate
+        }
         if (base == null) {
             Toast.makeText(this, R.string.message_select_date_first, Toast.LENGTH_SHORT).show()
             return
@@ -283,12 +287,16 @@ class AddEditSubTaskActivity : AppCompatActivity() {
     }
 
     private fun applySelectedTime(isStart: Boolean, hour: Int, minute: Int) {
-        val target = if (isStart) selectedStartDate else selectedEndDate
-        if (target == null) {
+        val base = if (isStart) {
+            selectedStartDate
+        } else {
+            selectedEndDate ?: selectedStartDate
+        }
+        if (base == null) {
             Toast.makeText(this, R.string.message_select_date_first, Toast.LENGTH_SHORT).show()
             return
         }
-        val calendar = Calendar.getInstance().apply { timeInMillis = target }
+        val calendar = Calendar.getInstance().apply { timeInMillis = base }
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
         calendar.set(Calendar.SECOND, 0)
