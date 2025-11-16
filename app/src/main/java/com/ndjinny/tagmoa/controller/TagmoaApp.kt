@@ -18,6 +18,7 @@ class TagmoaApp : Application() {
         SessionManager.init(this)
         TaskCompletionSyncManager.init(this)
         TaskReminderScheduler.ensureChannel(this)
+        FcmTokenRegistrar.ensureCurrentTokenSynced(this)
         enableFirebasePersistence()
         KakaoSdk.init(this, getString(R.string.kakao_app_key))
         initializeNaverSdk()

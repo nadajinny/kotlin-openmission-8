@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         SessionManager.currentSession?.uid?.let { uid ->
             TaskCompletionSyncManager.flushPending(uid, UserDatabase.tasksRef(uid))
         }
+        FcmTokenRegistrar.ensureCurrentTokenSynced(this)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_main)

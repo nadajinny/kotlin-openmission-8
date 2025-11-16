@@ -20,6 +20,14 @@
     <string name="label_main_task">주요 일정</string>
     <string name="label_priority">중요도</string>
     <string name="label_subtask_period">기간 선택</string>
+    <string name="label_subtask_start_time">시작 시간</string>
+    <string name="label_subtask_end_time">종료 시간</string>
+    <string name="label_time_placeholder">미설정</string>
+    <string name="action_select_time">시간 선택</string>
+    <string name="label_subtask_alarm">세부 일정 알림 받기</string>
+    <string name="label_alarm_offset">얼마 전에 알림을 받을까요?</string>
+    <string name="label_subtask_alarm_hint">종료 시간이 없으면 사용자 설정 기본 시간으로 알림을 보낼게요.</string>
+    <string name="message_select_date_first">먼저 날짜를 선택해주세요.</string>
     <string name="title_select_date_range">기간 선택</string>
     <string name="action_ok">확인</string>
     <string name="action_cancel">취소</string>
@@ -204,6 +212,10 @@
     <string name="notification_sub_deadline_title">세부 일정 마감</string>
     <string name="notification_sub_deadline_body">%1$s 마감 시간이 되었어요.</string>
     <string name="notification_sub_deadline_title_placeholder">세부 일정</string>
+    <string name="notification_channel_remote">푸시 알림</string>
+    <string name="notification_channel_remote_desc">Firebase Cloud Messaging으로 전송되는 맞춤 알림이에요.</string>
+    <string name="notification_remote_fallback_title">Tagmoa 알림</string>
+    <string name="notification_remote_fallback_body">새로운 알림이 도착했습니다.</string>
 
     <string name="onboarding_skip">건너뛰기</string>
     <string name="onboarding_next">다음</string>

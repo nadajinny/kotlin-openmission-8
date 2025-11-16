@@ -22,6 +22,7 @@ import java.util.Calendar
 object TaskReminderScheduler {
 
     const val CHANNEL_ID = "task_deadline_channel"
+    private const val TAG = "TaskReminderScheduler"
     private const val PREFS_NAME = "task_reminder_cache"
     private const val KEY_MAIN_REMINDERS = "main_task_reminders"
     private const val KEY_SUB_REMINDERS = "sub_task_reminders"
@@ -31,7 +32,7 @@ object TaskReminderScheduler {
     private data class ScheduledReminder(
         val id: String,
         val title: String,
-        val dueDate: Long
+        val triggerAt: Long
     )
 
     fun ensureChannel(context: Context) {
@@ -51,14 +52,17 @@ object TaskReminderScheduler {
     }
 
     fun syncMainTaskReminders(context: Context, tasks: List<MainTask>) {
+        Log.d(TAG, "syncMainTaskReminders: tasks=${tasks.size}")
+        val timePreference = AlarmPreferences.getMajorAlarmTime(context)
         val reminders = tasks.asSequence()
             .filter { !it.isCompleted }
             .mapNotNull { task ->
                 val dueDate = task.dueDate ?: return@mapNotNull null
+                val triggerAt = buildTriggerTime(dueDate, timePreference)
                 val title = task.title.ifBlank {
                     context.getString(R.string.notification_deadline_title_placeholder)
                 }
-                ScheduledReminder(task.id, title, dueDate)
+                ScheduledReminder(task.id, title, triggerAt)
             }
             .toList()
         syncReminders(
@@ -66,20 +70,24 @@ object TaskReminderScheduler {
             type = ReminderType.MAIN,
             storageKey = KEY_MAIN_REMINDERS,
             isEnabled = AlarmPreferences.isMajorAlarmEnabled(context),
-            timePreference = AlarmPreferences.getMajorAlarmTime(context),
             reminders = reminders
         )
     }
 
     fun syncSubTaskReminders(context: Context, tasks: List<SubTask>) {
+        Log.d(TAG, "syncSubTaskReminders: tasks=${tasks.size}")
+        val timePreference = AlarmPreferences.getSubAlarmTime(context)
         val reminders = tasks.asSequence()
-            .filter { !it.isCompleted }
+            .filter { !it.isCompleted && it.alarmEnabled }
             .mapNotNull { task ->
-                val dueDate = task.dueDate ?: return@mapNotNull null
                 val title = task.content.ifBlank {
                     context.getString(R.string.notification_sub_deadline_title_placeholder)
                 }
-                ScheduledReminder(task.id, title, dueDate)
+                val triggerAt = task.alarmTimeMillis ?: run {
+                    val dueDate = task.dueDate ?: return@mapNotNull null
+                    buildTriggerTime(dueDate, timePreference)
+                }
+                ScheduledReminder(task.id, title, triggerAt)
             }
             .toList()
         syncReminders(
@@ -87,7 +95,6 @@ object TaskReminderScheduler {
             type = ReminderType.SUB,
             storageKey = KEY_SUB_REMINDERS,
             isEnabled = AlarmPreferences.isSubAlarmEnabled(context),
-            timePreference = AlarmPreferences.getSubAlarmTime(context),
             reminders = reminders
         )
     }
@@ -97,8 +104,7 @@ object TaskReminderScheduler {
             context = context,
             type = ReminderType.MAIN,
             storageKey = KEY_MAIN_REMINDERS,
-            isEnabled = AlarmPreferences.isMajorAlarmEnabled(context),
-            timePreference = AlarmPreferences.getMajorAlarmTime(context)
+            isEnabled = AlarmPreferences.isMajorAlarmEnabled(context)
         )
     }
 
@@ -107,8 +113,7 @@ object TaskReminderScheduler {
             context = context,
             type = ReminderType.SUB,
             storageKey = KEY_SUB_REMINDERS,
-            isEnabled = AlarmPreferences.isSubAlarmEnabled(context),
-            timePreference = AlarmPreferences.getSubAlarmTime(context)
+            isEnabled = AlarmPreferences.isSubAlarmEnabled(context)
         )
     }
 
@@ -125,19 +130,26 @@ object TaskReminderScheduler {
         type: ReminderType,
         storageKey: String,
         isEnabled: Boolean,
-        timePreference: String,
         reminders: List<ScheduledReminder>
     ) {
         ensureChannel(context)
-        if (!isEnabled || !hasNotificationPermission(context) || !ExactAlarmPermissionHelper.hasExactAlarmPermission(context)) {
+        val hasNotifyPermission = hasNotificationPermission(context)
+        val hasExactPermission = ExactAlarmPermissionHelper.hasExactAlarmPermission(context)
+        if (!isEnabled || !hasNotifyPermission) {
+            Log.w(
+                TAG,
+                "syncReminders skipped type=$type enabled=$isEnabled notifyPerm=$hasNotifyPermission exactPerm=$hasExactPermission"
+            )
             cancelAllStoredReminders(context, type, storageKey)
             return
         }
 
         val now = System.currentTimeMillis()
-        val filtered = reminders.filter {
-            buildTriggerTime(it.dueDate, timePreference) > now
-        }
+        val filtered = reminders.filter { it.triggerAt > now }
+        Log.d(
+            TAG,
+            "syncReminders type=$type total=${reminders.size} filtered=${filtered.size} exactPerm=${ExactAlarmPermissionHelper.hasExactAlarmPermission(context)}"
+        )
 
         val stored = loadStoredReminders(context, storageKey)
         val storedMap = stored.associateBy { it.id }
@@ -145,6 +157,7 @@ object TaskReminderScheduler {
 
         stored.forEach { scheduled ->
             if (!desiredIds.contains(scheduled.id)) {
+                Log.d(TAG, "Removing reminder id=${scheduled.id}")
                 cancelReminder(context, type, scheduled.id, scheduled.title)
             }
         }
@@ -152,17 +165,13 @@ object TaskReminderScheduler {
         filtered.forEach { scheduled ->
             val existing = storedMap[scheduled.id]
             if (existing == null ||
-                existing.dueDate != scheduled.dueDate ||
+                existing.triggerAt != scheduled.triggerAt ||
                 existing.title != scheduled.title
             ) {
-                scheduleReminder(
-                    context,
-                    type,
-                    scheduled.id,
-                    scheduled.title,
-                    scheduled.dueDate,
-                    timePreference
-                )
+                Log.d(TAG, "Scheduling reminder id=${scheduled.id} triggerAt=${scheduled.triggerAt}")
+                scheduleReminder(context, type, scheduled.id, scheduled.title, scheduled.triggerAt)
+            } else {
+                Log.d(TAG, "Keeping existing reminder id=${scheduled.id}")
             }
         }
 
@@ -173,14 +182,17 @@ object TaskReminderScheduler {
         context: Context,
         type: ReminderType,
         storageKey: String,
-        isEnabled: Boolean,
-        timePreference: String
+        isEnabled: Boolean
     ) {
-        if (!isEnabled || !hasNotificationPermission(context) || !ExactAlarmPermissionHelper.hasExactAlarmPermission(context)) return
+        if (!isEnabled || !hasNotificationPermission(context)) {
+            Log.w(TAG, "rescheduleStoredReminders skipped type=$type enabled=$isEnabled")
+            return
+        }
         ensureChannel(context)
         val stored = loadStoredReminders(context, storageKey)
         stored.forEach {
-            scheduleReminder(context, type, it.id, it.title, it.dueDate, timePreference)
+            Log.d(TAG, "Rescheduling stored reminder id=${it.id}")
+            scheduleReminder(context, type, it.id, it.title, it.triggerAt)
         }
     }
 
@@ -190,6 +202,7 @@ object TaskReminderScheduler {
         storageKey: String
     ) {
         val stored = loadStoredReminders(context, storageKey)
+        Log.d(TAG, "cancelAllStoredReminders type=$type count=${stored.size}")
         stored.forEach { cancelReminder(context, type, it.id, it.title) }
         saveStoredReminders(context, storageKey, emptyList())
     }
@@ -199,22 +212,24 @@ object TaskReminderScheduler {
         type: ReminderType,
         taskId: String,
         title: String,
-        dueDateMillis: Long,
-        timeValue: String
+        triggerAtMillis: Long
     ) {
         if (taskId.isBlank()) return
-        if (!ExactAlarmPermissionHelper.hasExactAlarmPermission(context)) {
-            Log.w("TaskReminderScheduler", "Exact alarm permission missing. Cannot schedule reminder for $taskId")
-            return
-        }
-        val triggerAt = buildTriggerTime(dueDateMillis, timeValue)
-        if (triggerAt <= System.currentTimeMillis()) {
+        val hasExactPermission = ExactAlarmPermissionHelper.hasExactAlarmPermission(context)
+        if (triggerAtMillis <= System.currentTimeMillis()) {
+            Log.w(TAG, "Trigger time already passed for $taskId")
             cancelReminder(context, type, taskId)
             return
         }
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
         val pendingIntent = buildPendingIntent(context, type, taskId, title)
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent)
+        if (hasExactPermission) {
+            Log.d(TAG, "Scheduling exact alarm id=$taskId at=$triggerAtMillis title=$title type=$type")
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+        } else {
+            Log.w(TAG, "Exact alarm permission missing. Using inexact fallback for $taskId")
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+        }
     }
 
     private fun cancelReminder(
@@ -226,6 +241,7 @@ object TaskReminderScheduler {
         if (taskId.isBlank()) return
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
         val pendingIntent = buildPendingIntent(context, type, taskId, title.orEmpty())
+        Log.d(TAG, "Cancelling alarm id=$taskId type=$type")
         alarmManager.cancel(pendingIntent)
     }
 
@@ -272,9 +288,9 @@ object TaskReminderScheduler {
             val obj = array.optJSONObject(i) ?: continue
             val id = obj.optString("id")
             val title = obj.optString("title")
-            val dueDate = obj.optLong("dueDate", -1)
-            if (id.isNotBlank() && dueDate > 0) {
-                list.add(ScheduledReminder(id, title, dueDate))
+            val triggerAt = obj.optLong("triggerAt", -1)
+            if (id.isNotBlank() && triggerAt > 0) {
+                list.add(ScheduledReminder(id, title, triggerAt))
             }
         }
         return list
@@ -290,7 +306,7 @@ object TaskReminderScheduler {
             val obj = JSONObject().apply {
                 put("id", reminder.id)
                 put("title", reminder.title)
-                put("dueDate", reminder.dueDate)
+                put("triggerAt", reminder.triggerAt)
             }
             array.put(obj)
         }

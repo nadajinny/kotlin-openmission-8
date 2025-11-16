@@ -17,6 +17,8 @@ object UserDatabase {
 
     fun subTasksRef(uid: String): DatabaseReference = userRoot(uid).child("subTasks")
 
+    fun fcmTokensRef(uid: String): DatabaseReference = userRoot(uid).child("fcmTokens")
+
     fun upsertUserProfile(session: UserSession) {
         val profile = mapOf(
             "uid" to session.uid,

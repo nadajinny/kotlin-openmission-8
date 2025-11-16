@@ -40,5 +40,8 @@ data class SubTask(
     @get:PropertyName("isCompleted")
     @set:PropertyName("isCompleted")
     var isCompleted: Boolean = false,
-    var completedAt: Long? = null
+    var completedAt: Long? = null,
+    var alarmEnabled: Boolean = false,
+    var alarmLeadMinutes: Int = 0,
+    var alarmTimeMillis: Long? = null
 )
