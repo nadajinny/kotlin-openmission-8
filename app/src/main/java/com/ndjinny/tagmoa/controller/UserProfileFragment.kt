@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.AuthProvider
@@ -75,10 +76,12 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
         }
 
         rowDisconnect.setOnClickListener {
-            when (session.provider) {
-                AuthProvider.GOOGLE -> disconnectGoogle()
-                AuthProvider.KAKAO -> disconnectKakao()
-                AuthProvider.NAVER -> disconnectNaver()
+            confirmDisconnect {
+                when (session.provider) {
+                    AuthProvider.GOOGLE -> disconnectGoogle()
+                    AuthProvider.KAKAO -> disconnectKakao()
+                    AuthProvider.NAVER -> disconnectNaver()
+                }
             }
         }
     }
@@ -203,5 +206,14 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
     private fun openAlarmManagement() {
         val intent = Intent(requireContext(), AlarmManagementActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun confirmDisconnect(onConfirm: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.title_confirm_disconnect)
+            .setMessage(R.string.message_confirm_disconnect)
+            .setPositiveButton(R.string.action_disconnect_account) { _, _ -> onConfirm() }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 }
