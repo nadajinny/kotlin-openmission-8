@@ -181,6 +181,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
                     allTasks.add(task)
                 }
                 filterTasks()
+                context?.let { TaskReminderScheduler.syncMainTaskReminders(it, allTasks) }
             }
 
             override fun onCancelled(error: DatabaseError) {

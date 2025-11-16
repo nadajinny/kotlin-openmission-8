@@ -191,9 +191,15 @@
     <string name="alarm_item_major_time">주요 일정 알람 받는 시간 설정</string>
     <string name="alarm_item_sub_title">세부 일정 알람 받기</string>
     <string name="alarm_item_sub_time">세부 일정 알람 받는 시간 설정</string>
-    <string name="alarm_time_setting_placeholder">시간 설정 기능은 곧 제공될 예정입니다.</string>
+    <string name="alarm_time_setting_placeholder">설정한 시간에 주요 일정 마감 알림을 보낼게요.</string>
     <string name="alarm_permission_rationale">알림을 받으려면 알림 권한이 필요합니다.</string>
     <string name="alarm_permission_denied">알림 권한이 허용되지 않아 알림을 보낼 수 없습니다.</string>
+    <string name="alarm_sub_feature_placeholder">세부 일정 알림 기능은 준비 중이에요.</string>
+    <string name="notification_channel_task_deadline">마감 알림</string>
+    <string name="notification_channel_task_deadline_desc">주요 일정 마감 시간이 되면 알림을 보내드려요.</string>
+    <string name="notification_deadline_title">주요 일정 마감</string>
+    <string name="notification_deadline_body">%1$s 마감 시간이 되었어요.</string>
+    <string name="notification_deadline_title_placeholder">주요 일정</string>
 
     <string name="onboarding_skip">건너뛰기</string>
     <string name="onboarding_next">다음</string>

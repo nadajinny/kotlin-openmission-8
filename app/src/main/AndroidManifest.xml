@@ -82,6 +82,10 @@
             android:name=".controller.QnaActivity"
             android:exported="false" />
 
+        <receiver
+            android:name=".controller.TaskDeadlineReceiver"
+            android:exported="false" />
+
     </application>
 
 </manifest>
