@@ -196,6 +196,7 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
         subTasksListener = subTasksRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 subTasksByMain.clear()
+                val totalSubTasks = mutableListOf<SubTask>()
                 for (mainSnapshot in snapshot.children) {
                     val mainId = mainSnapshot.key.orEmpty()
                     val list = mutableListOf<SubTask>()
@@ -206,8 +207,10 @@ class MainTaskListFragment : Fragment(R.layout.fragment_main_task_list) {
                         list.add(subTask)
                     }
                     subTasksByMain[mainId] = list
+                    totalSubTasks.addAll(list)
                 }
                 filterTasks()
+                context?.let { TaskReminderScheduler.syncSubTaskReminders(it, totalSubTasks) }
             }
 
             override fun onCancelled(error: DatabaseError) {}

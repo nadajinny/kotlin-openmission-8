@@ -70,7 +70,7 @@ class AlarmManagementActivity : AppCompatActivity() {
             switchSubAlarm.isChecked = AlarmPreferences.isSubAlarmEnabled(this)
         }
         updateMajorTimeLabel()
-        textSubTime.text = AlarmPreferences.getSubAlarmTime(this)
+        updateSubTimeLabel()
 
         switchMajorAlarm.setOnCheckedChangeListener { _, isChecked ->
             if (suppressSwitchCallbacks) return@setOnCheckedChangeListener
@@ -83,7 +83,7 @@ class AlarmManagementActivity : AppCompatActivity() {
         }
 
         rowMajorTime.setOnClickListener { showMajorAlarmTimePicker() }
-        rowSubTime.setOnClickListener { showComingSoonToast() }
+        rowSubTime.setOnClickListener { showSubAlarmTimePicker() }
     }
 
     private fun handleSwitchToggle(targetSwitch: SwitchMaterial, isChecked: Boolean) {
@@ -104,12 +104,19 @@ class AlarmManagementActivity : AppCompatActivity() {
             R.id.switchMajorAlarm -> {
                 AlarmPreferences.setMajorAlarmEnabled(this, isChecked)
                 if (isChecked) {
-                    TaskReminderScheduler.rescheduleStoredReminders(this)
+                    TaskReminderScheduler.rescheduleStoredMainReminders(this)
                 } else {
-                    TaskReminderScheduler.cancelAllStoredReminders(this)
+                    TaskReminderScheduler.cancelAllStoredMainReminders(this)
                 }
             }
-            R.id.switchSubAlarm -> AlarmPreferences.setSubAlarmEnabled(this, isChecked)
+            R.id.switchSubAlarm -> {
+                AlarmPreferences.setSubAlarmEnabled(this, isChecked)
+                if (isChecked) {
+                    TaskReminderScheduler.rescheduleStoredSubReminders(this)
+                } else {
+                    TaskReminderScheduler.cancelAllStoredSubReminders(this)
+                }
+            }
         }
     }
 
@@ -145,7 +152,7 @@ class AlarmManagementActivity : AppCompatActivity() {
                 val formatted = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute)
                 AlarmPreferences.setMajorAlarmTime(this, formatted)
                 updateMajorTimeLabel()
-                TaskReminderScheduler.rescheduleStoredReminders(this)
+                TaskReminderScheduler.rescheduleStoredMainReminders(this)
             },
             initialHour,
             initialMinute,
@@ -153,7 +160,27 @@ class AlarmManagementActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun showComingSoonToast() {
-        Toast.makeText(this, R.string.alarm_sub_feature_placeholder, Toast.LENGTH_SHORT).show()
+    private fun updateSubTimeLabel() {
+        textSubTime.text = AlarmPreferences.getSubAlarmTime(this)
+    }
+
+    private fun showSubAlarmTimePicker() {
+        val current = AlarmPreferences.getSubAlarmTime(this)
+        val parts = current.split(":")
+        val initialHour = parts.getOrNull(0)?.toIntOrNull() ?: 13
+        val initialMinute = parts.getOrNull(1)?.toIntOrNull() ?: 0
+        val is24Hour = android.text.format.DateFormat.is24HourFormat(this)
+        TimePickerDialog(
+            this,
+            { _, hourOfDay, minute ->
+                val formatted = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute)
+                AlarmPreferences.setSubAlarmTime(this, formatted)
+                updateSubTimeLabel()
+                TaskReminderScheduler.rescheduleStoredSubReminders(this)
+            },
+            initialHour,
+            initialMinute,
+            is24Hour
+        ).show()
     }
 }

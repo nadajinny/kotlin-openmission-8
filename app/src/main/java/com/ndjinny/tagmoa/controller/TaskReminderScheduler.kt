@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.AlarmPreferences
 import com.ndjinny.tagmoa.model.MainTask
+import com.ndjinny.tagmoa.model.SubTask
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Calendar
@@ -22,8 +23,11 @@ object TaskReminderScheduler {
     const val CHANNEL_ID = "task_deadline_channel"
     private const val PREFS_NAME = "task_reminder_cache"
     private const val KEY_MAIN_REMINDERS = "main_task_reminders"
+    private const val KEY_SUB_REMINDERS = "sub_task_reminders"
 
-    private data class ScheduledMainTask(
+    private enum class ReminderType { MAIN, SUB }
+
+    private data class ScheduledReminder(
         val id: String,
         val title: String,
         val dueDate: Long
@@ -46,94 +50,196 @@ object TaskReminderScheduler {
     }
 
     fun syncMainTaskReminders(context: Context, tasks: List<MainTask>) {
-        ensureChannel(context)
-        if (!AlarmPreferences.isMajorAlarmEnabled(context) || !hasPermission(context)) {
-            cancelAllStoredReminders(context)
-            return
-        }
-
-        val timePreference = AlarmPreferences.getMajorAlarmTime(context)
-        val now = System.currentTimeMillis()
-        val desired = tasks.asSequence()
+        val reminders = tasks.asSequence()
             .filter { !it.isCompleted }
             .mapNotNull { task ->
                 val dueDate = task.dueDate ?: return@mapNotNull null
-                val triggerAt = buildTriggerTime(dueDate, timePreference)
-                if (triggerAt <= now) return@mapNotNull null
                 val title = task.title.ifBlank {
                     context.getString(R.string.notification_deadline_title_placeholder)
                 }
-                ScheduledMainTask(task.id, title, dueDate)
+                ScheduledReminder(task.id, title, dueDate)
             }
             .toList()
+        syncReminders(
+            context = context,
+            type = ReminderType.MAIN,
+            storageKey = KEY_MAIN_REMINDERS,
+            isEnabled = AlarmPreferences.isMajorAlarmEnabled(context),
+            timePreference = AlarmPreferences.getMajorAlarmTime(context),
+            reminders = reminders
+        )
+    }
 
-        val stored = loadStoredReminders(context)
+    fun syncSubTaskReminders(context: Context, tasks: List<SubTask>) {
+        val reminders = tasks.asSequence()
+            .filter { !it.isCompleted }
+            .mapNotNull { task ->
+                val dueDate = task.dueDate ?: return@mapNotNull null
+                val title = task.content.ifBlank {
+                    context.getString(R.string.notification_sub_deadline_title_placeholder)
+                }
+                ScheduledReminder(task.id, title, dueDate)
+            }
+            .toList()
+        syncReminders(
+            context = context,
+            type = ReminderType.SUB,
+            storageKey = KEY_SUB_REMINDERS,
+            isEnabled = AlarmPreferences.isSubAlarmEnabled(context),
+            timePreference = AlarmPreferences.getSubAlarmTime(context),
+            reminders = reminders
+        )
+    }
+
+    fun rescheduleStoredMainReminders(context: Context) {
+        rescheduleStoredReminders(
+            context = context,
+            type = ReminderType.MAIN,
+            storageKey = KEY_MAIN_REMINDERS,
+            isEnabled = AlarmPreferences.isMajorAlarmEnabled(context),
+            timePreference = AlarmPreferences.getMajorAlarmTime(context)
+        )
+    }
+
+    fun rescheduleStoredSubReminders(context: Context) {
+        rescheduleStoredReminders(
+            context = context,
+            type = ReminderType.SUB,
+            storageKey = KEY_SUB_REMINDERS,
+            isEnabled = AlarmPreferences.isSubAlarmEnabled(context),
+            timePreference = AlarmPreferences.getSubAlarmTime(context)
+        )
+    }
+
+    fun cancelAllStoredMainReminders(context: Context) {
+        cancelAllStoredReminders(context, ReminderType.MAIN, KEY_MAIN_REMINDERS)
+    }
+
+    fun cancelAllStoredSubReminders(context: Context) {
+        cancelAllStoredReminders(context, ReminderType.SUB, KEY_SUB_REMINDERS)
+    }
+
+    private fun syncReminders(
+        context: Context,
+        type: ReminderType,
+        storageKey: String,
+        isEnabled: Boolean,
+        timePreference: String,
+        reminders: List<ScheduledReminder>
+    ) {
+        ensureChannel(context)
+        if (!isEnabled || !hasPermission(context)) {
+            cancelAllStoredReminders(context, type, storageKey)
+            return
+        }
+
+        val now = System.currentTimeMillis()
+        val filtered = reminders.filter {
+            buildTriggerTime(it.dueDate, timePreference) > now
+        }
+
+        val stored = loadStoredReminders(context, storageKey)
         val storedMap = stored.associateBy { it.id }
-        val desiredIds = desired.map { it.id }.toSet()
+        val desiredIds = filtered.map { it.id }.toSet()
 
         stored.forEach { scheduled ->
             if (!desiredIds.contains(scheduled.id)) {
-                cancelMainTaskReminder(context, scheduled.id, scheduled.title)
+                cancelReminder(context, type, scheduled.id, scheduled.title)
             }
         }
 
-        desired.forEach { scheduled ->
+        filtered.forEach { scheduled ->
             val existing = storedMap[scheduled.id]
-            if (existing == null || existing.dueDate != scheduled.dueDate || existing.title != scheduled.title) {
-                scheduleReminder(context, scheduled.id, scheduled.title, scheduled.dueDate, timePreference)
+            if (existing == null ||
+                existing.dueDate != scheduled.dueDate ||
+                existing.title != scheduled.title
+            ) {
+                scheduleReminder(
+                    context,
+                    type,
+                    scheduled.id,
+                    scheduled.title,
+                    scheduled.dueDate,
+                    timePreference
+                )
             }
         }
 
-        saveStoredReminders(context, desired)
+        saveStoredReminders(context, storageKey, filtered)
     }
 
-    fun rescheduleStoredReminders(context: Context) {
-        if (!AlarmPreferences.isMajorAlarmEnabled(context) || !hasPermission(context)) return
+    private fun rescheduleStoredReminders(
+        context: Context,
+        type: ReminderType,
+        storageKey: String,
+        isEnabled: Boolean,
+        timePreference: String
+    ) {
+        if (!isEnabled || !hasPermission(context)) return
         ensureChannel(context)
-        val stored = loadStoredReminders(context)
-        stored.forEach { scheduleReminder(context, it.id, it.title, it.dueDate) }
+        val stored = loadStoredReminders(context, storageKey)
+        stored.forEach {
+            scheduleReminder(context, type, it.id, it.title, it.dueDate, timePreference)
+        }
     }
 
-    fun cancelAllStoredReminders(context: Context) {
-        val stored = loadStoredReminders(context)
-        stored.forEach { cancelMainTaskReminder(context, it.id, it.title) }
-        saveStoredReminders(context, emptyList())
+    private fun cancelAllStoredReminders(
+        context: Context,
+        type: ReminderType,
+        storageKey: String
+    ) {
+        val stored = loadStoredReminders(context, storageKey)
+        stored.forEach { cancelReminder(context, type, it.id, it.title) }
+        saveStoredReminders(context, storageKey, emptyList())
     }
 
     private fun scheduleReminder(
         context: Context,
+        type: ReminderType,
         taskId: String,
         title: String,
         dueDateMillis: Long,
-        timeValue: String = AlarmPreferences.getMajorAlarmTime(context)
+        timeValue: String
     ) {
         if (taskId.isBlank()) return
         val triggerAt = buildTriggerTime(dueDateMillis, timeValue)
         if (triggerAt <= System.currentTimeMillis()) {
-            cancelMainTaskReminder(context, taskId)
+            cancelReminder(context, type, taskId)
             return
         }
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
-        val pendingIntent = buildPendingIntent(context, taskId, title)
+        val pendingIntent = buildPendingIntent(context, type, taskId, title)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent)
     }
 
-    private fun cancelMainTaskReminder(context: Context, taskId: String, title: String? = null) {
+    private fun cancelReminder(
+        context: Context,
+        type: ReminderType,
+        taskId: String,
+        title: String? = null
+    ) {
         if (taskId.isBlank()) return
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
-        val pendingIntent = buildPendingIntent(context, taskId, title.orEmpty())
+        val pendingIntent = buildPendingIntent(context, type, taskId, title.orEmpty())
         alarmManager.cancel(pendingIntent)
     }
 
-    private fun buildPendingIntent(context: Context, taskId: String, title: String): PendingIntent {
+    private fun buildPendingIntent(
+        context: Context,
+        type: ReminderType,
+        taskId: String,
+        title: String
+    ): PendingIntent {
         val intent = Intent(context, TaskDeadlineReceiver::class.java).apply {
             putExtra(TaskDeadlineReceiver.EXTRA_TASK_ID, taskId)
             putExtra(TaskDeadlineReceiver.EXTRA_TASK_TITLE, title)
+            putExtra(TaskDeadlineReceiver.EXTRA_IS_SUBTASK, type == ReminderType.SUB)
         }
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val requestCode = "${type.name}-$taskId".hashCode()
         return PendingIntent.getBroadcast(
             context,
-            taskId.hashCode(),
+            requestCode,
             intent,
             flags
         )
@@ -153,23 +259,27 @@ object TaskReminderScheduler {
         return calendar.timeInMillis
     }
 
-    private fun loadStoredReminders(context: Context): List<ScheduledMainTask> {
-        val json = prefs(context).getString(KEY_MAIN_REMINDERS, "[]") ?: "[]"
+    private fun loadStoredReminders(context: Context, key: String): List<ScheduledReminder> {
+        val json = prefs(context).getString(key, "[]") ?: "[]"
         val array = JSONArray(json)
-        val list = mutableListOf<ScheduledMainTask>()
+        val list = mutableListOf<ScheduledReminder>()
         for (i in 0 until array.length()) {
             val obj = array.optJSONObject(i) ?: continue
             val id = obj.optString("id")
             val title = obj.optString("title")
             val dueDate = obj.optLong("dueDate", -1)
             if (id.isNotBlank() && dueDate > 0) {
-                list.add(ScheduledMainTask(id, title, dueDate))
+                list.add(ScheduledReminder(id, title, dueDate))
             }
         }
         return list
     }
 
-    private fun saveStoredReminders(context: Context, reminders: List<ScheduledMainTask>) {
+    private fun saveStoredReminders(
+        context: Context,
+        key: String,
+        reminders: List<ScheduledReminder>
+    ) {
         val array = JSONArray()
         reminders.forEach { reminder ->
             val obj = JSONObject().apply {
@@ -179,7 +289,7 @@ object TaskReminderScheduler {
             }
             array.put(obj)
         }
-        prefs(context).edit().putString(KEY_MAIN_REMINDERS, array.toString()).apply()
+        prefs(context).edit().putString(key, array.toString()).apply()
     }
 
     private fun prefs(context: Context) =
