@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.AlarmPreferences
@@ -128,7 +129,7 @@ object TaskReminderScheduler {
         reminders: List<ScheduledReminder>
     ) {
         ensureChannel(context)
-        if (!isEnabled || !hasPermission(context)) {
+        if (!isEnabled || !hasNotificationPermission(context) || !ExactAlarmPermissionHelper.hasExactAlarmPermission(context)) {
             cancelAllStoredReminders(context, type, storageKey)
             return
         }
@@ -175,7 +176,7 @@ object TaskReminderScheduler {
         isEnabled: Boolean,
         timePreference: String
     ) {
-        if (!isEnabled || !hasPermission(context)) return
+        if (!isEnabled || !hasNotificationPermission(context) || !ExactAlarmPermissionHelper.hasExactAlarmPermission(context)) return
         ensureChannel(context)
         val stored = loadStoredReminders(context, storageKey)
         stored.forEach {
@@ -202,6 +203,10 @@ object TaskReminderScheduler {
         timeValue: String
     ) {
         if (taskId.isBlank()) return
+        if (!ExactAlarmPermissionHelper.hasExactAlarmPermission(context)) {
+            Log.w("TaskReminderScheduler", "Exact alarm permission missing. Cannot schedule reminder for $taskId")
+            return
+        }
         val triggerAt = buildTriggerTime(dueDateMillis, timeValue)
         if (triggerAt <= System.currentTimeMillis()) {
             cancelReminder(context, type, taskId)
@@ -295,7 +300,7 @@ object TaskReminderScheduler {
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    private fun hasPermission(context: Context): Boolean {
+    private fun hasNotificationPermission(context: Context): Boolean {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
     }

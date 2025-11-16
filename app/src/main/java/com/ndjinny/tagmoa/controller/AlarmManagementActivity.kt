@@ -108,6 +108,12 @@ class AlarmManagementActivity : AppCompatActivity() {
             }
             return
         }
+        if (isChecked && !ExactAlarmPermissionHelper.hasExactAlarmPermission(this)) {
+            Toast.makeText(this, R.string.alarm_exact_permission_required, Toast.LENGTH_SHORT).show()
+            ExactAlarmPermissionHelper.requestExactAlarmPermission(this)
+            suppressSwitchUpdate { targetSwitch.isChecked = false }
+            return
+        }
         applySwitchState(targetSwitch, isChecked)
     }
 
