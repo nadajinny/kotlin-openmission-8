@@ -93,6 +93,11 @@ class OnboardingActivity : AppCompatActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        AlarmPermissionManager.ensurePermissions(this)
+    }
+
     private fun applyWindowInsets(root: View) {
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

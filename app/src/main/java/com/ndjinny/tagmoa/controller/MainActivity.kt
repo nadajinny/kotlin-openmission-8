@@ -67,6 +67,8 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             bottomNavigation.selectedItemId = R.id.navigation_home
         }
+
+        AlarmPermissionManager.ensurePermissions(this)
     }
 
     override fun onBackPressed() {
@@ -272,5 +274,10 @@ class MainActivity : AppCompatActivity() {
         val maxLeft = (parentWidth - (layoutParams?.rightMargin ?: 0) - fabMenuContainer.width).toFloat()
         val clampedLeft = desiredLeft.coerceIn(minLeft, maxLeft)
         fabMenuContainer.translationX = clampedLeft - currentLeft
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AlarmPermissionManager.ensurePermissions(this)
     }
 }

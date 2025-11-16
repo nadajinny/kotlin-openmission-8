@@ -91,6 +91,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        AlarmPermissionManager.ensurePermissions(this)
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
             val session = UserSession(

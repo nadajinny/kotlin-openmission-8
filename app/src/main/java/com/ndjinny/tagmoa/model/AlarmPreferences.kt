@@ -15,7 +15,7 @@ object AlarmPreferences {
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     fun isMajorAlarmEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_MAJOR_ENABLED, true)
+        prefs(context).getBoolean(KEY_MAJOR_ENABLED, false)
 
     fun setMajorAlarmEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean(KEY_MAJOR_ENABLED, enabled).apply()
