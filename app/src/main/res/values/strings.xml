@@ -194,6 +194,7 @@
     <string name="alarm_time_setting_placeholder">설정한 시간에 주요 일정 마감 알림을 보낼게요.</string>
     <string name="alarm_permission_rationale">알림을 받으려면 알림 권한이 필요합니다.</string>
     <string name="alarm_permission_denied">알림 권한이 허용되지 않아 알림을 보낼 수 없습니다.</string>
+    <string name="alarm_toggle_required">먼저 알람을 켜주세요.</string>
     <string name="notification_channel_task_deadline">마감 알림</string>
     <string name="notification_channel_task_deadline_desc">주요 일정 마감 시간이 되면 알림을 보내드려요.</string>
     <string name="notification_deadline_title">주요 일정 마감</string>

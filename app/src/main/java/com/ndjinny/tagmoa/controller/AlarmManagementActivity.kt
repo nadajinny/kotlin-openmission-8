@@ -82,8 +82,20 @@ class AlarmManagementActivity : AppCompatActivity() {
             handleSwitchToggle(switchSubAlarm, isChecked)
         }
 
-        rowMajorTime.setOnClickListener { showMajorAlarmTimePicker() }
-        rowSubTime.setOnClickListener { showSubAlarmTimePicker() }
+        rowMajorTime.setOnClickListener {
+            if (switchMajorAlarm.isChecked) {
+                showMajorAlarmTimePicker()
+            } else {
+                Toast.makeText(this, R.string.alarm_toggle_required, Toast.LENGTH_SHORT).show()
+            }
+        }
+        rowSubTime.setOnClickListener {
+            if (switchSubAlarm.isChecked) {
+                showSubAlarmTimePicker()
+            } else {
+                Toast.makeText(this, R.string.alarm_toggle_required, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun handleSwitchToggle(targetSwitch: SwitchMaterial, isChecked: Boolean) {
