@@ -29,4 +29,6 @@ object UserDatabase {
         )
         userRoot(session.uid).child("profile").updateChildren(profile)
     }
+
+    fun deleteUserData(uid: String) = userRoot(uid).removeValue()
 }

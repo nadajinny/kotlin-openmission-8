@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.ndjinny.tagmoa.R
 import com.ndjinny.tagmoa.model.AuthProvider
 import com.ndjinny.tagmoa.model.SessionManager
+import com.ndjinny.tagmoa.model.UserDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NidOAuth
@@ -131,48 +132,54 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             redirectToLogin()
             return
         }
-        currentUser.delete().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                firebaseAuth.signOut()
-                googleClient.revokeAccess().addOnCompleteListener {
-                    SessionManager.clearSession()
-                    Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
-                    redirectToLogin()
+        purgeWorkspaceData {
+            currentUser.delete().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    firebaseAuth.signOut()
+                    googleClient.revokeAccess().addOnCompleteListener {
+                        SessionManager.clearSession()
+                        Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
+                        redirectToLogin()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.message_account_delete_failed), Toast.LENGTH_LONG).show()
                 }
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.message_account_delete_failed), Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun disconnectKakao() {
-        UserApiClient.instance.unlink { error ->
-            if (error != null) {
-                Toast.makeText(requireContext(), getString(R.string.message_account_delete_failed), Toast.LENGTH_LONG).show()
-            } else {
-                SessionManager.clearSession()
-                Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
-                redirectToLogin()
+        purgeWorkspaceData {
+            UserApiClient.instance.unlink { error ->
+                if (error != null) {
+                    Toast.makeText(requireContext(), getString(R.string.message_account_delete_failed), Toast.LENGTH_LONG).show()
+                } else {
+                    SessionManager.clearSession()
+                    Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
+                    redirectToLogin()
+                }
             }
         }
     }
 
     private fun disconnectNaver() {
-        NidOAuth.disconnect(object : NidOAuthCallback {
-            override fun onSuccess() {
-                SessionManager.clearSession()
-                Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
-                redirectToLogin()
-            }
+        purgeWorkspaceData {
+            NidOAuth.disconnect(object : NidOAuthCallback {
+                override fun onSuccess() {
+                    SessionManager.clearSession()
+                    Toast.makeText(requireContext(), getString(R.string.message_account_deleted), Toast.LENGTH_SHORT).show()
+                    redirectToLogin()
+                }
 
-            override fun onFailure(errorCode: String, errorDesc: String) {
-                Toast.makeText(
-                    requireContext(),
-                    "errorCode:$errorCode, errorDesc:$errorDesc",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
+                override fun onFailure(errorCode: String, errorDesc: String) {
+                    Toast.makeText(
+                        requireContext(),
+                        "errorCode:$errorCode, errorDesc:$errorDesc",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
+        }
     }
 
     private fun openSupportEmail() {
@@ -215,5 +222,14 @@ class UserProfileFragment : Fragment(R.layout.fragment_user_profile) {
             .setPositiveButton(R.string.action_disconnect_account) { _, _ -> onConfirm() }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private fun purgeWorkspaceData(onComplete: () -> Unit) {
+        val uid = SessionManager.currentSession?.uid
+        if (uid.isNullOrBlank()) {
+            onComplete()
+            return
+        }
+        UserDatabase.deleteUserData(uid).addOnCompleteListener { onComplete() }
     }
 }
