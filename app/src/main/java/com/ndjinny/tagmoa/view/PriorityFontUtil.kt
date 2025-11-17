@@ -27,6 +27,7 @@ object PriorityFontUtil {
 
     @FontRes
     private fun fontResFor(priority: Int): Int = when (priority) {
+        3 -> R.font.paperlogy_8extrabold
         2 -> R.font.paperlogy_7bold
         1 -> R.font.paperlogy_5medium
         else -> R.font.paperlogy_3light

@@ -12,6 +12,8 @@ import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.database.DatabaseReference
 import com.ndjinny.tagmoa.R
@@ -33,12 +35,16 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         const val EXTRA_SUB_TASK_ID = "extra_sub_task_id"
     }
 
+    private data class PriorityChipView(
+        val container: MaterialCardView,
+        val title: TextView,
+    )
+
     private lateinit var tasksRef: DatabaseReference
     private lateinit var subTasksRef: DatabaseReference
     private lateinit var userId: String
 
     private lateinit var spinnerMainTasks: Spinner
-    private lateinit var spinnerPriority: Spinner
     private lateinit var textDateRange: TextView
     private lateinit var textStartTime: TextView
     private lateinit var textEndTime: TextView
@@ -48,6 +54,8 @@ class AddEditSubTaskActivity : AppCompatActivity() {
     private lateinit var editContent: EditText
     private lateinit var alarmOffsetValues: IntArray
     private var suppressAlarmSwitchCallback = false
+    private lateinit var priorityChips: List<PriorityChipView>
+    private var selectedPriority: Int = 0
 
     private var selectedStartDate: Long? = null
     private var selectedEndDate: Long? = null
@@ -71,7 +79,6 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_edit_sub_task)
 
         spinnerMainTasks = findViewById(R.id.spinnerMainTasks)
-        spinnerPriority = findViewById(R.id.spinnerPriority)
         textDateRange = findViewById(R.id.textSubTaskDateRange)
         textStartTime = findViewById(R.id.textSubTaskStartTime)
         textEndTime = findViewById(R.id.textSubTaskEndTime)
@@ -88,7 +95,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         selectedMainTaskId = intent.getStringExtra(EXTRA_MAIN_TASK_ID)
         subTaskId = intent.getStringExtra(EXTRA_SUB_TASK_ID)
 
-        setupPrioritySpinner()
+        setupPriorityButtons()
         setupAlarmOffsetSpinner()
         btnSelectDateRange.setOnClickListener { showDateRangePicker() }
         btnSelectStartTime.setOnClickListener { showTimePicker(isStart = true) }
@@ -111,12 +118,47 @@ class AddEditSubTaskActivity : AppCompatActivity() {
         loadMainTasks()
     }
 
-    private fun setupPrioritySpinner() {
-        val priorities = resources.getStringArray(R.array.sub_task_priorities)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerPriority.adapter = adapter
-        spinnerPriority.setSelection(0, false) // 기본값: 낮음
+    private fun setupPriorityButtons() {
+        priorityChips = listOf(
+            PriorityChipView(
+                container = findViewById(R.id.cardPriorityDefault),
+                title = findViewById(R.id.textPriorityDefaultTitle),
+            ),
+            PriorityChipView(
+                container = findViewById(R.id.cardPriorityImportant),
+                title = findViewById(R.id.textPriorityImportantTitle),
+            ),
+            PriorityChipView(
+                container = findViewById(R.id.cardPriorityUrgent),
+                title = findViewById(R.id.textPriorityUrgentTitle),
+            ),
+            PriorityChipView(
+                container = findViewById(R.id.cardPriorityMostImportant),
+                title = findViewById(R.id.textPriorityMostImportantTitle),
+            ),
+        )
+        priorityChips.forEachIndexed { index, chip ->
+            chip.container.setOnClickListener { selectPriority(index) }
+        }
+        selectPriority(selectedPriority)
+    }
+
+    private fun selectPriority(index: Int) {
+        val clamped = index.coerceIn(0, priorityChips.lastIndex)
+        selectedPriority = clamped
+        updatePriorityButtonStyles(clamped)
+    }
+
+    private fun updatePriorityButtonStyles(selectedIndex: Int) {
+        val selectedBg = ContextCompat.getColor(this, R.color.priority_chip_selected)
+        val defaultBg = ContextCompat.getColor(this, R.color.priority_chip_default)
+        val selectedTitle = ContextCompat.getColor(this, R.color.priority_chip_selected_text)
+        val defaultTitle = ContextCompat.getColor(this, R.color.priority_chip_text)
+        priorityChips.forEachIndexed { index, chip ->
+            val isSelected = index == selectedIndex
+            chip.container.setCardBackgroundColor(if (isSelected) selectedBg else defaultBg)
+            chip.title.setTextColor(if (isSelected) selectedTitle else defaultTitle)
+        }
     }
 
     private fun loadMainTasks() {
@@ -180,11 +222,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             switchAlarm.isChecked = subTask.alarmEnabled
             setAlarmOffsetSelection(alarmLeadMinutes)
             alarmOptionsContainer.visibility = if (subTask.alarmEnabled) View.VISIBLE else View.GONE
-            val adapterCount = spinnerPriority.adapter?.count ?: 0
-            if (adapterCount > 0) {
-                val priorityIndex = subTask.priority.coerceIn(0, adapterCount - 1)
-                spinnerPriority.setSelection(priorityIndex)
-            }
+            selectPriority(subTask.priority)
             selectedMainTaskId = subTask.mainTaskId.ifBlank { mainTaskId }
             setMainTaskSelection(selectedMainTaskId)
             updateDateRangeLabel()
@@ -321,7 +359,7 @@ class AddEditSubTaskActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.error_empty_subtask_content, Toast.LENGTH_SHORT).show()
             return
         }
-        val priority = spinnerPriority.selectedItemPosition
+        val priority = selectedPriority
         val subTaskKey = subTaskId ?: subTasksRef.child(mainTaskId).push().key
         if (subTaskKey.isNullOrBlank()) {
             Toast.makeText(this, R.string.error_generic, Toast.LENGTH_SHORT).show()

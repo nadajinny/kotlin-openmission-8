@@ -77,4 +77,10 @@
     <color name="gray_500">#FF9E9E9E</color>
     <color name="white_25">#40FFFFFF</color>
     <color name="white_50">#80FFFFFF</color>
+
+    <!-- Priority chip colors -->
+    <color name="priority_chip_default">#F1F3F6</color>
+    <color name="priority_chip_selected">#DEE6FF</color>
+    <color name="priority_chip_text">#222222</color>
+    <color name="priority_chip_selected_text">#0A58FF</color>
 </resources>

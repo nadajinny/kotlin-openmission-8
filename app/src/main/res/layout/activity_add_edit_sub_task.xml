@@ -173,21 +173,164 @@
                 android:textAppearance="@style/TextAppearance.Tagmoa.Caption" />
         </LinearLayout>
 
-        <!-- 중요도는 기본값(낮음)만 유지하고 화면에서는 숨김 -->
         <TextView
+            android:id="@+id/textPriorityLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/label_priority"
-            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle"
-            android:visibility="gone" />
+            android:textAppearance="@style/TextAppearance.Tagmoa.Subtitle" />
 
-        <Spinner
-            android:id="@+id/spinnerPriority"
+        <GridLayout
+            android:id="@+id/gridPriorityButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:visibility="gone" />
+            android:layout_marginTop="8dp"
+            android:alignmentMode="alignMargins"
+            android:columnCount="2"
+            android:rowOrderPreserved="false">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPriorityDefault"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/priority_chip_default"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/textPriorityDefaultTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/priority_default"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
+                        android:textColor="@color/priority_chip_text"
+                        android:fontFamily="@font/paperlogy_4regular"
+                        app:fontFamily="@font/paperlogy_4regular" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPriorityImportant"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/priority_chip_default"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/textPriorityImportantTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/priority_important"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
+                        android:textColor="@color/priority_chip_text"
+                        android:fontFamily="@font/paperlogy_4regular"
+                        app:fontFamily="@font/paperlogy_4regular" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPriorityUrgent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/priority_chip_default"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/textPriorityUrgentTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/priority_urgent"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
+                        android:textColor="@color/priority_chip_text"
+                        android:fontFamily="@font/paperlogy_4regular"
+                        app:fontFamily="@font/paperlogy_4regular" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPriorityMostImportant"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/priority_chip_default"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/textPriorityMostImportantTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/priority_most_important"
+                        android:textAppearance="@style/TextAppearance.Tagmoa.Body"
+                        android:textColor="@color/priority_chip_text"
+                        android:fontFamily="@font/paperlogy_4regular"
+                        app:fontFamily="@font/paperlogy_4regular" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveSubTask"

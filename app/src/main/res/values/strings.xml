@@ -108,9 +108,14 @@
     <string name="message_task_completed">주요 일정을 완료했어요.</string>
     <string name="message_subtask_completed">세부 일정을 완료했어요.</string>
 
-    <string name="priority_low">낮음</string>
-    <string name="priority_medium">보통</string>
-    <string name="priority_high">높음</string>
+    <string name="priority_default">💡 기본</string>
+    <string name="priority_important">🔥 중요</string>
+    <string name="priority_urgent">🚀 긴급</string>
+    <string name="priority_most_important">⭐️ 가장 중요</string>
+    <string name="priority_description_default">💡 보통 우선순위</string>
+    <string name="priority_description_important">🔥 놓치지 말아야 해요</string>
+    <string name="priority_description_urgent">🚀 빠르게 처리 필요</string>
+    <string name="priority_description_top">⭐️ 최우선으로 진행</string>
 
     <string name="kakao_app_key">a34795d3954f3817b08003b1b9e6d6d7</string>
     <string name="nav_home">홈</string>

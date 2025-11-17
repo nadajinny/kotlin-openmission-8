@@ -73,6 +73,9 @@ class SubTaskAdapter(
                 dateText.text = context.getString(R.string.label_with_date, dateLabel)
             }
 
+            itemView.setOnClickListener {
+                onEdit(subTask)
+            }
             moreButton.setOnClickListener {
                 showSubTaskMenu(context, subTask)
             }
