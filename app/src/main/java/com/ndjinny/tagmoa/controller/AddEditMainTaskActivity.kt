@@ -224,18 +224,27 @@ class AddEditMainTaskActivity : AppCompatActivity() {
             return
         }
 
-        val now = System.currentTimeMillis()
         val manualStart = selectedStartDate ?: selectedEndDate
         val finalStartDate = if (hasManualSchedule) {
             manualStart
         } else {
-            loadedTask?.startDate ?: now
+            loadedTask
+                ?.takeIf { !it.manualSchedule }
+                ?.startDate
         }
-        val finalEndDate = if (hasManualSchedule) selectedEndDate else null
+        val finalEndDate = if (hasManualSchedule) {
+            selectedEndDate
+        } else {
+            loadedTask
+                ?.takeIf { !it.manualSchedule }
+                ?.endDate
+        }
         val finalDueDate = if (hasManualSchedule) {
             selectedEndDate ?: selectedStartDate
         } else {
-            loadedTask?.takeIf { !it.manualSchedule }?.dueDate
+            loadedTask
+                ?.takeIf { !it.manualSchedule }
+                ?.dueDate
         }
         if (hasManualSchedule && finalStartDate == null) {
             Toast.makeText(this, R.string.label_select_period_placeholder, Toast.LENGTH_SHORT).show()

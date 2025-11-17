@@ -47,45 +47,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textLoginTitle" />
 
-    <LinearLayout
-        android:id="@+id/layout_login_button_group"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_google_login"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:background="@drawable/bg_panel_soft"
-        android:padding="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textLoginSubtitle"
-        tools:ignore="UselessParent">
+        app:layout_constraintTop_toBottomOf="@id/textLoginSubtitle" />
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/btn_google_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp" />
+    <!-- 카카오 로그인 버튼은 임시로 숨김 처리 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_kakao_login"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/action_kakao_login"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/btn_google_login"
+        app:layout_constraintStart_toStartOf="@id/btn_google_login"
+        app:layout_constraintTop_toBottomOf="@id/btn_google_login" />
 
-        <!-- 카카오 로그인 버튼은 임시로 숨김 처리 -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_kakao_login"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/action_kakao_login"
-            android:visibility="gone" />
-
-        <!-- 네이버 로그인 버튼은 임시로 숨김 처리 -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_naver_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/action_naver_login"
-            android:visibility="gone" />
-
-    </LinearLayout>
+    <!-- 네이버 로그인 버튼은 임시로 숨김 처리 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_naver_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/action_naver_login"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/btn_kakao_login"
+        app:layout_constraintStart_toStartOf="@id/btn_kakao_login"
+        app:layout_constraintTop_toBottomOf="@id/btn_kakao_login" />
 
     <ProgressBar
         android:id="@+id/progressLogin"
